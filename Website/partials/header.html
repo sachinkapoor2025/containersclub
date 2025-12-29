@@ -1,0 +1,51 @@
+<!-- /partials/header.html -->
+<header class="header">
+    <div class="header-inner">
+      <div class="brand">
+        <img src="/images/cc_logo.png" alt="Containers Club logo" />
+        <span>Containers Club</span>
+      </div>
+  
+      <!-- Mobile menu button -->
+      <button class="menu-btn" aria-label="Open menu"
+              aria-controls="primary-nav" aria-expanded="false">
+        <span></span><span></span><span></span>
+      </button>
+  
+      <!-- Primary nav -->
+      <nav id="primary-nav" class="nav">
+        <a class="secondary" href="/track/index.html">Track</a>
+        <a class="secondary" href="/rent/index.html">Rent</a>
+        <a class="secondary" href="/sell/index.html">Sell</a>
+        <a class="secondary" href="/info/index.html">Info</a>
+        <a class="secondary" href="/onoff/index.html">On-Off</a>
+        <a class="secondary" href="/ports/index.html">Ports</a>
+        <a class="secondary" href="/news/index.html">News</a>
+        <a class="secondary" href="/mmc/index.html">MMC</a>
+        <a class="secondary" href="/insurance/index.html">Insurance</a>
+      </nav>
+    </div>
+  </header>
+  
+  <script>
+    // Runs after injection; initializes hamburger toggles for any header instance (including drawers)
+    (function () {
+      document.querySelectorAll('.menu-btn').forEach(btn => {
+        const navId = btn.getAttribute('aria-controls') || 'primary-nav';
+        const nav = document.getElementById(navId);
+        if (!nav) return;
+        btn.addEventListener('click', () => {
+          const isOpen = nav.classList.toggle('open');
+          btn.setAttribute('aria-expanded', isOpen);
+        });
+      });
+  
+      document.querySelectorAll('nav a').forEach(a =>
+        a.addEventListener('click', () => {
+          document.querySelectorAll('.nav.open').forEach(n => n.classList.remove('open'));
+          document.querySelectorAll('.menu-btn').forEach(b => b.setAttribute('aria-expanded', 'false'));
+        })
+      );
+    })();
+  </script>
+  

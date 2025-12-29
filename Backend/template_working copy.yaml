@@ -1,0 +1,1030 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Description: Consolidated SAM template — single CloudFront for website + all APIs. Keep resources unchanged; single CFDistribution.
+
+Globals:
+  Function:
+    # Default for most Python lambdas
+    Runtime: python3.12
+    Timeout: 30
+    MemorySize: 512
+    Architectures: [arm64]
+
+Resources:
+
+  #################################
+  # APIs (kept separate for now)
+  #################################
+  ApiGatewayLogGroup:
+  Type: AWS::Logs::LogGroup
+  Properties:
+    LogGroupName: !Sub "/aws/apigateway/${AWS::StackName}"
+    RetentionInDays: 14
+
+ApiGatewayCloudWatchRole:
+  Type: AWS::IAM::Role
+  Properties:
+    AssumeRolePolicyDocument:
+      Version: "2012-10-17"
+      Statement:
+        - Effect: Allow
+          Principal:
+            Service: apigateway.amazonaws.com
+          Action: sts:AssumeRole
+    ManagedPolicyArns:
+      - arn:aws:iam::aws:policy/service-role/AmazonAPIGatewayPushToCloudWatchLogs
+
+ApiGatewayAccount:
+  Type: AWS::ApiGateway::Account
+  Properties:
+    CloudWatchRoleArn: !GetAtt ApiGatewayCloudWatchRole.Arn
+
+  Api:
+    Type: AWS::Serverless::Api
+    Properties:
+      StageName: prod
+      Cors:
+        AllowMethods: "'GET,POST,OPTIONS'"
+        AllowHeaders: "'*'"
+        AllowOrigin: "'*'"
+
+  HttpApi:
+    Type: AWS::Serverless::HttpApi
+    Properties:
+      CorsConfiguration:
+        AllowMethods: [ GET, POST, OPTIONS ]
+        AllowHeaders: [ "*" ]
+        AllowOrigins: [ "*" ]
+
+  RentApi:
+    Type: AWS::Serverless::Api
+    Properties:
+      Name: !Sub "${AWS::StackName}-RentApi"
+      StageName: prod
+      Cors:
+        AllowMethods: "'GET,POST,OPTIONS'"
+        AllowHeaders: "'*'"
+        AllowOrigin: "'*'"
+
+  SellApi:
+    Type: AWS::Serverless::Api
+    Properties:
+      Name: !Sub "${AWS::StackName}-SellApi"
+      StageName: prod
+      Cors:
+        AllowMethods: "'GET,POST,OPTIONS'"
+        AllowHeaders: "'*'"
+        AllowOrigin: "'*'"
+
+  #################################
+  # DynamoDB Tables
+  #################################
+  NewsTable:
+    Type: AWS::DynamoDB::Table
+    Properties:
+      BillingMode: PAY_PER_REQUEST
+      AttributeDefinitions:
+        - AttributeName: pk
+          AttributeType: S
+        - AttributeName: ts
+          AttributeType: N
+      KeySchema:
+        - AttributeName: pk
+          KeyType: HASH
+        - AttributeName: ts
+          KeyType: RANGE
+      TableName: !Sub "${AWS::StackName}-news"
+
+  PricesOnloadTable:
+    Type: AWS::DynamoDB::Table
+    Properties:
+      BillingMode: PAY_PER_REQUEST
+      AttributeDefinitions:
+        - AttributeName: route
+          AttributeType: S
+      KeySchema:
+        - AttributeName: route
+          KeyType: HASH
+      TableName: !Sub "${AWS::StackName}-prices-onload"
+
+  PricesOffloadTable:
+    Type: AWS::DynamoDB::Table
+    Properties:
+      BillingMode: PAY_PER_REQUEST
+      AttributeDefinitions:
+        - AttributeName: route
+          AttributeType: S
+      KeySchema:
+        - AttributeName: route
+          KeyType: HASH
+      TableName: !Sub "${AWS::StackName}-prices-offload"
+
+  BookingsTable:
+    Type: AWS::DynamoDB::Table
+    Properties:
+      BillingMode: PAY_PER_REQUEST
+      AttributeDefinitions:
+        - AttributeName: booking_id
+          AttributeType: S
+      KeySchema:
+        - AttributeName: booking_id
+          KeyType: HASH
+      TableName: !Sub "${AWS::StackName}-bookings"
+
+  PortsTable:
+    Type: AWS::DynamoDB::Table
+    Properties:
+      BillingMode: PAY_PER_REQUEST
+      AttributeDefinitions:
+        - AttributeName: country
+          AttributeType: S
+        - AttributeName: name
+          AttributeType: S
+      KeySchema:
+        - AttributeName: country
+          KeyType: HASH
+        - AttributeName: name
+          KeyType: RANGE
+      TableName: !Sub "${AWS::StackName}-ports"
+
+  PortsTableV2:
+    Type: AWS::DynamoDB::Table
+    DeletionPolicy: Retain
+    UpdateReplacePolicy: Retain
+    Properties:
+      TableName: !Sub "${AWS::StackName}-ports-v2"
+      BillingMode: PAY_PER_REQUEST
+      SSESpecification:
+        SSEEnabled: true
+      AttributeDefinitions:
+        - AttributeName: id
+          AttributeType: S
+        - AttributeName: state
+          AttributeType: S
+        - AttributeName: scIndexed
+          AttributeType: S
+        - AttributeName: city
+          AttributeType: S
+        - AttributeName: cityIndexed
+          AttributeType: S
+        - AttributeName: name_lc
+          AttributeType: S
+        - AttributeName: pincode
+          AttributeType: S
+      KeySchema:
+        - AttributeName: id
+          KeyType: HASH
+      GlobalSecondaryIndexes:
+        - IndexName: GSI_StateCity
+          KeySchema:
+            - AttributeName: state
+              KeyType: HASH
+            - AttributeName: scIndexed
+              KeyType: RANGE
+          Projection: { ProjectionType: ALL }
+        - IndexName: GSI_City
+          KeySchema:
+            - AttributeName: city
+              KeyType: HASH
+            - AttributeName: cityIndexed
+              KeyType: RANGE
+          Projection: { ProjectionType: ALL }
+        - IndexName: GSI_Name
+          KeySchema:
+            - AttributeName: name_lc
+              KeyType: HASH
+            - AttributeName: id
+              KeyType: RANGE
+          Projection: { ProjectionType: ALL }
+        - IndexName: GSI_Pincode
+          KeySchema:
+            - AttributeName: pincode
+              KeyType: HASH
+            - AttributeName: id
+              KeyType: RANGE
+          Projection: { ProjectionType: ALL }
+
+  # Tracker / submission tables
+  SubmissionsTable:
+    Type: AWS::DynamoDB::Table
+    Properties:
+      BillingMode: PAY_PER_REQUEST
+      AttributeDefinitions:
+        - AttributeName: id
+          AttributeType: S
+      KeySchema:
+        - AttributeName: id
+          KeyType: HASH
+      SSESpecification: { SSEEnabled: true }
+
+  CacheTable:
+    Type: AWS::DynamoDB::Table
+    Properties:
+      BillingMode: PAY_PER_REQUEST
+      AttributeDefinitions:
+        - AttributeName: container
+          AttributeType: S
+      KeySchema:
+        - AttributeName: container
+          KeyType: HASH
+      SSESpecification: { SSEEnabled: true }
+
+  UsersTable:
+    Type: AWS::DynamoDB::Table
+    Properties:
+      BillingMode: PAY_PER_REQUEST
+      AttributeDefinitions:
+        - AttributeName: phone
+          AttributeType: S
+        - AttributeName: email
+          AttributeType: S
+      KeySchema:
+        - AttributeName: phone
+          KeyType: HASH
+      GlobalSecondaryIndexes:
+        - IndexName: EmailIndex
+          KeySchema:
+            - AttributeName: email
+              KeyType: HASH
+          Projection: { ProjectionType: ALL }
+      SSESpecification: { SSEEnabled: true }
+
+  # Rentals / Sell listings tables
+  RentListingsTable:
+    Type: AWS::DynamoDB::Table
+    Properties:
+      BillingMode: PAY_PER_REQUEST
+      AttributeDefinitions:
+        - AttributeName: listingId
+          AttributeType: S
+      KeySchema:
+        - AttributeName: listingId
+          KeyType: HASH
+      TableName: !Sub "${AWS::StackName}-RentListings"
+
+  SellListingsTable:
+    Type: AWS::DynamoDB::Table
+    Properties:
+      BillingMode: PAY_PER_REQUEST
+      AttributeDefinitions:
+        - AttributeName: listingId
+          AttributeType: S
+      KeySchema:
+        - AttributeName: listingId
+          KeyType: HASH
+      TableName: !Sub "${AWS::StackName}-SellListings"
+
+  #################################
+  # S3 Buckets
+  #################################
+  WebBucket:
+    Type: AWS::S3::Bucket
+    Properties:
+      OwnershipControls:
+        Rules:
+          - ObjectOwnership: BucketOwnerEnforced
+      PublicAccessBlockConfiguration:
+        BlockPublicAcls: true
+        BlockPublicPolicy: true
+        IgnorePublicAcls: true
+        RestrictPublicBuckets: true
+
+  RentMediaBucket:
+    Type: AWS::S3::Bucket
+    Properties:
+      CorsConfiguration:
+        CorsRules:
+          - AllowedHeaders: ["*"]
+            AllowedMethods: ["GET", "PUT", "HEAD"]
+            AllowedOrigins: ["*"]
+            MaxAge: 3000
+
+  SellMediaBucket:
+    Type: AWS::S3::Bucket
+    Properties:
+      CorsConfiguration:
+        CorsRules:
+          - AllowedHeaders: ["*"]
+            AllowedMethods: ["GET", "PUT", "HEAD"]
+            AllowedOrigins: ["*"]
+            MaxAge: 3000
+
+  #################################
+  # Cognito (rent/sell)
+  #################################
+  RentUserPool:
+    Type: AWS::Cognito::UserPool
+    Properties:
+      UserPoolName: !Sub "${AWS::StackName}-Renters"
+      AutoVerifiedAttributes: ["email"]
+
+  RentUserPoolClient:
+    Type: AWS::Cognito::UserPoolClient
+    Properties:
+      ClientName: web
+      GenerateSecret: false
+      UserPoolId: !Ref RentUserPool
+      AllowedOAuthFlows: ["implicit"]
+      AllowedOAuthScopes: ["email", "openid", "profile"]
+      AllowedOAuthFlowsUserPoolClient: true
+      CallbackURLs:
+        - https://containersclub.com/rent/new.html
+
+  SellUserPool:
+    Type: AWS::Cognito::UserPool
+    Properties:
+      UserPoolName: !Sub "${AWS::StackName}-Sellers"
+      AutoVerifiedAttributes: ["email"]
+
+  SellUserPoolClient:
+    Type: AWS::Cognito::UserPoolClient
+    Properties:
+      ClientName: web
+      GenerateSecret: false
+      UserPoolId: !Ref SellUserPool
+      AllowedOAuthFlows: ["implicit"]
+      AllowedOAuthScopes: ["email", "openid", "profile"]
+      AllowedOAuthFlowsUserPoolClient: true
+      CallbackURLs:
+        - https://containersclub.com/sell/new.html
+
+  #################################
+  # CloudFront OAC + OriginRequestPolicy
+  #################################
+  SiteOAC:
+    Type: AWS::CloudFront::OriginAccessControl
+    Properties:
+      OriginAccessControlConfig:
+        Name: !Sub "${AWS::StackName}-oac"
+        Description: Access S3 bucket securely from CloudFront
+        SigningBehavior: always
+        SigningProtocol: sigv4
+        OriginAccessControlOriginType: s3
+
+  # Custom OriginRequestPolicy to forward Authorization + common headers to API origins
+  # CFApiOriginRequestPolicy:
+  #   Type: AWS::CloudFront::OriginRequestPolicy
+  #   Properties:
+  #     OriginRequestPolicyConfig:
+  #       Name: !Sub "${AWS::StackName}-api-forward-auth-policy"
+  #       Comment: "Forward Authorization and common headers to API origins"
+  #       HeadersConfig:
+  #         HeaderBehavior: include
+  #         Headers:
+  #           - Authorization
+  #           - Content-Type
+  #           - Origin
+  #           - Referer
+  #           - User-Agent
+  #       CookiesConfig:
+  #         CookieBehavior: none
+  #       QueryStringsConfig:
+  #         QueryStringBehavior: all
+
+  #################################
+  # Single CloudFront Distribution (website + APIs)
+  #################################
+  CFDistribution:
+    Type: AWS::CloudFront::Distribution
+    Properties:
+      DistributionConfig:
+        Enabled: true
+        DefaultRootObject: index.html
+        Origins:
+          - Id: S3Origin
+            DomainName: !GetAtt WebBucket.RegionalDomainName
+            S3OriginConfig: {}
+            OriginAccessControlId: !GetAtt SiteOAC.Id
+
+          - Id: HttpApiOrigin
+            DomainName: !Sub "${HttpApi}.execute-api.${AWS::Region}.amazonaws.com"
+            CustomOriginConfig:
+              OriginProtocolPolicy: https-only
+              OriginSSLProtocols: [ TLSv1.2 ]
+
+          - Id: RestApiOrigin
+            DomainName: !Sub "${Api}.execute-api.${AWS::Region}.amazonaws.com"
+            CustomOriginConfig:
+              OriginProtocolPolicy: https-only
+              OriginSSLProtocols: [ TLSv1.2 ]
+
+          - Id: RentApiOrigin
+            DomainName: !Sub "${RentApi}.execute-api.${AWS::Region}.amazonaws.com"
+            CustomOriginConfig:
+              OriginProtocolPolicy: https-only
+              OriginSSLProtocols: [ TLSv1.2 ]
+
+          - Id: SellApiOrigin
+            DomainName: !Sub "${SellApi}.execute-api.${AWS::Region}.amazonaws.com"
+            CustomOriginConfig:
+              OriginProtocolPolicy: https-only
+              OriginSSLProtocols: [ TLSv1.2 ]
+
+        # DefaultBehaviour -> serve static website from S3
+        DefaultCacheBehavior:
+          TargetOriginId: S3Origin
+          ViewerProtocolPolicy: redirect-to-https
+          Compress: true
+          AllowedMethods: [ GET, HEAD, OPTIONS ]
+          CachedMethods: [ GET, HEAD ]
+          CachePolicyId: 658327ea-f89d-4fab-a63d-7e88639e58f6
+          ResponseHeadersPolicyId: 67f7725c-6f97-4210-82d7-5512b31e9d03
+
+        CacheBehaviors:
+          # Route /api/* -> HTTP API (HttpApi)
+          - PathPattern: "/api/*"
+            TargetOriginId: HttpApiOrigin
+            ViewerProtocolPolicy: https-only
+            Compress: true
+            AllowedMethods: [ GET, HEAD, OPTIONS, PUT, POST, PATCH, DELETE ]
+            CachedMethods: [ GET, HEAD, OPTIONS ]
+            CachePolicyId: 4135ea2d-6df8-44a3-9df3-4b5a84be39ad
+            OriginRequestPolicyId: 216adef6-5c7f-47e4-b989-5492eafa07d3
+
+          # Legacy REST API path pattern (adjust if your REST API stage path differs)
+          - PathPattern: "/prod/*"
+            TargetOriginId: RestApiOrigin
+            ViewerProtocolPolicy: https-only
+            AllowedMethods: [ GET, HEAD, OPTIONS, PUT, POST, PATCH, DELETE ]
+            CachedMethods: [ GET, HEAD, OPTIONS ]
+            CachePolicyId: 4135ea2d-6df8-44a3-9df3-4b5a84be39ad
+            OriginRequestPolicyId: 216adef6-5c7f-47e4-b989-5492eafa07d3
+
+          # Rent service paths
+          - PathPattern: "/rent/api/*"
+            TargetOriginId: RentApiOrigin
+            ViewerProtocolPolicy: https-only
+            AllowedMethods: [ GET, HEAD, OPTIONS, PUT, POST, PATCH, DELETE ]
+            CachedMethods: [ GET, HEAD, OPTIONS ]
+            CachePolicyId: 4135ea2d-6df8-44a3-9df3-4b5a84be39ad
+            OriginRequestPolicyId: 216adef6-5c7f-47e4-b989-5492eafa07d3
+
+          # Sell service paths
+          - PathPattern: "/sell/api/*"
+            TargetOriginId: SellApiOrigin
+            ViewerProtocolPolicy: https-only
+            AllowedMethods: [ GET, HEAD, OPTIONS, PUT, POST, PATCH, DELETE ]
+            CachedMethods: [ GET, HEAD, OPTIONS ]
+            CachePolicyId: 4135ea2d-6df8-44a3-9df3-4b5a84be39ad
+            OriginRequestPolicyId: 216adef6-5c7f-47e4-b989-5492eafa07d3
+
+        PriceClass: PriceClass_100
+
+  # S3 bucket policy allowing CloudFront to read objects
+  WebBucketPolicy:
+    Type: AWS::S3::BucketPolicy
+    Properties:
+      Bucket: !Ref WebBucket
+      PolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+          - Sid: AllowCloudFrontServiceGet
+            Effect: Allow
+            Principal:
+              Service: cloudfront.amazonaws.com
+            Action: "s3:GetObject"
+            Resource: !Sub "${WebBucket.Arn}/*"
+            Condition:
+              StringEquals:
+                AWS:SourceArn: !Sub "arn:aws:cloudfront::${AWS::AccountId}:distribution/${CFDistribution}"
+
+  #################################
+  # Lambda functions (Python by default; Node overrides)
+  #################################
+
+  # News fetcher (python) - schedule
+  NewsFetcherFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      Handler: app.lambda_handler
+      CodeUri: lambda/news_fetcher/
+      Policies:
+        - DynamoDBCrudPolicy:
+            TableName: !Ref NewsTable
+      Environment:
+        Variables:
+          NEWS_TABLE: !Ref NewsTable
+      Events:
+        DailySchedule:
+          Type: Schedule
+          Properties:
+            Schedule: rate(1 day)
+
+  GetNewsFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      Handler: app.lambda_handler
+      CodeUri: lambda/news/
+      Policies:
+        - DynamoDBReadPolicy:
+            TableName: !Ref NewsTable
+      Environment:
+        Variables:
+          NEWS_TABLE: !Ref NewsTable
+      Events:
+        ApiGet:
+          Type: Api
+          Properties:
+            RestApiId: !Ref Api
+            Path: /news
+            Method: GET
+
+  PriceLookupFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      Handler: app.lambda_handler
+      CodeUri: lambda/price/
+      Policies:
+        - DynamoDBReadPolicy:
+            TableName: !Ref PricesOnloadTable
+        - DynamoDBReadPolicy:
+            TableName: !Ref PricesOffloadTable
+      Environment:
+        Variables:
+          ONLOAD_TABLE: !Ref PricesOnloadTable
+          OFFLOAD_TABLE: !Ref PricesOffloadTable
+      Events:
+        ApiPost:
+          Type: Api
+          Properties:
+            RestApiId: !Ref Api
+            Path: /prices
+            Method: POST
+
+  BookingFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      Handler: app.lambda_handler
+      CodeUri: lambda/book/
+      Policies:
+        - DynamoDBCrudPolicy:
+            TableName: !Ref BookingsTable
+      Environment:
+        Variables:
+          BOOKINGS_TABLE: !Ref BookingsTable
+      Events:
+        ApiPost:
+          Type: Api
+          Properties:
+            RestApiId: !Ref Api
+            Path: /book
+            Method: POST
+
+  PortsSearchFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      Handler: app.lambda_handler
+      CodeUri: lambda/port/
+      Policies:
+        - DynamoDBReadPolicy:
+            TableName: !Ref PortsTableV2
+        - Statement:
+            - Effect: Allow
+              Action:
+                - dynamodb:Query
+                - dynamodb:Scan
+                - dynamodb:GetItem
+              Resource:
+                - !GetAtt PortsTableV2.Arn
+                - !Sub "${PortsTableV2.Arn}/index/*"
+      Environment:
+        Variables:
+          PORTS_TABLE: !Ref PortsTableV2
+      Events:
+        ApiList:
+          Type: Api
+          Properties:
+            RestApiId: !Ref Api
+            Path: /ports
+            Method: GET
+        ApiDetail:
+          Type: Api
+          Properties:
+            RestApiId: !Ref Api
+            Path: /ports/{id}
+            Method: GET
+        ApiFilters:
+          Type: Api
+          Properties:
+            RestApiId: !Ref Api
+            Path: /ports/filters
+            Method: GET
+
+  # Example list/create lambdas (rental listing)
+  ListCreateListingFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      Handler: app.lambda_handler
+      CodeUri: lambda/list/create_listing/
+      Policies:
+        - DynamoDBWritePolicy:
+            TableName: !Ref RentListingsTable
+      Environment:
+        Variables:
+          TABLE_NAME: !Ref RentListingsTable
+      Events:
+        ApiPost:
+          Type: Api
+          Properties:
+            RestApiId: !Ref Api
+            Path: /listings
+            Method: POST
+
+  ListListListingFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      Handler: app.lambda_handler
+      CodeUri: lambda/list/list_listing/
+      Policies:
+        - DynamoDBReadPolicy:
+            TableName: !Ref RentListingsTable
+      Environment:
+        Variables:
+          TABLE_NAME: !Ref RentListingsTable
+      Events:
+        ApiGet:
+          Type: Api
+          Properties:
+            RestApiId: !Ref Api
+            Path: /listings
+            Method: GET
+
+  # Rent functions (python)
+  ListListingsFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: lambda/list/list_listing/
+      Handler: app.handler
+      Runtime: python3.12
+      Policies:
+        - DynamoDBReadPolicy:
+            TableName: !Ref RentListingsTable
+      Environment:
+        Variables:
+          TABLE_NAME: !Ref RentListingsTable
+      Events:
+        ApiEvent:
+          Type: Api
+          Properties:
+            Path: /rent/listings
+            Method: GET
+            RestApiId: !Ref RentApi
+
+  CreateListingFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: lambda/list/create_listing/
+      Handler: app.handler
+      Runtime: python3.12
+      Policies:
+        - DynamoDBWritePolicy:
+            TableName: !Ref RentListingsTable
+      Environment:
+        Variables:
+          TABLE_NAME: !Ref RentListingsTable
+      Events:
+        ApiEvent:
+          Type: Api
+          Properties:
+            Path: /rent/listings
+            Method: POST
+            RestApiId: !Ref RentApi
+
+  PresignUploadFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: lambda/sell/presign_upload/
+      Handler: app.handler
+      Runtime: python3.12
+      Policies:
+        - S3CrudPolicy:
+            BucketName: !Ref RentMediaBucket
+      Environment:
+        Variables:
+          BUCKET_NAME: !Ref RentMediaBucket
+      Events:
+        ApiEvent:
+          Type: Api
+          Properties:
+            Path: /rent/presign
+            Method: POST
+            RestApiId: !Ref RentApi
+
+  # Sell functions (python)
+  SellListListingsFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: lambda/sell/list_listing/
+      Handler: app.handler
+      Runtime: python3.12
+      Policies:
+        - DynamoDBReadPolicy:
+            TableName: !Ref SellListingsTable
+      Environment:
+        Variables:
+          TABLE_NAME: !Ref SellListingsTable
+      Events:
+        ApiEvent:
+          Type: Api
+          Properties:
+            Path: /sell/listings
+            Method: GET
+            RestApiId: !Ref SellApi
+
+  SellCreateListingFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: lambda/sell/create_listing/
+      Handler: app.handler
+      Runtime: python3.12
+      Policies:
+        - DynamoDBWritePolicy:
+            TableName: !Ref SellListingsTable
+      Environment:
+        Variables:
+          TABLE_NAME: !Ref SellListingsTable
+      Events:
+        ApiEvent:
+          Type: Api
+          Properties:
+            Path: /sell/listings
+            Method: POST
+            RestApiId: !Ref SellApi
+
+  SellPresignUploadFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: lambda/sell/presign_upload/
+      Handler: app.handler
+      Runtime: python3.12
+      Policies:
+        - S3CrudPolicy:
+            BucketName: !Ref SellMediaBucket
+      Environment:
+        Variables:
+          BUCKET_NAME: !Ref SellMediaBucket
+      Events:
+        ApiEvent:
+          Type: Api
+          Properties:
+            Path: /sell/presign
+            Method: POST
+            RestApiId: !Ref SellApi
+
+  #################################
+  # Node.js Lambda(s) - explicit runtime
+  #################################
+  ApiFunc:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: lambda/Apifunc/
+      Handler: index.handler
+      Runtime: nodejs20.x
+      Policies:
+        - DynamoDBCrudPolicy:
+            TableName: !Ref SubmissionsTable
+        - DynamoDBCrudPolicy:
+            TableName: !Ref CacheTable
+        - DynamoDBCrudPolicy:
+            TableName: !Ref UsersTable
+      Environment:
+        Variables:
+          SUBMISSION_TABLE: !Ref SubmissionsTable
+          CACHE_TABLE: !Ref CacheTable
+          USERS_TABLE: !Ref UsersTable
+      Events:
+        GetCarriers:
+          Type: HttpApi
+          Properties:
+            ApiId: !Ref HttpApi
+            Path: /api/carriers
+            Method: GET
+        Resolve:
+          Type: HttpApi
+          Properties:
+            ApiId: !Ref HttpApi
+            Path: /api/resolve
+            Method: POST
+        InitTrack:
+          Type: HttpApi
+          Properties:
+            ApiId: !Ref HttpApi
+            Path: /api/track/init
+            Method: POST
+        TrackDetails:
+          Type: HttpApi
+          Properties:
+            ApiId: !Ref HttpApi
+            Path: /api/track/details
+            Method: POST
+
+  TrackFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: lambda/track/
+      Handler: index.handler
+      Runtime: nodejs20.x
+      Environment:
+        Variables: {}
+      Events:
+        ApiEvent:
+          Type: Api
+          Properties:
+            Path: /track
+            Method: GET
+            RestApiId: !Ref Api
+
+  #################################
+  # Additional backend lambdas (python) - contact/book/port/price etc.
+  #################################
+  ContactFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      Handler: app.lambda_handler
+      CodeUri: lambda/contact/
+      Policies: []
+      Environment:
+        Variables: {}
+
+  BookFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      Handler: app.lambda_handler
+      CodeUri: lambda/book/
+      Policies: []
+      Environment:
+        Variables: {}
+
+  PortFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      Handler: app.lambda_handler
+      CodeUri: lambda/port/
+      Policies:
+        - DynamoDBReadPolicy:
+            TableName: !Ref PortsTableV2
+      Environment:
+        Variables:
+          PORTS_TABLE: !Ref PortsTableV2
+
+  PriceFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      Handler: app.lambda_handler
+      CodeUri: lambda/price/
+      Policies:
+        - DynamoDBReadPolicy:
+            TableName: !Ref PricesOnloadTable
+        - DynamoDBReadPolicy:
+            TableName: !Ref PricesOffloadTable
+      Environment:
+        Variables:
+          ONLOAD_TABLE: !Ref PricesOnloadTable
+          OFFLOAD_TABLE: !Ref PricesOffloadTable
+
+    #################################
+  # BLOG SERVICE (DynamoDB + S3 + Lambda + API)
+  #################################
+
+  BlogTable:
+    Type: AWS::DynamoDB::Table
+    Properties:
+      BillingMode: PAY_PER_REQUEST
+      TableName: !Sub "${AWS::StackName}-blog"
+      AttributeDefinitions:
+        - AttributeName: id
+          AttributeType: S
+        - AttributeName: ts
+          AttributeType: N
+      KeySchema:
+        - AttributeName: id
+          KeyType: HASH
+        - AttributeName: ts
+          KeyType: RANGE
+
+  BlogMediaBucket:
+    Type: AWS::S3::Bucket
+    Properties:
+      BucketName: !Sub "${AWS::StackName}-blog-media"
+      CorsConfiguration:
+        CorsRules:
+          - AllowedHeaders: ["*"]
+            AllowedMethods: ["GET", "PUT", "HEAD"]
+            AllowedOrigins: ["*"]
+            MaxAge: 3000
+
+  BlogCreateFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: lambda/blog/create/
+      Handler: app.handler
+      Runtime: python3.12
+      Timeout: 30
+      MemorySize: 512
+      Policies:
+        - DynamoDBWritePolicy:
+            TableName: !Ref BlogTable
+      Environment:
+        Variables:
+          BLOG_TABLE: !Ref BlogTable
+      Events:
+        ApiCreate:
+          Type: Api
+          Properties:
+            RestApiId: !Ref Api
+            Path: /blog/create
+            Method: POST
+
+  BlogGetFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: lambda/blog/get/
+      Handler: app.handler
+      Runtime: python3.12
+      Timeout: 30
+      MemorySize: 512
+      Policies:
+        - DynamoDBReadPolicy:
+            TableName: !Ref BlogTable
+      Environment:
+        Variables:
+          BLOG_TABLE: !Ref BlogTable
+      Events:
+        ApiGetBlog:
+          Type: Api
+          Properties:
+            RestApiId: !Ref Api
+            Path: /blog/get
+            Method: GET
+
+  BlogListFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: lambda/blog/list/
+      Handler: app.handler
+      Runtime: python3.12
+      Timeout: 30
+      MemorySize: 512
+      Policies:
+        - DynamoDBReadPolicy:
+            TableName: !Ref BlogTable
+      Environment:
+        Variables:
+          BLOG_TABLE: !Ref BlogTable
+      Events:
+        ApiListBlogs:
+          Type: Api
+          Properties:
+            RestApiId: !Ref Api
+            Path: /blog/list
+            Method: GET
+
+  BlogUpdateFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: lambda/blog/update/
+      Handler: app.handler
+      Runtime: python3.12
+      Timeout: 30
+      MemorySize: 512
+      Policies:
+        - DynamoDBCrudPolicy:
+            TableName: !Ref BlogTable
+      Environment:
+        Variables:
+          BLOG_TABLE: !Ref BlogTable
+      Events:
+        ApiUpdateBlog:
+          Type: Api
+          Properties:
+            RestApiId: !Ref Api
+            Path: /blog/update
+            Method: PUT
+
+
+  #################################
+  # Outputs
+  #################################
+Outputs:
+  CloudFrontURL:
+    Description: "CloudFront distribution domain"
+    Value: !Sub "https://${CFDistribution.DomainName}"
+  WebBucketName:
+    Description: "Website S3 bucket"
+    Value: !Ref WebBucket
+  ApiInvokeURLHttpApi:
+    Description: "HttpApi invoke URL"
+    Value: !Sub "https://${HttpApi}.execute-api.${AWS::Region}.amazonaws.com"
+  ApiInvokeURLRestApi:
+    Description: "Rest Api invoke URL (prod stage)"
+    Value: !Sub "https://${Api}.execute-api.${AWS::Region}.amazonaws.com/prod"
+
+  # Table names (convenience)
+  NewsTableName:        { Value: !Ref NewsTable }
+  OnloadTableName:      { Value: !Ref PricesOnloadTable }
+  OffloadTableName:     { Value: !Ref PricesOffloadTable }
+  BookingsTableName:    { Value: !Ref BookingsTable }
+  PortsTableName:       { Value: !Ref PortsTableV2 }
+  LegacyPortsTableName: { Value: !Ref PortsTable }
+  UsersTableName:
+    Value: !Ref UsersTable

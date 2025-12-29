@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Login | Containers Club</title>
+  <script src="/config.js"></script>
+  <script>
+    // Detect if login is for sell based on referrer
+    if (document.referrer && document.referrer.includes('/sell/')) {
+      window.COGNITO_DOMAIN = window.SELL_COGNITO_DOMAIN;
+      window.COGNITO_CLIENT_ID = window.SELL_COGNITO_CLIENT_ID;
+      localStorage.setItem('cognito_type', 'sell');
+    } else {
+      localStorage.setItem('cognito_type', 'rent');
+    }
+  </script>
+</head>
+<body>
+
+<h1>Login to Containers Club</h1>
+<p>You must log in to sell a container.</p>
+
+<button onclick="login()">Login / Sign Up</button>
+
+<script>
+  function login() {
+    const loginUrl =
+      `${COGNITO_DOMAIN}/login` +
+      `?client_id=${COGNITO_CLIENT_ID}` +
+      `&response_type=code` +
+      `&scope=${encodeURIComponent(COGNITO_SCOPES)}` +
+      `&redirect_uri=${encodeURIComponent(COGNITO_REDIRECT_URI_SELL)}`;
+
+    window.location.href = loginUrl;
+  }
+</script>
+
+</body>
+</html>

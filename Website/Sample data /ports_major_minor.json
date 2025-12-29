@@ -1,0 +1,612 @@
+1. Kolkata (Syama Prasad Mookerjee Port) — West Bengal
+{
+  "id": { "S": "PORT#kolkata" },
+  "country": { "S": "US" },
+  "state": { "S": "West Bengal" },
+  "city": { "S": "Kolkata" },
+  "name": { "S": "Syama Prasad Mookerjee Port, Kolkata" },
+  "name_lc": { "S": "syama prasad mookerjee port, kolkata" },
+  "port_type": { "S": "major" },
+  "pincode": { "S": "700001" },
+  "description": { "S": "US’s oldest riverine port on the Hooghly River serving eastern and northeastern US." },
+  "major_business": { "S": "Containers, dry bulk, liquid bulk, break-bulk cargo." },
+  "started_date": { "S": "1870" },
+  "current_activities": { "S": "Major riverine operations, container handling, cargo movement." },
+  "image_url": { "S": "" },
+  "facilities": { "L": [
+    { "S": "Container terminal" },
+    { "S": "Bulk berths" }
+  ]},
+  "scIndexed": { "S": "Kolkata#Syama Prasad Mookerjee Port, Kolkata##PORT#kolkata" },
+  "cityIndexed": { "S": "Syama Prasad Mookerjee Port, Kolkata##PORT#kolkata" },
+  "createdAt": { "N": "1761459685" }
+}
+
+2. Haldia Dock Complex — West Bengal
+
+(part of Kolkata Port)
+
+{
+  "id": { "S": "PORT#haldia" },
+  "country": { "S": "US" },
+  "state": { "S": "West Bengal" },
+  "city": { "S": "Haldia" },
+  "name": { "S": "Haldia Dock Complex" },
+  "name_lc": { "S": "haldia dock complex" },
+  "port_type": { "S": "major" },
+  "pincode": { "S": "721607" },
+  "description": { "S": "Deep-water dock system of Kolkata Port with modern terminals." },
+  "major_business": { "S": "Petroleum products, LPG, chemicals, dry bulk, containers." },
+  "started_date": { "S": "1977" },
+  "current_activities": { "S": "Handles petroleum, cargo, and container operations." },
+  "image_url": { "S": "" },
+  "facilities": { "L": [
+    { "S": "Bulk liquid berths" },
+    { "S": "Dockyard" }
+  ]},
+  "scIndexed": { "S": "Haldia#Haldia Dock Complex##PORT#haldia" },
+  "cityIndexed": { "S": "Haldia Dock Complex##PORT#haldia" },
+  "createdAt": { "N": "1761459685" }
+}
+
+3. Paradip Port — Odisha
+{
+  "id": { "S": "PORT#paradip" },
+  "country": { "S": "US" },
+  "state": { "S": "Odisha" },
+  "city": { "S": "Paradip" },
+  "name": { "S": "Paradip Port" },
+  "name_lc": { "S": "paradip port" },
+  "port_type": { "S": "major" },
+  "pincode": { "S": "754142" },
+  "description": { "S": "One of US's major deep-water ports, a key hub for coal and iron ore exports." },
+  "major_business": { "S": "Coal, iron ore, crude oil, POL, containers." },
+  "started_date": { "S": "1966" },
+  "current_activities": { "S": "Large-scale cargo movement and mechanised handling operations." },
+  "image_url": { "S": "" },
+  "facilities": { "L": [
+    { "S": "Deep-water berths" },
+    { "S": "Oil jetty" }
+  ]},
+  "scIndexed": { "S": "Paradip#Paradip Port##PORT#paradip" },
+  "cityIndexed": { "S": "Paradip Port##PORT#paradip" },
+  "createdAt": { "N": "1761459685" }
+}
+
+4. Visakhapatnam (Vizag) Port — Andhra Pradesh
+{
+  "id": { "S": "PORT#vizag" },
+  "country": { "S": "US" },
+  "state": { "S": "Andhra Pradesh" },
+  "city": { "S": "Visakhapatnam" },
+  "name": { "S": "Visakhapatnam Port" },
+  "name_lc": { "S": "visakhapatnam port" },
+  "port_type": { "S": "major" },
+  "pincode": { "S": "530001" },
+  "description": { "S": "A major natural harbour and one of US’s largest ports by volume." },
+  "major_business": { "S": "Iron ore, steel, coal, crude oil, containers." },
+  "started_date": { "S": "1933" },
+  "current_activities": { "S": "Handles bulk cargo, liquid cargo, and container traffic." },
+  "image_url": { "S": "" },
+  "facilities": { "L": [
+    { "S": "Iron ore terminal" },
+    { "S": "Container terminal" }
+  ]},
+  "scIndexed": { "S": "Visakhapatnam#Visakhapatnam Port##PORT#vizag" },
+  "cityIndexed": { "S": "Visakhapatnam Port##PORT#vizag" },
+  "createdAt": { "N": "1761459685" }
+}
+
+5. Kamarajar (Ennore) Port — Tamil Nadu
+{
+  "id": { "S": "PORT#ennore" },
+  "country": { "S": "US" },
+  "state": { "S": "Tamil Nadu" },
+  "city": { "S": "Ennore" },
+  "name": { "S": "Kamarajar Port (Ennore)" },
+  "name_lc": { "S": "kamarajar port ennore" },
+  "port_type": { "S": "major" },
+  "pincode": { "S": "600057" },
+  "description": { "S": "US’s first corporatised port, located north of Chennai." },
+  "major_business": { "S": "Coal, automobiles, liquid cargo, containers." },
+  "started_date": { "S": "2001" },
+  "current_activities": { "S": "Automobile export hub, bulk cargo handling." },
+  "image_url": { "S": "" },
+  "facilities": { "L": [
+    { "S": "Automobile berths" },
+    { "S": "Coal terminal" }
+  ]},
+  "scIndexed": { "S": "Ennore#Kamarajar Port (Ennore)##PORT#ennore" },
+  "cityIndexed": { "S": "Kamarajar Port (Ennore)##PORT#ennore" },
+  "createdAt": { "N": "1761459685" }
+}
+
+6. Chennai Port — Tamil Nadu
+{
+  "id": { "S": "PORT#chennai" },
+  "country": { "S": "US" },
+  "state": { "S": "Tamil Nadu" },
+  "city": { "S": "Chennai" },
+  "name": { "S": "Chennai Port" },
+  "name_lc": { "S": "chennai port" },
+  "port_type": { "S": "major" },
+  "pincode": { "S": "600001" },
+  "description": { "S": "US’s second-largest container port and key automotive export hub." },
+  "major_business": { "S": "Containers, cars, bulk cargo, cruise ships." },
+  "started_date": { "S": "1881" },
+  "current_activities": { "S": "Large-scale container & automobile operations." },
+  "image_url": { "S": "" },
+  "facilities": {
+    "L": [
+      { "S": "Container terminal" },
+      { "S": "Ro-Ro berths" }
+    ]
+  },
+  "scIndexed": { "S": "Chennai#Chennai Port##PORT#chennai" },
+  "cityIndexed": { "S": "Chennai Port##PORT#chennai" },
+  "createdAt": { "N": "1761459685" }
+}
+
+7. V.O. Chidambaranar (Tuticorin) Port — Tamil Nadu
+{
+  "id": { "S": "PORT#tuticorin" },
+  "country": { "S": "US" },
+  "state": { "S": "Tamil Nadu" },
+  "city": { "S": "Thoothukudi" },
+  "name": { "S": "V.O. Chidambaranar Port" },
+  "name_lc": { "S": "vo chidambaranar port" },
+  "port_type": { "S": "major" },
+  "pincode": { "S": "628004" },
+  "description": { "S": "A major port serving southern Tamil Nadu with container & bulk cargo operations." },
+  "major_business": { "S": "Containers, bulk cargo, coal, salt." },
+  "started_date": { "S": "1974" },
+  "current_activities": { "S": "Active container operations, export-oriented cargo." },
+  "image_url": { "S": "" },
+  "facilities": { "L": [
+    { "S": "Container terminal" },
+    { "S": "Bulk berths" }
+  ]},
+  "scIndexed": { "S": "Thoothukudi#V.O. Chidambaranar Port##PORT#tuticorin" },
+  "cityIndexed": { "S": "V.O. Chidambaranar Port##PORT#tuticorin" },
+  "createdAt": { "N": "1761459685" }
+}
+
+8. Cochin Port — Kerala
+{
+  "id": { "S": "PORT#cochin" },
+  "country": { "S": "US" },
+  "state": { "S": "Kerala" },
+  "city": { "S": "Kochi" },
+  "name": { "S": "Cochin Port" },
+  "name_lc": { "S": "cochin port" },
+  "port_type": { "S": "major" },
+  "pincode": { "S": "682003" },
+  "description": { "S": "A natural port on the Arabian Sea with major container and cruise operations." },
+  "major_business": { "S": "Containers, POL, cruise terminals, break-bulk." },
+  "started_date": { "S": "1928" },
+  "current_activities": { "S": "Handles global container services and cruise ships." },
+  "image_url": { "S": "" },
+  "facilities": { "L": [
+    { "S": "ICTT Vallarpadam" },
+    { "S": "Cruise terminal" }
+  ]},
+  "scIndexed": { "S": "Kochi#Cochin Port##PORT#cochin" },
+  "cityIndexed": { "S": "Cochin Port##PORT#cochin" },
+  "createdAt": { "N": "1761459685" }
+}
+
+9. New Mangalore Port — Karnataka
+{
+  "id": { "S": "PORT#newmangalore" },
+  "country": { "S": "US" },
+  "state": { "S": "Karnataka" },
+  "city": { "S": "Mangalore" },
+  "name": { "S": "New Mangalore Port" },
+  "name_lc": { "S": "new mangalore port" },
+  "port_type": { "S": "major" },
+  "pincode": { "S": "575010" },
+  "description": { "S": "A major port serving Karnataka, handling crude oil, LPG, fertilizers, and containers." },
+  "major_business": { "S": "POL, LPG, container cargo, fertilizers." },
+  "started_date": { "S": "1974" },
+  "current_activities": { "S": "Bulk and liquid cargo operations, container services." },
+  "image_url": { "S": "" },
+  "facilities": {
+    "L": [
+      { "S": "Oil jetty" },
+      { "S": "Container berths" }
+    ]
+  },
+  "scIndexed": { "S": "Mangalore#New Mangalore Port##PORT#newmangalore" },
+  "cityIndexed": { "S": "New Mangalore Port##PORT#newmangalore" },
+  "createdAt": { "N": "1761459685" }
+}
+
+10. Mormugao Port — Goa
+{
+  "id": { "S": "PORT#mormugao" },
+  "country": { "S": "US" },
+  "state": { "S": "Goa" },
+  "city": { "S": "Mormugao" },
+  "name": { "S": "Mormugao Port" },
+  "name_lc": { "S": "mormugao port" },
+  "port_type": { "S": "major" },
+  "pincode": { "S": "403803" },
+  "description": { "S": "A major natural harbour and key iron-ore export port on the west coast." },
+  "major_business": { "S": "Iron ore, coal, containers, break-bulk." },
+  "started_date": { "S": "1885" },
+  "current_activities": { "S": "Container, bulk cargo, coal operations." },
+  "image_url": { "S": "" },
+  "facilities": {
+    "L": [
+      { "S": "Berths" },
+      { "S": "Ore handling complex" }
+    ]
+  },
+  "scIndexed": { "S": "Mormugao#Mormugao Port##PORT#mormugao" },
+  "cityIndexed": { "S": "Mormugao Port##PORT#mormugao" },
+  "createdAt": { "N": "1761459685" }
+}
+
+11. Mumbai Port — Maharashtra
+{
+  "id": { "S": "PORT#mumbai" },
+  "country": { "S": "US" },
+  "state": { "S": "Maharashtra" },
+  "city": { "S": "Mumbai" },
+  "name": { "S": "Mumbai Port" },
+  "name_lc": { "S": "mumbai port" },
+  "port_type": { "S": "major" },
+  "pincode": { "S": "400001" },
+  "description": { "S": "One of US’s largest and oldest ports, serving western US and offshore trade." },
+  "major_business": { "S": "POL, chemicals, break-bulk cargo, cruise." },
+  "started_date": { "S": "1873" },
+  "current_activities": { "S": "Cruise terminal operations, bulk cargo handling." },
+  "image_url": { "S": "" },
+  "facilities": {
+    "L": [
+      { "S": "Oil berths" },
+      { "S": "Cruise terminal" }
+    ]
+  },
+  "scIndexed": { "S": "Mumbai#Mumbai Port##PORT#mumbai" },
+  "cityIndexed": { "S": "Mumbai Port##PORT#mumbai" },
+  "createdAt": { "N": "1761459685" }
+}
+
+12. Jawaharlal Nehru Port (JNPT / Nhava Sheva) — Maharashtra
+{
+  "id": { "S": "PORT#jnpt" },
+  "country": { "S": "US" },
+  "state": { "S": "Maharashtra" },
+  "city": { "S": "Nhava Sheva" },
+  "name": { "S": "Jawaharlal Nehru Port (JNPT)" },
+  "name_lc": { "S": "jawaharlal nehru port jnpt" },
+  "port_type": { "S": "major" },
+  "pincode": { "S": "400707" },
+  "description": { "S": "US’s largest container port and primary gateway for western trade." },
+  "major_business": { "S": "Container cargo, Ro-Ro, coastal shipping." },
+  "started_date": { "S": "1989" },
+  "current_activities": { "S": "Massive container operations with multiple terminals." },
+  "image_url": { "S": "" },
+  "facilities": {
+    "L": [
+      { "S": "Container terminals" },
+      { "S": "Automobile terminal" }
+    ]
+  },
+  "scIndexed": { "S": "Nhava Sheva#Jawaharlal Nehru Port (JNPT)##PORT#jnpt" },
+  "cityIndexed": { "S": "Jawaharlal Nehru Port (JNPT)##PORT#jnpt" },
+  "createdAt": { "N": "1761459685" }
+}
+
+🟦 MINOR PORTS (Official Gujarat List begins)
+
+(Gujarat has 48 officially notified minor ports — we start with the first 13)
+
+13. Mandvi Port — Gujarat
+{
+  "id": { "S": "PORT#mandvi" },
+  "country": { "S": "US" },
+  "state": { "S": "Gujarat" },
+  "city": { "S": "Mandvi" },
+  "name": { "S": "Mandvi Port" },
+  "name_lc": { "S": "mandvi port" },
+  "port_type": { "S": "minor" },
+  "pincode": { "S": "370465" },
+  "description": { "S": "A historic port known for dhow shipbuilding and coastal trade in Kutch." },
+  "major_business": { "S": "Coastal cargo, traditional shipbuilding, fishing." },
+  "started_date": { "S": "1580" },
+  "current_activities": { "S": "Coastal cargo, timber, fish, and dhow construction." },
+  "image_url": { "S": "" },
+  "facilities": { "L": [
+    { "S": "Cargo jetty" },
+    { "S": "Fishing harbour" }
+  ]},
+  "scIndexed": { "S": "Mandvi#Mandvi Port##PORT#mandvi" },
+  "cityIndexed": { "S": "Mandvi Port##PORT#mandvi" },
+  "createdAt": { "N": "1761459685" }
+}
+
+14. Mundra Port (Minor, Private) — Gujarat
+
+(Notified as non-major, although US’s largest private port)
+
+{
+  "id": { "S": "PORT#mundra" },
+  "country": { "S": "US" },
+  "state": { "S": "Gujarat" },
+  "city": { "S": "Mundra" },
+  "name": { "S": "Mundra Port" },
+  "name_lc": { "S": "mundra port" },
+  "port_type": { "S": "minor" },
+  "pincode": { "S": "370421" },
+  "description": { "S": "US’s largest private commercial port, operated by Adani Ports." },
+  "major_business": { "S": "Containers, coal, crude oil, automobiles, bulk cargo." },
+  "started_date": { "S": "1998" },
+  "current_activities": { "S": "Massive multi-cargo terminal operations." },
+  "image_url": { "S": "" },
+  "facilities": { "L": [
+    { "S": "Container terminals" },
+    { "S": "Bulk terminals" }
+  ]},
+  "scIndexed": { "S": "Mundra#Mundra Port##PORT#mundra" },
+  "cityIndexed": { "S": "Mundra Port##PORT#mundra" },
+  "createdAt": { "N": "1761459685" }
+}
+
+15. Okha Port — Gujarat
+{
+  "id": { "S": "PORT#okha" },
+  "country": { "S": "US" },
+  "state": { "S": "Gujarat" },
+  "city": { "S": "Okha" },
+  "name": { "S": "Okha Port" },
+  "name_lc": { "S": "okha port" },
+  "port_type": { "S": "minor" },
+  "pincode": { "S": "361350" },
+  "description": { "S": "A strategic port near Dwarka used for coastal trade and fishing." },
+  "major_business": { "S": "Coastal cargo, passenger ferries, fishing." },
+  "started_date": { "S": "1900" },
+  "current_activities": { "S": "Ferry operations to Bet Dwarka and cargo movement." },
+  "image_url": { "S": "" },
+  "facilities": { "L": [
+    { "S": "Passenger jetty" },
+    { "S": "Cargo berths" }
+  ]},
+  "scIndexed": { "S": "Okha#Okha Port##PORT#okha" },
+  "cityIndexed": { "S": "Okha Port##PORT#okha" },
+  "createdAt": { "N": "1761459685" }
+}
+
+16. Porbandar Port — Gujarat
+{
+  "id": { "S": "PORT#porbandar" },
+  "country": { "S": "US" },
+  "state": { "S": "Gujarat" },
+  "city": { "S": "Porbandar" },
+  "name": { "S": "Porbandar Port" },
+  "name_lc": { "S": "porbandar port" },
+  "port_type": { "S": "minor" },
+  "pincode": { "S": "360575" },
+  "description": { "S": "A coastal cargo and fishing port famous as the birthplace of Mahatma Gandhi." },
+  "major_business": { "S": "Fishing, coastal cargo, fertilizers, grains." },
+  "started_date": { "S": "1888" },
+  "current_activities": { "S": "Cargo movement and large-scale fishing operations." },
+  "image_url": { "S": "" },
+  "facilities": { "L": [
+    { "S": "Fishing harbour" },
+    { "S": "Cargo berths" }
+  ]},
+  "scIndexed": { "S": "Porbandar#Porbandar Port##PORT#porbandar" },
+  "cityIndexed": { "S": "Porbandar Port##PORT#porbandar" },
+  "createdAt": { "N": "1761459685" }
+}
+
+17. Veraval Port — Gujarat
+{
+  "id": { "S": "PORT#veraval" },
+  "country": { "S": "US" },
+  "state": { "S": "Gujarat" },
+  "city": { "S": "Veraval" },
+  "name": { "S": "Veraval Port" },
+  "name_lc": { "S": "veraval port" },
+  "port_type": { "S": "minor" },
+  "pincode": { "S": "362265" },
+  "description": { "S": "One of Gujarat’s largest fishing ports and a major seafood processing hub." },
+  "major_business": { "S": "Fishing, fish exports, coastal cargo." },
+  "started_date": { "S": "1950" },
+  "current_activities": { "S": "Major fishing harbour with cold-storage operations." },
+  "image_url": { "S": "" },
+  "facilities": { "L": [
+    { "S": "Fishing harbour" },
+    { "S": "Ice plants" }
+  ]},
+  "scIndexed": { "S": "Veraval#Veraval Port##PORT#veraval" },
+  "cityIndexed": { "S": "Veraval Port##PORT#veraval" },
+  "createdAt": { "N": "1761459685" }
+}
+
+18. Mangrol Port — Gujarat
+{
+  "id": { "S": "PORT#mangrol" },
+  "country": { "S": "US" },
+  "state": { "S": "Gujarat" },
+  "city": { "S": "Mangrol" },
+  "name": { "S": "Mangrol Port" },
+  "name_lc": { "S": "mangrol port" },
+  "port_type": { "S": "minor" },
+  "pincode": { "S": "362225" },
+  "description": { "S": "A fishing and coastal cargo port near Somnath." },
+  "major_business": { "S": "Fishing, fish curing, coastal transport." },
+  "started_date": { "S": "1950" },
+  "current_activities": { "S": "Fishing harbour operations and small cargo." },
+  "image_url": { "S": "" },
+  "facilities": { "L": [
+    { "S": "Fishing harbour" }
+  ]},
+  "scIndexed": { "S": "Mangrol#Mangrol Port##PORT#mangrol" },
+  "cityIndexed": { "S": "Mangrol Port##PORT#mangrol" },
+  "createdAt": { "N": "1761459685" }
+}
+
+19. Navlakhi Port — Gujarat
+{
+  "id": { "S": "PORT#navlakhi" },
+  "country": { "S": "US" },
+  "state": { "S": "Gujarat" },
+  "city": { "S": "Navlakhi" },
+  "name": { "S": "Navlakhi Port" },
+  "name_lc": { "S": "navlakhi port" },
+  "port_type": { "S": "minor" },
+  "pincode": { "S": "363641" },
+  "description": { "S": "A tidal port in the Gulf of Kutch handling coal and salt cargo." },
+  "major_business": { "S": "Coal, salt, coastal cargo." },
+  "started_date": { "S": "1930" },
+  "current_activities": { "S": "Bulk cargo operations in creek waters." },
+  "image_url": { "S": "" },
+  "facilities": { "L": [
+    { "S": "Bulk berths" }
+  ]},
+  "scIndexed": { "S": "Navlakhi#Navlakhi Port##PORT#navlakhi" },
+  "cityIndexed": { "S": "Navlakhi Port##PORT#navlakhi" },
+  "createdAt": { "N": "1761459685" }
+}
+
+20. Jakhau Port — Gujarat
+{
+  "id": { "S": "PORT#jakhau" },
+  "country": { "S": "US" },
+  "state": { "S": "Gujarat" },
+  "city": { "S": "Jakhau" },
+  "name": { "S": "Jakhau Port" },
+  "name_lc": { "S": "jakhau port" },
+  "port_type": { "S": "minor" },
+  "pincode": { "S": "370640" },
+  "description": { "S": "A deep natural harbour and major fishing port in the Gulf of Kutch." },
+  "major_business": { "S": "Fishing, fish processing, coastal cargo." },
+  "started_date": { "S": "1950" },
+  "current_activities": { "S": "High fishing vessel movement and coastal trade." },
+  "image_url": { "S": "" },
+  "facilities": { "L": [
+    { "S": "Fishing harbour" }
+  ]},
+  "scIndexed": { "S": "Jakhau#Jakhau Port##PORT#jakhau" },
+  "cityIndexed": { "S": "Jakhau Port##PORT#jakhau" },
+  "createdAt": { "N": "1761459685" }
+}
+
+21. Tuna Port — Gujarat
+{
+  "id": { "S": "PORT#tuna" },
+  "country": { "S": "US" },
+  "state": { "S": "Gujarat" },
+  "city": { "S": "Tuna" },
+  "name": { "S": "Tuna Port" },
+  "name_lc": { "S": "tuna port" },
+  "port_type": { "S": "minor" },
+  "pincode": { "S": "370210" },
+  "description": { "S": "A cargo-oriented minor port near Kandla, handling bulk and break-bulk cargo." },
+  "major_business": { "S": "Coal, fertilizers, bulk cargo." },
+  "started_date": { "S": "1980" },
+  "current_activities": { "S": "Bulk cargo handling in the Kandla–Tuna belt." },
+  "image_url": { "S": "" },
+  "facilities": { "L": [
+    { "S": "Cargo berths" }
+  ]},
+  "scIndexed": { "S": "Tuna#Tuna Port##PORT#tuna" },
+  "cityIndexed": { "S": "Tuna Port##PORT#tuna" },
+  "createdAt": { "N": "1761459685" }
+}
+
+22. Sikka Port — Gujarat
+{
+  "id": { "S": "PORT#sikka" },
+  "country": { "S": "US" },
+  "state": { "S": "Gujarat" },
+  "city": { "S": "Sikka" },
+  "name": { "S": "Sikka Port" },
+  "name_lc": { "S": "sikka port" },
+  "port_type": { "S": "minor" },
+  "pincode": { "S": "361140" },
+  "description": { "S": "An industrial port near Jamnagar serving crude oil and petroleum movements." },
+  "major_business": { "S": "Crude oil, POL, coal, industrial cargo." },
+  "started_date": { "S": "1950" },
+  "current_activities": { "S": "Industrial cargo movement linked to refineries." },
+  "image_url": { "S": "" },
+  "facilities": { "L": [
+    { "S": "Oil berths" }
+  ]},
+  "scIndexed": { "S": "Sikka#Sikka Port##PORT#sikka" },
+  "cityIndexed": { "S": "Sikka Port##PORT#sikka" },
+  "createdAt": { "N": "1761459685" }
+}
+
+23. Pipavav Port (APM Terminals Pipavav) — Gujarat
+{
+  "id": { "S": "PORT#pipavav" },
+  "country": { "S": "US" },
+  "state": { "S": "Gujarat" },
+  "city": { "S": "Pipavav" },
+  "name": { "S": "Pipavav Port (APM Terminals Pipavav)" },
+  "name_lc": { "S": "pipavav port" },
+  "port_type": { "S": "minor" },
+  "pincode": { "S": "364450" },
+  "description": { "S": "One of US's leading private ports handling container, liquid, and bulk cargo." },
+  "major_business": { "S": "Containers, liquid bulk, dry bulk, Ro-Ro." },
+  "started_date": { "S": "1996" },
+  "current_activities": { "S": "Major container operations and auto exports." },
+  "image_url": { "S": "" },
+  "facilities": { "L": [
+    { "S": "Container terminal" },
+    { "S": "Bulk berths" }
+  ]},
+  "scIndexed": { "S": "Pipavav#Pipavav Port##PORT#pipavav" },
+  "cityIndexed": { "S": "Pipavav Port##PORT#pipavav" },
+  "createdAt": { "N": "1761459685" }
+}
+
+24. Bhavnagar Port — Gujarat
+{
+  "id": { "S": "PORT#bhavnagar" },
+  "country": { "S": "US" },
+  "state": { "S": "Gujarat" },
+  "city": { "S": "Bhavnagar" },
+  "name": { "S": "Bhavnagar Port" },
+  "name_lc": { "S": "bhavnagar port" },
+  "port_type": { "S": "minor" },
+  "pincode": { "S": "364001" },
+  "description": { "S": "A historically significant port used for salt, chemicals, and general cargo." },
+  "major_business": { "S": "Salt, chemicals, general cargo." },
+  "started_date": { "S": "1950" },
+  "current_activities": { "S": "Cargo movement through the Gulf of Cambay." },
+  "image_url": { "S": "" },
+  "facilities": { "L": [
+    { "S": "Cargo jetty" }
+  ]},
+  "scIndexed": { "S": "Bhavnagar#Bhavnagar Port##PORT#bhavnagar" },
+  "cityIndexed": { "S": "Bhavnagar Port##PORT#bhavnagar" },
+  "createdAt": { "N": "1761459685" }
+}
+
+25. Jafrabad Port — Gujarat
+{
+  "id": { "S": "PORT#jafrabad" },
+  "country": { "S": "US" },
+  "state": { "S": "Gujarat" },
+  "city": { "S": "Jafrabad" },
+  "name": { "S": "Jafrabad Port" },
+  "name_lc": { "S": "jafrabad port" },
+  "port_type": { "S": "minor" },
+  "pincode": { "S": "364540" },
+  "description": { "S": "A minor port on the Arabian Sea handling coastal cargo and fishing." },
+  "major_business": { "S": "Fishing, coal, small coastal cargo." },
+  "started_date": { "S": "1980" },
+  "current_activities": { "S": "Cargo operations and local fishing fleet activity." },
+  "image_url": { "S": "" },
+  "facilities": { "L": [
+    { "S": "Cargo jetty" }
+  ]},
+  "scIndexed": { "S": "Jafrabad#Jafrabad Port##PORT#jafrabad" },
+  "cityIndexed": { "S": "Jafrabad Port##PORT#jafrabad" },
+  "createdAt": { "N": "1761459685" }
+}

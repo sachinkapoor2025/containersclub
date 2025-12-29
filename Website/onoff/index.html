@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Containers Club | Container Loading & Offloading</title>
+  <link rel="icon" href="/images/cc_logo.png" />
+  <meta name="description" content="Book container loading or offloading at ports across the US. Integrated with Containers Club’s logistics platform." />
+
+  <link rel="stylesheet" href="/styles.css" />
+  <script src="/config.js?v=20251026" defer></script>
+
+  <style>
+    .form-grid {
+      display: grid;
+      gap: 12px;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    }
+    .radio-row {
+      display: flex;
+      gap: 16px;
+      margin-bottom: 16px;
+      flex-wrap: wrap;
+    }
+    .price-card {
+      border: 1px solid #ddd;
+      border-radius: 8px;
+      padding: 12px;
+      margin: 8px 0;
+      background: #fff;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+    }
+    .hidden { display: none; }
+  </style>
+
+  <!-- Injects GA + header/footer partials -->
+  <script src="/partials/include.js" defer></script>
+</head>
+<body>
+
+<!-- Shared header -->
+<div data-include="/partials/header.html" id="site-header"></div>
+
+<main class="container">
+
+  
+
+  <!-- Main Hero Section -->
+  <section class="hero" style="align-items:flex-start;">
+    <div>
+      <h1>Container Loading & Offloading</h1>
+      <p class="sub">
+        Book container loading (from your address to port) or offloading (from port to your address). 
+        Prices and services are integrated via Containers Club’s logistics platform.
+      </p>
+
+      <div class="radio-row">
+        <label><input type="radio" name="mode" value="onload" checked /> Onloading (Pickup at your address → Port)</label>
+        <label><input type="radio" name="mode" value="offload" /> Offloading (Pickup at Port → Your address)</label>
+      </div>
+
+      <form id="booking-form" class="form-grid">
+        <input name="customerName" placeholder="Customer name *" required />
+        <input name="companyName" placeholder="Company name (optional)" />
+
+        <label>Country
+          <select name="countryCode" id="countryCode">
+            <option value="US">United States (+1)</option>
+            <option value="GB">United Kingdom (+44)</option>
+            <option value="AE">United Arab Emirates (+971)</option>
+            <option value="IN">India (+91)</option>
+          </select>
+        </label>
+
+        <input name="mobile" placeholder="10-digit mobile (no spaces)" pattern="\d{10}" required />
+
+        <label>State
+          <select name="state" id="stateSelect" required></select>
+        </label>
+
+        <label>City
+          <input name="city" id="cityInput" placeholder="City *" required />
+        </label>
+
+        <input name="address" placeholder="Full address *" required />
+
+        <label>Weight (kg)
+          <input name="weightKg" type="number" min="1" step="0.1" required />
+        </label>
+
+        <label>Length (cm)
+          <input name="lenCm" type="number" min="1" step="0.1" required />
+        </label>
+
+        <label>Width (cm)
+          <input name="widCm" type="number" min="1" step="0.1" required />
+        </label>
+
+        <label>Height (cm)
+          <input name="htCm" type="number" min="1" step="0.1" required />
+        </label>
+
+        <label id="portLabel">Port
+          <input name="port" id="portInput" placeholder="Nearest port *" required />
+        </label>
+
+        <button type="button" id="checkPrices">Check Prices</button>
+      </form>
+    </div>
+      <div class="hero-ill">
+    <img src="/images/onboarding-hero.png" alt="Container news illustration"/>
+  </div>
+  <br/>
+    <div class="hero-ill">
+    <img src="/images/offboarding-hero.png" alt="Container news illustration"/>
+  </div>
+  </section>
+
+  <section id="priceResults" class="hidden section">
+    <h2>Available Options</h2>
+    <div id="pricesContainer"></div>
+  </section>
+
+  <!-- ================== SEO CONTENT PANEL (INSERTED) ================== -->
+  <section class="content-panel content-intro section" style="margin-bottom:24px;">
+    <h1>Container Loading & Offloading Services – Port Pickup, Delivery & US Logistics Support</h1>
+    <p>
+      Containers Club provides fast, reliable container loading and offloading services across major US ports. 
+      Whether you are moving cargo from your location to a port (onloading) or receiving containers from a port to 
+      your address (offloading), our platform offers a streamlined booking experience with transparent pricing. 
+      Designed for shippers, transporters, businesses, and homeowners, our services ensure smooth container 
+      handling and timely port logistics coordination.
+    </p>
+
+    <h2>US Port Loading & Offloading – Simplified Container Movement</h2>
+    <p>
+      Moving a container requires accurate weight handling, proper equipment, verified drivers, and coordination 
+      between ports and customer locations. Containers Club automates these steps using a guided workflow and 
+      trusted logistics partners. Whether you're handling commercial shipments, relocation cargo, or industrial 
+      equipment, our loading and offloading services help ensure safe, compliant, and timely transfers.
+    </p>
+
+    <h2>How Pricing Works for Container Loading & Offloading</h2>
+    <p>
+      Pricing depends on several factors, including weight, container size, pickup distance, port fees, handling 
+      requirements, and US regional regulations. By entering key details such as your address, cargo dimensions, 
+      and preferred port, you receive instant price ranges from verified logistics providers. This allows you to 
+      compare, plan, and book services confidently.
+    </p>
+
+    <h3>Frequently Asked Questions — Port Pickup, Delivery, Fees & Handling Rules</h3>
+    <p>
+      Customers often ask about required documents, port delays, equipment used for handling, service timelines, 
+      and what impacts pricing. Our FAQ-driven process ensures clarity before booking, helping you avoid unexpected 
+      costs or handling issues. This is especially valuable for first-time shippers, small businesses, and 
+      commercial logistics operations.
+    </p>
+  </section>
+  <!-- ================== END SEO CONTENT PANEL ================== -->
+
+</main>
+
+<!-- Shared footer -->
+<div data-include="/partials/footer.html" id="site-footer"></div>
+
+<script src="./onoff.js?v=20251026" defer></script>
+</body>
+</html>

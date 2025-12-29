@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <title>Edit Blog | Containers Club</title>
+  <link rel="stylesheet" href="/styles.css"/>
+  <script src="/partials/include.js" defer></script>
+</head>
+<body>
+
+<div data-include="/partials/header.html"></div>
+
+<main class="container">
+  <section class="hero">
+    <h1>Edit Blog Post</h1>
+  </section>
+
+  <section class="card">
+    <form id="editBlogForm">
+      <div class="field">
+        <label>Blog Title</label>
+        <input type="text" id="editTitle" required/>
+      </div>
+
+      <div class="field">
+        <label>Replace Cover Image (optional)</label>
+        <input type="file" id="editCoverImage" accept="image/*"/>
+      </div>
+
+      <div class="field">
+        <label>Blog Content</label>
+        <textarea id="editContent" rows="12" required></textarea>
+      </div>
+
+      <button type="submit" class="primary">Save Changes</button>
+    </form>
+  </section>
+</main>
+
+<div data-include="/partials/footer.html"></div>
+
+<script src="/blog/app-edit.js"></script>
+
+</body>
+</html>

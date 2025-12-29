@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1"/>
+  <title>Containers Club | Container Market News</title>
+
+  <link rel="icon" href="/images/cc_logo.png"/>
+  <meta name="description" content="Daily updates on container logistics, ports, depots, freight rates, policies and market moves across the US."/>
+  <link rel="stylesheet" href="/styles.css"/>
+
+  <!-- Global config for API base URL etc. -->
+  <script src="/config.js"></script>
+
+  <!-- Injects GA + shared header/footer -->
+  <script src="/partials/include.js" defer></script>
+</head>
+<body>
+
+<!-- Shared header (injected) -->
+<div id="site-header" data-include="/partials/header.html"></div>
+
+<main class="container">
+
+  
+
+  <section class="hero" style="align-items:flex-start">
+    <div>
+      <h1>Container Market News</h1>
+      <p class="sub">Updated daily via our automated feed. Tap a headline to read the source.</p>
+      <div class="grid-3" style="margin-top:18px">
+        <div class="card">
+          <h3 id="metricStories">—</h3>
+          <div class="sub">Stories today</div>
+        </div>
+        <div class="card">
+          <h3 id="metricSources">—</h3>
+          <div class="sub">Sources tracked</div>
+        </div>
+        <div class="card">
+          <h3 id="metricUpdated">—</h3>
+          <div class="sub">Last updated</div>
+        </div>
+      </div>
+    </div>
+      <!-- NEW IMAGE SLOT ADDED -->
+  <div class="hero-ill">
+    <img src="/images/news-hero.png" alt="Container news illustration"/>
+  </div>
+  </section>
+
+  <section class="section">
+    <div id="news-list" class="card-list"></div>
+  </section>
+  <!-- ================== SEO CONTENT PANEL (INSERTED) ================== -->
+  <section class="content-panel content-intro section" style="margin-bottom:24px;">
+    <h1>Container Market News & Logistics Updates – US Ports, Freight Rates & Industry Trends</h1>
+    <p>
+      Stay updated with the latest container market movements across the United States. From port congestion and 
+      depot updates to changes in freight rates, equipment availability, and government trade policies, our daily 
+      feed provides logistics professionals, shippers, NVOCCs, transporters, and container owners with timely and 
+      actionable updates. Containers Club aggregates reliable sources to help you monitor the industry and make 
+      informed operational decisions.
+    </p>
+
+    <h2>Daily Container Logistics Insights Across US Ports & Depots</h2>
+    <p>
+      Container operations across major US ports—including Los Angeles, Long Beach, New York/New Jersey, Savannah, 
+      Houston, and more—are influenced by seasonal demand, international trade flows, policy changes, and vessel 
+      schedules. Our curated reports highlight key developments such as berth delays, yard utilization, chassis 
+      availability, inland congestion, and container repositioning trends. Whether you manage a fleet or ship goods 
+      regularly, these insights help optimize planning.
+    </p>
+
+    <h2>Shipping Trends, Equipment Shortages & Market Forecasts</h2>
+    <p>
+      Frequent fluctuations in freight rates, container shortages, repositioning imbalances, and global supply-chain 
+      trends directly affect US logistics operations. Containers Club monitors these shifts and summarizes their 
+      impact on shippers, importers, exporters, and container owners. From carrier policy updates to inland network 
+      performance, our goal is to keep the community informed with relevant and easy-to-consume updates.
+    </p>
+
+    <h3>Frequently Asked Questions — Container Market, Freight Rates & Industry Updates</h3>
+    <p>
+      Users often ask how market rates are determined, why equipment shortages occur, how port congestion impacts 
+      lead times, and what signals to watch when forecasting logistics costs. Our FAQ-driven content helps both new 
+      and experienced logistics professionals understand broader market behavior and make strategic decisions.
+    </p>
+  </section>
+  <!-- ================== END SEO CONTENT PANEL ================== -->
+</main>
+
+<!-- Shared footer (injected) -->
+<div id="site-footer" data-include="/partials/footer.html"></div>
+
+<!-- Page logic -->
+<script src="news.js"></script>
+</body>
+</html>

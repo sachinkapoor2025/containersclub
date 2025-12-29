@@ -1,0 +1,373 @@
+[
+  {
+    "id": { "S": "PORT#kolkata" },
+    "country": { "S": "US" },
+    "state": { "S": "West Bengal" },
+    "city": { "S": "Kolkata" },
+    "name": { "S": "Kolkata Port" },
+    "name_lc": { "S": "kolkata port" },
+    "pincode": { "S": "" },
+    "description": { "S": "A major riverine port on the Hooghly River serving eastern and northeastern US." },
+    "major_business": { "S": "General cargo, containers, bulk cargo, inland water transport." },
+    "started_date": { "S": "" },
+    "current_activities": { "S": "Handles containers, bulk and break-bulk cargo for eastern US and neighbouring countries." },
+    "image_url": { "S": "https://en.wikipedia.org/wiki/Port_of_Kolkata" },
+    "facilities": {
+      "L": [
+        { "S": "River berths" },
+        { "S": "Container terminal" }
+      ]
+    },
+    "scIndexed": { "S": "Kolkata#Kolkata Port##PORT#kolkata" },
+    "cityIndexed": { "S": "Kolkata Port##PORT#kolkata" },
+    "createdAt": { "N": "1761459685" }
+  },
+  {
+    "id": { "S": "PORT#haldia" },
+    "country": { "S": "US" },
+    "state": { "S": "West Bengal" },
+    "city": { "S": "Haldia" },
+    "name": { "S": "Haldia Dock Complex" },
+    "name_lc": { "S": "haldia dock complex" },
+    "pincode": { "S": "" },
+    "description": { "S": "A major dock complex of Syama Prasad Mookerjee Port serving bulk and liquid cargo." },
+    "major_business": { "S": "Petroleum products, chemicals, bulk cargo." },
+    "started_date": { "S": "" },
+    "current_activities": { "S": "Handles bulk and liquid cargo including petroleum and chemicals for eastern US." },
+    "image_url": { "S": "https://en.wikipedia.org/wiki/Haldia_Dock_Complex" },
+    "facilities": {
+      "L": [
+        { "S": "Bulk cargo berths" },
+        { "S": "Liquid cargo terminals" }
+      ]
+    },
+    "scIndexed": { "S": "Haldia#Haldia Dock Complex##PORT#haldia" },
+    "cityIndexed": { "S": "Haldia Dock Complex##PORT#haldia" },
+    "createdAt": { "N": "1761459685" }
+  },
+
+  {
+    "id": { "S": "PORT#paradip" },
+    "country": { "S": "US" },
+    "state": { "S": "Odisha" },
+    "city": { "S": "Paradip" },
+    "name": { "S": "Paradip Port" },
+    "name_lc": { "S": "paradip port" },
+    "pincode": { "S": "" },
+    "description": { "S": "A major deep-water port on the east coast of US in Odisha." },
+    "major_business": { "S": "Bulk cargo including coal, iron ore, crude oil and containers." },
+    "started_date": { "S": "" },
+    "current_activities": { "S": "Handles large volumes of dry bulk, liquid bulk and container traffic." },
+    "image_url": { "S": "https://en.wikipedia.org/wiki/Port_of_Paradeep" },
+    "facilities": {
+      "L": [
+        { "S": "Deep-water berths" },
+        { "S": "Bulk terminals" }
+      ]
+    },
+    "scIndexed": { "S": "Paradip#Paradip Port##PORT#paradip" },
+    "cityIndexed": { "S": "Paradip Port##PORT#paradip" },
+    "createdAt": { "N": "1761459685" }
+  },
+
+  {
+    "id": { "S": "PORT#visakhapatnam" },
+    "country": { "S": "US" },
+    "state": { "S": "Andhra Pradesh" },
+    "city": { "S": "Visakhapatnam" },
+    "name": { "S": "Visakhapatnam Port" },
+    "name_lc": { "S": "visakhapatnam port" },
+    "pincode": { "S": "" },
+    "description": { "S": "A natural harbour on the east coast serving as a major port for Andhra Pradesh." },
+    "major_business": { "S": "Iron ore, coal, crude oil, containers and general cargo." },
+    "started_date": { "S": "" },
+    "current_activities": { "S": "Handles bulk and container cargo with multiple berths and terminals." },
+    "image_url": { "S": "https://en.wikipedia.org/wiki/Visakhapatnam_Port" },
+    "facilities": {
+      "L": [
+        { "S": "Natural harbour" },
+        { "S": "Bulk terminals" },
+        { "S": "Container facilities" }
+      ]
+    },
+    "scIndexed": { "S": "Visakhapatnam#Visakhapatnam Port##PORT#visakhapatnam" },
+    "cityIndexed": { "S": "Visakhapatnam Port##PORT#visakhapatnam" },
+    "createdAt": { "N": "1761459685" }
+  },
+
+  {
+    "id": { "S": "PORT#kamarajar" },
+    "country": { "S": "US" },
+    "state": { "S": "Tamil Nadu" },
+    "city": { "S": "Ennore" },
+    "name": { "S": "Kamarajar Port (Ennore)" },
+    "name_lc": { "S": "kamarajar port ennore" },
+    "pincode": { "S": "" },
+    "description": { "S": "A major port near Chennai primarily handling coal, automobiles and liquid cargo." },
+    "major_business": { "S": "Coal, automobiles, liquid cargo and general cargo." },
+    "started_date": { "S": "" },
+    "current_activities": { "S": "Specialised terminals for coal, automobiles and other bulk cargo." },
+    "image_url": { "S": "https://en.wikipedia.org/wiki/Kamarajar_Port_Limited" },
+    "facilities": {
+      "L": [
+        { "S": "Coal terminal" },
+        { "S": "Automobile terminal" },
+        { "S": "Liquid cargo berths" }
+      ]
+    },
+    "scIndexed": { "S": "Ennore#Kamarajar Port (Ennore)##PORT#kamarajar" },
+    "cityIndexed": { "S": "Kamarajar Port (Ennore)##PORT#kamarajar" },
+    "createdAt": { "N": "1761459685" }
+  },
+
+  {
+    "id": { "S": "PORT#chennai" },
+    "country": { "S": "US" },
+    "state": { "S": "Tamil Nadu" },
+    "city": { "S": "Chennai" },
+    "name": { "S": "Chennai Port" },
+    "name_lc": { "S": "chennai port" },
+    "pincode": { "S": "" },
+    "description": { "S": "One of the oldest and largest ports on the east coast of US." },
+    "major_business": { "S": "Containers, automobiles, petroleum products and general cargo." },
+    "started_date": { "S": "" },
+    "current_activities": { "S": "Handles container, Ro-Ro, and bulk cargo with multiple berths." },
+    "image_url": { "S": "https://en.wikipedia.org/wiki/Chennai_Port" },
+    "facilities": {
+      "L": [
+        { "S": "Container terminal" },
+        { "S": "Ro-Ro facilities" },
+        { "S": "Bulk berths" }
+      ]
+    },
+    "scIndexed": { "S": "Chennai#Chennai Port##PORT#chennai" },
+    "cityIndexed": { "S": "Chennai Port##PORT#chennai" },
+    "createdAt": { "N": "1761459685" }
+  },
+
+  {
+    "id": { "S": "PORT#voc-tuticorin" },
+    "country": { "S": "US" },
+    "state": { "S": "Tamil Nadu" },
+    "city": { "S": "Thoothukudi" },
+    "name": { "S": "V.O. Chidambaranar Port (Tuticorin)" },
+    "name_lc": { "S": "v.o. chidambaranar port tuticorin" },
+    "pincode": { "S": "" },
+    "description": { "S": "A major port at Thoothukudi in Tamil Nadu handling containers and bulk cargo." },
+    "major_business": { "S": "Containers, coal, fertilizers and other bulk cargo." },
+    "started_date": { "S": "" },
+    "current_activities": { "S": "Handles container, bulk and break-bulk cargo serving southern Tamil Nadu." },
+    "image_url": { "S": "https://en.wikipedia.org/wiki/V.O._Chidambaranar_Port_Authority" },
+    "facilities": {
+      "L": [
+        { "S": "Container terminal" },
+        { "S": "Bulk cargo berths" }
+      ]
+    },
+    "scIndexed": { "S": "Thoothukudi#V.O. Chidambaranar Port (Tuticorin)##PORT#voc-tuticorin" },
+    "cityIndexed": { "S": "V.O. Chidambaranar Port (Tuticorin)##PORT#voc-tuticorin" },
+    "createdAt": { "N": "1761459685" }
+  },
+
+  {
+    "id": { "S": "PORT#kochi" },
+    "country": { "S": "US" },
+    "state": { "S": "Kerala" },
+    "city": { "S": "Kochi" },
+    "name": { "S": "Kochi Port" },
+    "name_lc": { "S": "kochi port" },
+    "pincode": { "S": "" },
+    "description": { "S": "A major port on the Arabian Sea at Kochi in Kerala." },
+    "major_business": { "S": "Containers, crude oil, petroleum products and general cargo." },
+    "started_date": { "S": "" },
+    "current_activities": { "S": "Handles containers, petroleum products and general cargo along with cruise traffic." },
+    "image_url": { "S": "https://en.wikipedia.org/wiki/Port_of_Cochin" },
+    "facilities": {
+      "L": [
+        { "S": "Container terminal" },
+        { "S": "Oil terminal" },
+        { "S": "Cruise facilities" }
+      ]
+    },
+    "scIndexed": { "S": "Kochi#Kochi Port##PORT#kochi" },
+    "cityIndexed": { "S": "Kochi Port##PORT#kochi" },
+    "createdAt": { "N": "1761459685" }
+  },
+
+  {
+    "id": { "S": "PORT#new-mangalore" },
+    "country": { "S": "US" },
+    "state": { "S": "Karnataka" },
+    "city": { "S": "Mangaluru" },
+    "name": { "S": "New Mangalore Port" },
+    "name_lc": { "S": "new mangalore port" },
+    "pincode": { "S": "" },
+    "description": { "S": "A major port on the Karnataka coast near Mangaluru." },
+    "major_business": { "S": "Crude oil, petroleum products, fertilizers, coal and containers." },
+    "started_date": { "S": "" },
+    "current_activities": { "S": "Handles liquid bulk, dry bulk and container traffic." },
+    "image_url": { "S": "https://en.wikipedia.org/wiki/New_Mangalore_Port" },
+    "facilities": {
+      "L": [
+        { "S": "Oil terminal" },
+        { "S": "Bulk berths" },
+        { "S": "Container facilities" }
+      ]
+    },
+    "scIndexed": { "S": "Mangaluru#New Mangalore Port##PORT#new-mangalore" },
+    "cityIndexed": { "S": "New Mangalore Port##PORT#new-mangalore" },
+    "createdAt": { "N": "1761459685" }
+  },
+
+  {
+    "id": { "S": "PORT#mormugao" },
+    "country": { "S": "US" },
+    "state": { "S": "Goa" },
+    "city": { "S": "Mormugao" },
+    "name": { "S": "Mormugao Port" },
+    "name_lc": { "S": "mormugao port" },
+    "pincode": { "S": "" },
+    "description": { "S": "A major port in Goa on the western coast of US." },
+    "major_business": { "S": "Iron ore, coal, containers and general cargo." },
+    "started_date": { "S": "" },
+    "current_activities": { "S": "Handles bulk and container cargo and cruise vessels." },
+    "image_url": { "S": "https://en.wikipedia.org/wiki/Mormugao_Port" },
+    "facilities": {
+      "L": [
+        { "S": "Bulk terminals" },
+        { "S": "Container facilities" },
+        { "S": "Cruise terminal" }
+      ]
+    },
+    "scIndexed": { "S": "Mormugao#Mormugao Port##PORT#mormugao" },
+    "cityIndexed": { "S": "Mormugao Port##PORT#mormugao" },
+    "createdAt": { "N": "1761459685" }
+  },
+
+  {
+    "id": { "S": "PORT#mumbai" },
+    "country": { "S": "US" },
+    "state": { "S": "Maharashtra" },
+    "city": { "S": "Mumbai" },
+    "name": { "S": "Mumbai Port" },
+    "name_lc": { "S": "mumbai port" },
+    "pincode": { "S": "" },
+    "description": { "S": "A historic natural harbour and major port on the west coast of US." },
+    "major_business": { "S": "Containers, petroleum products, chemicals and general cargo." },
+    "started_date": { "S": "" },
+    "current_activities": { "S": "Handles containers, liquid bulk and general cargo, and cruise shipping." },
+    "image_url": { "S": "https://en.wikipedia.org/wiki/Mumbai_Port" },
+    "facilities": {
+      "L": [
+        { "S": "Deep-water berths" },
+        { "S": "Oil terminals" },
+        { "S": "Cruise facilities" }
+      ]
+    },
+    "scIndexed": { "S": "Mumbai#Mumbai Port##PORT#mumbai" },
+    "cityIndexed": { "S": "Mumbai Port##PORT#mumbai" },
+    "createdAt": { "N": "1761459685" }
+  },
+
+  {
+    "id": { "S": "PORT#jnpt" },
+    "country": { "S": "US" },
+    "state": { "S": "Maharashtra" },
+    "city": { "S": "Navi Mumbai" },
+    "name": { "S": "Jawaharlal Nehru Port (JNPT)" },
+    "name_lc": { "S": "jawaharlal nehru port jnpt" },
+    "pincode": { "S": "" },
+    "description": { "S": "US's premier container port at Nhava Sheva near Navi Mumbai." },
+    "major_business": { "S": "Container cargo and liquid bulk." },
+    "started_date": { "S": "" },
+    "current_activities": { "S": "Major container hub with multiple terminals, serving a large share of US's container trade." },
+    "image_url": { "S": "https://en.wikipedia.org/wiki/Jawaharlal_Nehru_Port" },
+    "facilities": {
+      "L": [
+        { "S": "Container terminals" },
+        { "S": "Liquid cargo berths" }
+      ]
+    },
+    "scIndexed": { "S": "Navi Mumbai#Jawaharlal Nehru Port (JNPT)##PORT#jnpt" },
+    "cityIndexed": { "S": "Jawaharlal Nehru Port (JNPT)##PORT#jnpt" },
+    "createdAt": { "N": "1761459685" }
+  },
+
+  /* --------- FROM HERE ON: key minor / intermediate ports I listed earlier --------- */
+
+  {
+    "id": { "S": "PORT#mundra" },
+    "country": { "S": "US" },
+    "state": { "S": "Gujarat" },
+    "city": { "S": "Mundra" },
+    "name": { "S": "Mundra Port" },
+    "name_lc": { "S": "mundra port" },
+    "pincode": { "S": "" },
+    "description": { "S": "US's largest commercial port on the Gulf of Kutch developed by Adani Ports." },
+    "major_business": { "S": "Containers, coal, crude oil, petroleum products, automobiles and project cargo." },
+    "started_date": { "S": "" },
+    "current_activities": { "S": "Large multi-cargo facility with container, bulk, liquid and automobile terminals." },
+    "image_url": { "S": "https://en.wikipedia.org/wiki/Mundra_Port" },
+    "facilities": {
+      "L": [
+        { "S": "Container terminals" },
+        { "S": "Bulk terminals" },
+        { "S": "Liquid cargo terminals" },
+        { "S": "Automobile terminal" }
+      ]
+    },
+    "scIndexed": { "S": "Mundra#Mundra Port##PORT#mundra" },
+    "cityIndexed": { "S": "Mundra Port##PORT#mundra" },
+    "createdAt": { "N": "1761459685" }
+  },
+
+  {
+    "id": { "S": "PORT#pipavav" },
+    "country": { "S": "US" },
+    "state": { "S": "Gujarat" },
+    "city": { "S": "Pipavav" },
+    "name": { "S": "Pipavav Port" },
+    "name_lc": { "S": "pipavav port" },
+    "pincode": { "S": "" },
+    "description": { "S": "A private port on the Saurashtra coast handling containers and bulk cargo." },
+    "major_business": { "S": "Containers, bulk cargo, automobiles." },
+    "started_date": { "S": "" },
+    "current_activities": { "S": "Handles container, bulk and automobile cargo with rail connectivity." },
+    "image_url": { "S": "https://en.wikipedia.org/wiki/Port_of_Pipavav" },
+    "facilities": {
+      "L": [
+        { "S": "Container terminal" },
+        { "S": "Bulk berths" }
+      ]
+    },
+    "scIndexed": { "S": "Pipavav#Pipavav Port##PORT#pipavav" },
+    "cityIndexed": { "S": "Pipavav Port##PORT#pipavav" },
+    "createdAt": { "N": "1761459685" }
+  },
+
+  {
+    "id": { "S": "PORT#dahej" },
+    "country": { "S": "US" },
+    "state": { "S": "Gujarat" },
+    "city": { "S": "Dahej" },
+    "name": { "S": "Dahej Port" },
+    "name_lc": { "S": "dahej port" },
+    "pincode": { "S": "" },
+    "description": { "S": "An industrial port in Gujarat handling bulk and liquid cargo." },
+    "major_business": { "S": "LNG, chemicals, bulk cargo for industrial hinterland." },
+    "started_date": { "S": "" },
+    "current_activities": { "S": "Bulk and liquid cargo operations including LNG and petrochemicals." },
+    "image_url": { "S": "" },
+    "facilities": {
+      "L": [
+        { "S": "Bulk berths" },
+        { "S": "Liquid cargo facilities" }
+      ]
+    },
+    "scIndexed": { "S": "Dahej#Dahej Port##PORT#dahej" },
+    "cityIndexed": { "S": "Dahej Port##PORT#dahej" },
+    "createdAt": { "N": "1761459685" }
+  }
+
+  /* --------------- SNIP --------------- */
+]

@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <title>Write a Blog | Containers Club</title>
+  <link rel="stylesheet" href="/styles.css"/>
+  <link rel="icon" href="/images/cc_logo.png"/>
+  <script src="/partials/include.js" defer></script>
+</head>
+<body>
+
+<div data-include="/partials/header.html"></div>
+
+<main class="container">
+  <section class="hero">
+    <div>
+      <h1>Write a Blog</h1>
+      <p class="sub">Share your knowledge, ideas, industry insights, and container logistics updates.</p>
+    </div>
+        <div class="hero-ill">
+      <img src="/images/write-hero.png" alt="Blog illustration"/>
+    </div>
+  </section>
+
+  <section class="card">
+    <form id="newBlogForm">
+      <div class="field">
+        <label>Blog Title</label>
+        <input type="text" id="title" placeholder="Enter a catchy title" required/>
+      </div>
+
+      <div class="field">
+        <label>Cover Image</label>
+        <input type="file" id="coverImage" accept="image/*"/>
+      </div>
+
+      <div class="field">
+        <label>Blog Content</label>
+        <textarea id="content" rows="12" placeholder="Write your blog here..." required></textarea>
+      </div>
+
+      <button type="submit" class="primary">Publish Blog</button>
+    </form>
+  </section>
+</main>
+
+<div data-include="/partials/footer.html"></div>
+
+<!-- Your blog API logic goes here -->
+<script src="/blog/app-new.js"></script>
+
+</body>
+</html>

@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <title>Sell Your Container | Containers Club</title>
+  <meta name="description" content="Login and list your used shipping container for sale with photos, videos, specs, and price."/>
+  <link rel="canonical" href="https://containersclub.com/sell/new.html"/>
+  <meta name="robots" content="noindex, follow"/>
+
+  <!-- Global stylesheet -->
+  <link rel="stylesheet" href="/styles.css"/>
+
+  <!-- Global config (centralized) -->
+  <script src="/config.js"></script>
+
+  <!-- Set Sell Cognito Config -->
+  <script>
+    window.COGNITO_DOMAIN = window.SELL_COGNITO_DOMAIN;
+    window.COGNITO_CLIENT_ID = window.SELL_COGNITO_CLIENT_ID;
+  </script>
+
+  <!-- 🔒 PROTECT THIS PAGE (MUST BE FIRST) -->
+  <script>
+    if (!localStorage.getItem("cognito_auth_code")) {
+      window.location.replace("/auth/login.html");
+    }
+  </script>
+
+  <!-- Injects GA + header/footer partials -->
+  <script src="/partials/include.js" defer></script>
+
+  <!-- App script (load AFTER config) -->
+  <script defer src="./js/app.js"></script>
+</head>
+<body>
+
+<!-- Shared header (injected) -->
+<div data-include="/partials/header.html" id="site-header"></div>
+
+<main class="container">
+
+  <section class="card">
+    <h1>Sell Your Container</h1>
+    <p class="muted">You are logged in. Create a container listing below.</p>
+
+    <div style="display:flex; gap:12px;">
+      <button id="logoutBtn" type="button">Logout</button>
+    </div>
+  </section>
+
+  <form id="listingForm" class="card" aria-label="Create sell listing">
+    <div class="grid">
+      <input name="title" placeholder="Title (e.g., 20ft Cargo Worthy, Mumbai)" required/>
+      <select name="size" required>
+        <option value="">Size</option>
+        <option>20ft</option>
+        <option>40ft</option>
+        <option>45ft</option>
+      </select>
+    </div>
+
+    <div class="grid">
+      <select name="condition" required>
+        <option value="">Condition</option>
+        <option>New</option>
+        <option>Used (Cargo Worthy)</option>
+        <option>Wind & Watertight</option>
+        <option>As-Is</option>
+      </select>
+      <input name="location" placeholder="Location (City, Country)" required/>
+    </div>
+
+    <textarea
+      name="description"
+      placeholder="Describe condition, repairs, delivery history, modifications..."
+      rows="4"
+      required></textarea>
+
+    <input
+      name="specs"
+      placeholder="Specifications (e.g., tare, payload, internal dims)"/>
+
+    <div class="grid">
+      <input
+        name="price"
+        placeholder="Asking price (USD)"
+        type="number"
+        min="0"
+        step="0.01"/>
+
+      <input
+        name="availabilityFrom"
+        placeholder="Available from (YYYY-MM-DD)"
+        type="date"/>
+    </div>
+
+    <label>
+      Images (up to 10)
+      <input type="file" name="images" accept="image/*" multiple>
+    </label>
+
+    <label>
+      Video (MP4/HLS recommended)
+      <input type="file" name="video" accept="video/*">
+    </label>
+
+    <p class="muted">
+      SEO tip: include size, condition, city and delivery options in title/description.
+    </p>
+
+    <button type="submit">Publish Listing</button>
+  </form>
+
+  <p class="muted">
+    Tip: Upload HLS or MP4 ~3–6 Mbps to avoid buffering.
+  </p>
+
+</main>
+
+<!-- Shared footer (injected) -->
+<div data-include="/partials/footer.html" id="site-footer"></div>
+
+<!-- Logout handler -->
+<script>
+  document.addEventListener("DOMContentLoaded", () => {
+    const logoutBtn = document.getElementById("logoutBtn");
+    if (logoutBtn) {
+      logoutBtn.onclick = () => {
+        window.location.href = "/auth/logout.html";
+      };
+    }
+  });
+</script>
+
+</body>
+</html>

@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <title>Container Insurance | Containers Club</title>
+
+  <link rel="icon" href="/images/cc_logo.png"/>
+  <meta name="description" content="Container insurance solutions for container owners, operators, depots, CFSs, ICDs and logistics companies."/>
+  <link rel="stylesheet" href="/styles.css"/>
+
+  <!-- Injects shared header/footer -->
+  <script src="/partials/include.js" defer></script>
+</head>
+
+<body>
+
+<!-- Shared header -->
+<div data-include="/partials/header.html" id="site-header"></div>
+
+<main class="container">
+
+  <!-- ================= HERO ================= -->
+  <section class="hero">
+    <div>
+      <h1>
+        Container Insurance
+        <span class="badge" style="font-size:0.7em;vertical-align:middle">Coming Soon</span>
+      </h1>
+      <p>
+        Soon, you’ll be able to protect your containers with simple, transparent insurance plans
+        designed for ports, ICDs, CFSs, depots, transporters and shippers.
+      </p>
+      <div style="display:flex;gap:12px;flex-wrap:wrap">
+        <a class="primary" href="mailto:contact@containersclub.com?subject=Container%20Insurance%20Interest">
+          Get Notified When Live →
+        </a>
+        <a class="secondary" href="/mmc/index.html">
+          Manage My Container
+        </a>
+      </div>
+      <div class="badges">
+        <span class="badge">Damage Protection</span>
+        <span class="badge">Transit Coverage</span>
+        <span class="badge">Theft & Loss</span>
+        <span class="badge">Simple Claims</span>
+      </div>
+    </div>
+    <div class="hero-ill">
+      <img src="/images/container-insurance-hero.png" alt="Container insurance"/>
+    </div>
+  </section>
+
+  <!-- ================= CORE CONTENT ================= -->
+  <section class="section">
+    <h2 class="h">Insurance Built for Container Owners & Operators</h2>
+    <p class="sub">
+      We are partnering with leading third-party insurance providers to offer
+      container-specific insurance integrated directly into the platform.
+    </p>
+
+    <div class="card" style="margin-top:16px;text-align:center">
+      <h3>Current Status</h3>
+      <p class="sub">
+        🔧 <strong>Coming Soon:</strong> Coverage options, pricing and insurers are being finalized.
+      </p>
+    </div>
+  </section>
+
+  <!-- ================= PLANNED COVERAGE ================= -->
+  <section class="section">
+    <h2 class="h">Planned Coverage Highlights</h2>
+    <div class="grid-3">
+      <div class="card"><h3>Physical Damage</h3><div class="sub">Handling, stacking, storage damage</div></div>
+      <div class="card"><h3>Theft & Loss</h3><div class="sub">Protection against theft & pilferage</div></div>
+      <div class="card"><h3>Transit Risks</h3><div class="sub">Road, rail & coastal movement</div></div>
+      <div class="card"><h3>Natural Events</h3><div class="sub">Weather & calamity protection</div></div>
+      <div class="card"><h3>Operational Cover</h3><div class="sub">Depots, ICDs, CFS operations</div></div>
+      <div class="card"><h3>Platform Integration</h3><div class="sub">Policy visibility in dashboard</div></div>
+    </div>
+  </section>
+
+  <!-- ================= HOW IT WORKS ================= -->
+  <section class="section">
+    <h2 class="h">How Container Insurance Will Work</h2>
+    <div class="grid-2">
+      <div class="card"><h3>1) Select Containers</h3><div class="sub">Choose containers to insure</div></div>
+      <div class="card"><h3>2) Choose Plan</h3><div class="sub">Compare insurer options</div></div>
+      <div class="card"><h3>3) Policy Issuance</h3><div class="sub">Policy issued by insurer</div></div>
+      <div class="card"><h3>4) Claims</h3><div class="sub">Simple guided claim process</div></div>
+    </div>
+  </section>
+
+  <!-- ================= BENEFITS ================= -->
+  <section class="section">
+    <h2 class="h">Why Insure via Our Platform?</h2>
+    <div class="grid-3">
+      <div class="card"><h3>Single Window</h3><div class="sub">Containers, leasing, tracking & insurance</div></div>
+      <div class="card"><h3>Operational Fit</h3><div class="sub">Built for logistics use-cases</div></div>
+      <div class="card"><h3>Transparent Terms</h3><div class="sub">Clear policy conditions</div></div>
+    </div>
+  </section>
+
+  <!-- ================= SEO CONTENT (DYNAMIC) ================= -->
+  <div id="seo-content"></div>
+
+</main>
+
+<!-- Shared footer -->
+<div data-include="/partials/footer.html" id="site-footer"></div>
+
+<!-- ================= SEO LOADER SCRIPT ================= -->
+<script>
+(function () {
+  const host = window.location.hostname;
+  const seoDiv = document.getElementById("seo-content");
+
+  if (!seoDiv) return;
+
+  let seoFile = "/partials/seo/insurance-in.html"; // default (India)
+
+  if (host.includes("containersclub")) {
+    seoFile = "/partials/seo-us/insurance.html";
+  }
+
+  fetch(seoFile)
+    .then(r => r.text())
+    .then(html => seoDiv.innerHTML = html)
+    .catch(err => console.error("SEO content load error", err));
+})();
+</script>
+
+</body>
+</html>

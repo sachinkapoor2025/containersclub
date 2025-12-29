@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <title>Rent Containers | Containers Club</title>
+  <meta name="description" content="Browse shipping containers available for rent. Filter by size, condition, location, and more."/>
+  <link rel="canonical" href="https://containersclub.com/rent/"/>
+  <meta name="robots" content="index, follow"/>
+
+  <!-- Global stylesheet -->
+  <link rel="stylesheet" href="/styles.css"/>
+
+  <!-- Global config (centralized) -->
+  <script src="/config.js"></script>
+  <script>
+    // Point generic var to rent-specific redirect (if present)
+    if (window.COGNITO_REDIRECT_URI_RENT) {
+      window.COGNITO_REDIRECT_URI = window.COGNITO_REDIRECT_URI_RENT;
+    }
+  </script>
+
+  <!-- Injects GA + header/footer partials -->
+  <script src="/partials/include.js" defer></script>
+
+  <!-- App script (load AFTER config) -->
+  <script defer src="./js/app.js"></script>
+</head>
+<body>
+
+<!-- Shared header (injected) -->
+<div data-include="/partials/header.html" id="site-header"></div>
+
+<main class="container">
+
+  
+
+  <!-- Original page components (unchanged) -->
+  <section class="card hero">
+    <div>
+      <h1>Container Rentals</h1>
+
+      <ul class="muted" style="margin-top:10px; line-height:1.55;">
+        <li>Browse a wide range of shipping containers available for rent across multiple locations.</li>
+        <li>Filter by size, condition, and location to find the perfect container for your needs.</li>
+        <li>View detailed specifications, photos, and pricing before making a decision.</li>
+        <li>Contact owners directly and schedule fast, reliable delivery anywhere in the USA.</li>
+        <li>List your own containers for rent and reach thousands of active renters.</li>
+      </ul>
+
+      <p style="margin-top:18px;"><a class="primary" href="./new.html">List your container</a></p>
+    </div>
+
+    <!-- image on the right (will size per .hero-ill img rules in styles.css) -->
+    <div class="hero-ill">
+      <img src="/images/rent-hero.png" alt="Container rentals illustration"/>
+    </div>
+  </section>
+
+
+  <section class="card">
+    <div class="grid" style="grid-template-columns: repeat(auto-fit, minmax(220px,1fr)); gap:16px;">
+      <input type="search" id="q" placeholder="Search by title/spec/location"/>
+      <select id="size">
+        <option value="">Any size</option>
+        <option>20ft</option>
+        <option>40ft</option>
+        <option>45ft</option>
+      </select>
+      <select id="condition">
+        <option value="">Any condition</option>
+        <option>New</option>
+        <option>Used (Cargo Worthy)</option>
+        <option>Wind & Watertight</option>
+        <option>As-Is</option>
+      </select>
+      <select id="location">
+        <option value="">Any location</option>
+      </select>
+    </div>
+  </section>
+
+  <section class="card">
+    <div id="listingGrid" class="grid" aria-live="polite" style="grid-template-columns: repeat(auto-fill, minmax(280px,1fr)); gap:16px;"></div>
+  </section>
+  <!-- ============================
+       NEW SEO CONTENT PANEL
+       ============================ -->
+  <section class="content-panel content-intro">
+    <h1>Rent Shipping Containers in the USA – Affordable Container Rentals & Delivery</h1>
+    <p>
+      Renting shipping containers in the USA has become a reliable and cost-effective solution for 
+      businesses, construction companies, retail operations, and homeowners seeking secure, 
+      temporary storage or on-site workspace. Our container rental services offer high-quality, 
+      weatherproof, and structurally strong units delivered directly to your location. Whether you 
+      need a short-term rental for a project or a long-term storage solution, we provide flexible 
+      options to meet every requirement. With nationwide delivery, transparent pricing, and a 
+      variety of sizes and configurations, our platform ensures a seamless rental experience across 
+      all major U.S. regions.
+    </p>
+
+    <h2>Rent Standard & Custom Shipping Containers — 20ft, 40ft & More</h2>
+    <p>
+      We offer a wide selection of rental containers, available in multiple sizes including 10ft, 
+      20ft, 40ft, and high-cube models. Each unit is inspected for durability, structural integrity, 
+      and weather resistance to ensure premium performance. Whether you need a standard cargo-worthy 
+      container or a custom-modified unit with ventilation, insulation, lighting, shelving, or 
+      advanced security features, we have options designed to support various industries. From 
+      construction and logistics to retail pop-up shops and agricultural storage, our containers 
+      provide adaptable, secure, and affordable solutions for any use case.
+    </p>
+
+    <h2>Flexible Container Rental Plans Across Major U.S. Cities & Ports</h2>
+    <p>
+      Our container rental plans are built for flexibility, allowing customers across major U.S. 
+      cities and ports to choose terms that best fit their timeline and budget. Whether you operate 
+      near the Port of Los Angeles, Port of Houston, Port of Miami, Port of Seattle, or any inland 
+      distribution hub, we ensure fast availability and timely delivery. You can select daily, 
+      weekly, monthly, or long-term rental schedules based on your project needs. Our service network 
+      covers both urban and rural locations, ensuring that your shipping container is delivered safely, 
+      efficiently, and without unnecessary delays.
+    </p>
+
+    <h2>Why Choose Us for Container Rental, Delivery & Storage?</h2>
+    <p>
+      Customers across the USA trust our container rental services because of our commitment to 
+      quality, reliability, and convenience. We pride ourselves on offering transparent pricing 
+      with no hidden fees, flexible rental terms, secure storage solutions, and responsive customer 
+      support. Every container is built to withstand harsh weather, secure your equipment or 
+      inventory, and improve on-site operational efficiency. Whether you need temporary storage for 
+      your business or long-term container solutions for large construction projects, we provide 
+      dependable options backed by nationwide delivery and expert guidance.
+    </p>
+
+    <h3>Easy Online Booking — Instant Quote & Delivery Scheduling</h3>
+    <p>
+      Our easy-to-use online platform allows you to book a shipping container rental in minutes. 
+      Simply enter your location, choose the container size, select your rental duration, and 
+      receive an instant quote. Once booked, our team schedules delivery to your location at the 
+      earliest convenience. The entire process is designed for speed and simplicity, enabling 
+      businesses to streamline operations and avoid project delays. With real-time availability and 
+      accurate pricing, renting a container has never been easier.
+    </p>
+
+    <h3>Delivery to U.S. Ports, Warehouses & Storage Yards</h3>
+    <p>
+      We provide fast, reliable delivery to all major U.S. ports, commercial warehouses, storage 
+      yards, and remote job sites. Our delivery team ensures secure placement of containers, 
+      whether on paved lots, construction sites, residential properties, or industrial facilities. 
+      No matter where your project is located, we ensure timely delivery and pickup, making the rental 
+      process stress-free and efficient. Our multi-state logistics network allows us to deliver 
+      containers even on short notice, supporting urgent project and storage requirements.
+    </p>
+
+    <h3>Short-Term & Long-Term Rental Options for Projects, Storage & Logistics</h3>
+    <p>
+      We offer both short-term and long-term rental options to meet the needs of small and large-scale 
+      operations. Short-term rentals are perfect for temporary storage, seasonal business demands, 
+      events, and emergency situations. Long-term rentals are ideal for construction companies, 
+      warehouses, logistics operations, and businesses requiring ongoing secure storage. Our flexible 
+      rental terms, competitive pricing, and durable container solutions make it easy to manage 
+      inventory, protect equipment, and support daily operations without the cost of purchasing a 
+      container outright.
+    </p>
+  </section>
+</main>
+
+<!-- Shared footer (injected) -->
+<div data-include="/partials/footer.html" id="site-footer"></div>
+
+</body>
+</html>
