@@ -9,7 +9,9 @@
 
 <script>
   // Clear local session
+  localStorage.removeItem("cognito_auth");
   localStorage.removeItem("cognito_auth_code");
+  localStorage.removeItem("id_token");
 
   // Redirect to Cognito logout
   const logoutUrl =

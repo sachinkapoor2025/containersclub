@@ -48,7 +48,7 @@
         <li>List your own containers for rent and reach thousands of active renters.</li>
       </ul>
 
-      <p style="margin-top:18px;"><a class="primary" href="./new.html">List your container</a></p>
+      <p style="margin-top:18px;"><a id="rentCta" class="primary" href="./new.html">List your container</a></p>
     </div>
 
     <!-- image on the right (will size per .hero-ill img rules in styles.css) -->
@@ -167,6 +167,32 @@
 
 <!-- Shared footer (injected) -->
 <div data-include="/partials/footer.html" id="site-footer"></div>
+
+<!-- Auth-aware CTA logic -->
+<script>
+  function getAuth() {
+    try { return JSON.parse(localStorage.getItem("cognito_auth") || "null"); }
+    catch { return null; }
+  }
+  function isExpired(auth) {
+    if (!auth || !auth.exp) return true;
+    return Date.now() >= auth.exp - 5000;
+  }
+  document.addEventListener("DOMContentLoaded", () => {
+    const rentCta = document.getElementById("rentCta");
+    if (!rentCta) return;
+
+    const auth = getAuth();
+    const isLoggedIn = auth && !isExpired(auth);
+
+    rentCta.addEventListener("click", (e) => {
+      if (!isLoggedIn) {
+        e.preventDefault();
+        window.location.href = "/auth/login.html";
+      }
+    });
+  });
+</script>
 
 </body>
 </html>

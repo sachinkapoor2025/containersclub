@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <title>Container Layout Test</title>
+  <link rel="stylesheet" href="/styles.css"/>
+</head>
+<body>
+
+<main class="container">
+
+<section class="card">
+  <h1>Containers for Sale - New Layout</h1>
+  <p class="muted">One container per row with details and Book button</p>
+</section>
+
+<section class="card">
+  <div id="listingGrid" style="display: flex; flex-direction: column; gap: 20px;">
+    
+    <!-- Container 1 -->
+    <article class="card" style="display: flex; gap: 20px; align-items: center; padding: 20px;">
+      <div style="flex-shrink: 0; width: 200px; height: 150px; overflow: hidden; border-radius: 10px;">
+        <img src="https://via.placeholder.com/200x150/0ea5e9/ffffff?text=Container" alt="" style="width: 100%; height: 100%; object-fit: cover;">
+      </div>
+      <div style="flex: 1;">
+        <div class="badge" style="margin-bottom: 10px;">40ft HC</div>
+        <h3 style="margin: 0 0 10px 0; font-size: 20px;">40ft High Cube Container - Wind & Watertight</h3>
+        <p style="margin: 5px 0; color: #6b7280; font-weight: 600;">Houston, TX • $3100</p>
+        <p style="margin: 10px 0 0 0; color: #374151; line-height: 1.5;">Sturdy 40ft HC container, wind & watertight. Great for storage or export. Minor cosmetic wear. Clean interior. Available for immediate pickup or delivery.</p>
+      </div>
+      <div style="flex-shrink: 0;">
+        <button class="primary" style="white-space: nowrap; padding: 12px 24px;">Book Now</button>
+      </div>
+    </article>
+
+    <!-- Container 2 -->
+    <article class="card" style="display: flex; gap: 20px; align-items: center; padding: 20px;">
+      <div style="flex-shrink: 0; width: 200px; height: 150px; overflow: hidden; border-radius: 10px;">
+        <img src="https://via.placeholder.com/200x150/0284c7/ffffff?text=Reefer" alt="" style="width: 100%; height: 100%; object-fit: cover;">
+      </div>
+      <div style="flex: 1;">
+        <div class="badge" style="margin-bottom: 10px;">20ft Reefer</div>
+        <h3 style="margin: 0 0 10px 0; font-size: 20px;">20ft Refrigerated Reefer Container - Working</h3>
+        <p style="margin: 5px 0; color: #6b7280; font-weight: 600;">New York, NY • $6900</p>
+        <p style="margin: 10px 0 0 0; color: #374151; line-height: 1.5;">Reefer unit operational at -20°C to +25°C. Perfect for cold storage. Clean interior. Tested and certified. Includes power hookup instructions and maintenance records.</p>
+      </div>
+      <div style="flex-shrink: 0;">
+        <button class="primary" style="white-space: nowrap; padding: 12px 24px;">Book Now</button>
+      </div>
+    </article>
+
+    <!-- Container 3 -->
+    <article class="card" style="display: flex; gap: 20px; align-items: center; padding: 20px;">
+      <div style="flex-shrink: 0; width: 200px; height: 150px; overflow: hidden; border-radius: 10px;">
+        <img src="https://via.placeholder.com/200x150/f0f9ff/0284c7?text=20ft" alt="" style="width: 100%; height: 100%; object-fit: cover;">
+      </div>
+      <div style="flex: 1;">
+        <div class="badge" style="margin-bottom: 10px;">20ft</div>
+        <h3 style="margin: 0 0 10px 0; font-size: 20px;">20ft Standard Container - As Is Condition</h3>
+        <p style="margin: 5px 0; color: #6b7280; font-weight: 600;">Seattle, WA • $1500</p>
+        <p style="margin: 10px 0 0 0; color: #374151; line-height: 1.5;">As-is 20ft unit. Some surface rust, doors functional. Ideal budget storage option. Structurally sound. Great for backyard storage or workshop conversion projects.</p>
+      </div>
+      <div style="flex-shrink: 0;">
+        <button class="primary" style="white-space: nowrap; padding: 12px 24px;">Book Now</button>
+      </div>
+    </article>
+
+    <!-- Container 4 -->
+    <article class="card" style="display: flex; gap: 20px; align-items: center; padding: 20px;">
+      <div style="flex-shrink: 0; width: 200px; height: 150px; overflow: hidden; border-radius: 10px;">
+        <img src="https://via.placeholder.com/200x150/bae6fd/0284c7?text=Open+Side" alt="" style="width: 100%; height: 100%; object-fit: cover;">
+      </div>
+      <div style="flex: 1;">
+        <div class="badge" style="margin-bottom: 10px;">20ft Open Side</div>
+        <h3 style="margin: 0 0 10px 0; font-size: 20px;">20ft Open-Side Container - Good Condition</h3>
+        <p style="margin: 5px 0; color: #6b7280; font-weight: 600;">Chicago, IL • $3500</p>
+        <p style="margin: 10px 0 0 0; color: #374151; line-height: 1.5;">Fully opening side doors. Great for loading large or awkward items. Structurally solid. Recently painted. Perfect for retail pop-ups or mobile workshop applications.</p>
+      </div>
+      <div style="flex-shrink: 0;">
+        <button class="primary" style="white-space: nowrap; padding: 12px 24px;">Book Now</button>
+      </div>
+    </article>
+
+    <!-- Container 5 -->
+    <article class="card" style="display: flex; gap: 20px; align-items: center; padding: 20px;">
+      <div style="flex-shrink: 0; width: 200px; height: 150px; overflow: hidden; border-radius: 10px;">
+        <img src="https://via.placeholder.com/200x150/e0f2fe/0284c7?text=40ft" alt="" style="width: 100%; height: 100%; object-fit: cover;">
+      </div>
+      <div style="flex: 1;">
+        <div class="badge" style="margin-bottom: 10px;">40ft</div>
+        <h3 style="margin: 0 0 10px 0; font-size: 20px;">40ft Standard Container - Good for Export</h3>
+        <p style="margin: 5px 0; color: #6b7280; font-weight: 600;">Savannah, GA • $2700</p>
+        <p style="margin: 10px 0 0 0; color: #374151; line-height: 1.5;">Cargo-worthy 40ft unit with valid CSC plate. Ready for export shipments. Well-maintained with minimal wear. Inspected and certified for international shipping use.</p>
+      </div>
+      <div style="flex-shrink: 0;">
+        <button class="primary" style="white-space: nowrap; padding: 12px 24px;">Book Now</button>
+      </div>
+    </article>
+
+    <!-- Container 6 -->
+    <article class="card" style="display: flex; gap: 20px; align-items: center; padding: 20px;">
+      <div style="flex-shrink: 0; width: 200px; height: 150px; overflow: hidden; border-radius: 10px;">
+        <img src="https://via.placeholder.com/200x150/f6fbff/0284c7?text=10ft" alt="" style="width: 100%; height: 100%; object-fit: cover;">
+      </div>
+      <div style="flex: 1;">
+        <div class="badge" style="margin-bottom: 10px;">10ft</div>
+        <h3 style="margin: 0 0 10px 0; font-size: 20px;">10ft Mini Container - Excellent Condition</h3>
+        <p style="margin: 5px 0; color: #6b7280; font-weight: 600;">Denver, CO • $1800</p>
+        <p style="margin: 10px 0 0 0; color: #374151; line-height: 1.5;">Compact 10ft storage container. Ideal for small spaces. Recently repainted. Lock box included. Perfect for residential use, garden storage, or tool shed applications.</p>
+      </div>
+      <div style="flex-shrink: 0;">
+        <button class="primary" style="white-space: nowrap; padding: 12px 24px;">Book Now</button>
+      </div>
+    </article>
+
+  </div>
+</section>
+
+</main>
+
+</body>
+</html>

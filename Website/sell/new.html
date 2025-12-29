@@ -14,15 +14,18 @@
   <!-- Global config (centralized) -->
   <script src="/config.js"></script>
 
-  <!-- Set Sell Cognito Config -->
-  <script>
-    window.COGNITO_DOMAIN = window.SELL_COGNITO_DOMAIN;
-    window.COGNITO_CLIENT_ID = window.SELL_COGNITO_CLIENT_ID;
-  </script>
-
   <!-- 🔒 PROTECT THIS PAGE (MUST BE FIRST) -->
   <script>
-    if (!localStorage.getItem("cognito_auth_code")) {
+    function getAuth() {
+      try { return JSON.parse(localStorage.getItem("cognito_auth") || "null"); }
+      catch { return null; }
+    }
+    function isExpired(auth) {
+      if (!auth || !auth.exp) return true;
+      return Date.now() >= auth.exp - 5000;
+    }
+    const auth = getAuth();
+    if (!auth || isExpired(auth)) {
       window.location.replace("/auth/login.html");
     }
   </script>
@@ -127,6 +130,8 @@
     const logoutBtn = document.getElementById("logoutBtn");
     if (logoutBtn) {
       logoutBtn.onclick = () => {
+        localStorage.removeItem("cognito_auth");
+        localStorage.removeItem("id_token");
         window.location.href = "/auth/logout.html";
       };
     }

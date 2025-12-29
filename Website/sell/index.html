@@ -81,8 +81,7 @@
 </section>
 
 <section class="card">
-  <div id="listingGrid" class="grid" aria-live="polite"
-       style="grid-template-columns: repeat(auto-fill, minmax(280px,1fr)); gap:16px;">
+  <div id="listingGrid" aria-live="polite" style="display: flex; flex-direction: column; gap: 20px;">
   </div>
 </section>
 
@@ -135,11 +134,20 @@
 
 <!-- Auth-aware CTA logic -->
 <script>
+  function getAuth() {
+    try { return JSON.parse(localStorage.getItem("cognito_auth") || "null"); }
+    catch { return null; }
+  }
+  function isExpired(auth) {
+    if (!auth || !auth.exp) return true;
+    return Date.now() >= auth.exp - 5000;
+  }
   document.addEventListener("DOMContentLoaded", () => {
     const sellCta = document.getElementById("sellCta");
     if (!sellCta) return;
 
-    const isLoggedIn = !!localStorage.getItem("cognito_auth_code");
+    const auth = getAuth();
+    const isLoggedIn = auth && !isExpired(auth);
 
     sellCta.addEventListener("click", (e) => {
       if (!isLoggedIn) {

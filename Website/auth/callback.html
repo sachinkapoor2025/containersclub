@@ -10,23 +10,48 @@
 <p>Signing you in…</p>
 
 <script>
-  const params = new URLSearchParams(window.location.search);
-  const code = params.get("code");
+  // Parse tokens from hash (implicit flow)
+  function parseHashForTokens() {
+    if (!location.hash || location.hash.length < 2) return null;
+    const params = new URLSearchParams(location.hash.substring(1));
+    const access = params.get("access_token");
+    const idToken = params.get("id_token");
+    const type = params.get("token_type") || "Bearer";
+    const expires = parseInt(params.get("expires_in") || "3600", 10);
+    const state = params.get("state");
 
-  if (!code) {
-    alert("Login failed. Please try again.");
-    window.location.href = "/auth/login.html";
-  } else {
-    // Store auth code (MVP approach)
-    localStorage.setItem("cognito_auth_code", code);
-
-    // Redirect to appropriate protected page based on cognito type
-    const cognitoType = localStorage.getItem('cognito_type') || 'rent';
-    if (cognitoType === 'sell') {
-      window.location.href = "/sell/new.html";
-    } else {
-      window.location.href = "/rent/new.html";
+    if (access) {
+      const auth = {
+        access_token: access,
+        id_token: idToken,
+        token_type: type,
+        exp: Date.now() + expires * 1000
+      };
+      localStorage.setItem("cognito_auth", JSON.stringify(auth));
+      // Clean the hash from URL
+      history.replaceState(null, "", location.pathname + location.search);
+      return { auth, state };
     }
+    return null;
+  }
+
+  const result = parseHashForTokens();
+  if (!result) {
+    // Check for code (old way, but shouldn't happen)
+    const params = new URLSearchParams(window.location.search);
+    const code = params.get("code");
+    if (!code) {
+      alert("Login failed. Please try again.");
+      window.location.href = "/auth/login.html";
+    } else {
+      // For code flow, we'd need to exchange, but for now, store code
+      localStorage.setItem("cognito_auth_code", code);
+      window.location.href = "/sell/new.html";
+    }
+  } else {
+    // Redirect based on state
+    const redirectTo = result.state === "rent" ? "/rent/new.html" : "/sell/new.html";
+    window.location.href = redirectTo;
   }
 </script>
 

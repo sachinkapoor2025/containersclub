@@ -1,18 +1,138 @@
 const CONFIG = {
-  API_BASE: window.SELL_API_BASE || '/api',
-  REGION: window.AWS_REGION || 'ap-south-1',
-  COGNITO_DOMAIN: window.COGNITO_DOMAIN || '',
-  COGNITO_CLIENT_ID: window.COGNITO_CLIENT_ID || '',
-  COGNITO_REDIRECT_URI: window.COGNITO_REDIRECT_URI || window.location.origin + '/sell/new.html',
+  API_BASE: window.SELL_API_BASE || '/api'
 };
-function authToken(){const p=new URLSearchParams(window.location.hash.slice(1)||window.location.search.slice(1));const t=p.get('id_token')||p.get('access_token')||localStorage.getItem('id_token');if(t)localStorage.setItem('id_token',t);return t;}
-function login(){if(!CONFIG.COGNITO_DOMAIN||!CONFIG.COGNITO_CLIENT_ID){alert('Login not configured');return;}const u=`${CONFIG.COGNITO_DOMAIN}/login?client_id=${CONFIG.COGNITO_CLIENT_ID}&response_type=token&redirect_uri=${encodeURIComponent(CONFIG.COGNITO_REDIRECT_URI)}`;window.location.href=u;}
-function logout(){localStorage.removeItem('id_token');alert('Logged out');window.location.reload();}
-async function api(path,opt={}){const h=Object.assign({'Content-Type':'application/json'},opt.headers||{});const t=authToken();if(t)h['Authorization']=t;const r=await fetch(CONFIG.API_BASE+path,{...opt,headers:h});if(!r.ok)throw new Error(await r.text());return r.json();}
-async function listListings(q={}){const p=new URLSearchParams(q).toString();return api('/sell/listings'+(p?'?'+p:''),{method:'GET',headers:{'Content-Type':'application/json'}});}
-function cardHtml(it){const img=(it.images&&it.images[0])||'./media/placeholder.jpg';const badge=it.size||'Container';const loc=it.location||'';const price=it.price?`$${it.price}`:'';const vid=it.video||'';return `<article class="card">${vid?`<video controls preload="metadata" src="${vid}"></video>`:`<img src="${img}" alt="">`}<div class="content"><div class="badge">${badge}</div><h3>${it.title||'Untitled'}</h3><p>${loc} ${price?('• '+price):''}</p><p>${(it.description||'').slice(0,140)}...</p></div></article>`;}
-async function renderGrid(){const g=document.getElementById('listingGrid');if(!g)return;try{const q={q:document.getElementById('q')?.value||'',size:document.getElementById('size')?.value||'',condition:document.getElementById('condition')?.value||'',location:document.getElementById('location')?.value||''};const data=await listListings(q);g.innerHTML=(data.items||[]).map(cardHtml).join('')||'<p>No listings yet.</p>';}catch(e){g.innerHTML='<p>Failed to load listings.</p>';console.error(e);}}
-function bindFilters(){['q','size','condition','location'].forEach(id=>{const el=document.getElementById(id);if(el)el.addEventListener('change',renderGrid);if(el&&el.tagName==='INPUT')el.addEventListener('input',e=>{clearTimeout(window.__qtimer);window.__qtimer=setTimeout(renderGrid,400);});});}
-async function handleForm(){const f=document.getElementById('listingForm');if(!f)return;f.addEventListener('submit',async(e)=>{e.preventDefault();const t=authToken();if(!t){alert('Please login first');return;}const fd=new FormData(f);const payload={title:fd.get('title'),size:fd.get('size'),condition:fd.get('condition'),location:fd.get('location'),description:fd.get('description'),specs:fd.get('specs'),price:parseFloat(fd.get('price')||'0'),availabilityFrom:fd.get('availabilityFrom')||null,images:[],video:null};const images=f.querySelector('input[name="images"]').files;const video=f.querySelector('input[name="video"]').files[0];for(let i=0;i<Math.min(images.length,10);i++){const file=images[i];const {uploadUrl, publicUrl}=await api('/sell/presign',{method:'POST',body:JSON.stringify({filename:file.name,contentType:file.type})});await fetch(uploadUrl,{method:'PUT',body:file});payload.images.push(publicUrl);}if(video){const {uploadUrl, publicUrl}=await api('/sell/presign',{method:'POST',body:JSON.stringify({filename:video.name,contentType:video.type})});await fetch(uploadUrl,{method:'PUT',body:video});payload.video=publicUrl;}await api('/sell/listings',{method:'POST',body:JSON.stringify(payload)});alert('Listing published!');window.location.href='./index.html';});}
-function initAuthButtons(){const t=authToken();const loginBtn=document.getElementById('loginBtn');const logoutBtn=document.getElementById('logoutBtn');if(loginBtn)loginBtn.onclick=login;if(logoutBtn)logoutBtn.onclick=logout;if(t){if(loginBtn)loginBtn.style.display='none';if(logoutBtn)logoutBtn.style.display='inline-block';}}
-document.addEventListener('DOMContentLoaded',()=>{bindFilters();renderGrid();handleForm();initAuthButtons();});
+
+function authToken() {
+  const auth = JSON.parse(localStorage.getItem('cognito_auth') || 'null');
+  return auth?.access_token || localStorage.getItem('id_token');
+}
+
+async function api(path, options = {}) {
+  const headers = { 'Content-Type': 'application/json' };
+  const token = authToken();
+  if (token) headers.Authorization = token;
+
+  const res = await fetch(CONFIG.API_BASE + path, { ...options, headers });
+  if (!res.ok) throw new Error(await res.text());
+  return res.json();
+}
+
+/* ---------------- LIST ---------------- */
+
+async function listListings() {
+  return api('/sell/listings');
+}
+
+/* ---------------- RENDER ---------------- */
+
+function cardHtml(it) {
+  const img = it.images?.[0] || '/media/placeholder.jpg';
+
+  return `
+  <article class="card" style="display:flex;gap:20px;padding:20px;">
+    <img src="${img}" style="width:200px;height:140px;object-fit:cover;border-radius:10px;">
+
+    <div style="flex:1;">
+      <div class="badge">${it.size}</div>
+      <h3>${it.title}</h3>
+      <p><strong>${it.location}</strong> • <span style="color:#0ea5e9">$${it.price}</span></p>
+      <p>${it.description.slice(0,120)}...</p>
+    </div>
+
+    <div style="display:flex;flex-direction:column;gap:10px;">
+      <button onclick="showDetails('${it.listingId}')">Details</button>
+      <button class="primary" onclick="showBooking('${it.listingId}')">Book</button>
+    </div>
+  </article>`;
+}
+
+async function renderGrid() {
+  const grid = document.getElementById('listingGrid');
+  const data = await listListings();
+  window.listings = data.items;
+  grid.innerHTML = data.items.map(cardHtml).join('');
+}
+
+/* ---------------- DETAILS ---------------- */
+
+async function getListingById(id) {
+  return api(`/sell/listings/${id}`);
+}
+
+async function showDetails(id) {
+  const item = await getListingById(id);
+
+  let modal = document.getElementById('detailsModal');
+  if (!modal) {
+    modal = document.createElement('div');
+    modal.id = 'detailsModal';
+    modal.className = 'modal';
+    document.body.appendChild(modal);
+  }
+
+  const images = item.images?.map(i =>
+    `<img src="${i}" style="width:30%;margin:5px;border-radius:8px;">`
+  ).join('');
+
+  modal.innerHTML = `
+  <div class="modal-content">
+    <span class="close" onclick="detailsModal.style.display='none'">&times;</span>
+    <h2>${item.title}</h2>
+
+    <p><b>ID:</b> ${item.listingId}</p>
+    <p><b>Size:</b> ${item.size}</p>
+    <p><b>Condition:</b> ${item.condition}</p>
+    <p><b>Location:</b> ${item.location}</p>
+    <p><b>Price:</b> $${item.price} ${item.currency}</p>
+    <p><b>Available From:</b> ${item.availableFrom}</p>
+    <p><b>Delivery:</b> ${item.deliveryAvailable ? 'Yes' : 'No'}</p>
+    <p><b>Description:</b> ${item.description}</p>
+
+    <h3>Images</h3>
+    <div style="display:flex;flex-wrap:wrap">${images}</div>
+  </div>`;
+
+  modal.style.display = 'block';
+}
+
+/* ---------------- BOOKING ---------------- */
+
+async function showBooking(id) {
+  const item = await getListingById(id);
+
+  let modal = document.getElementById('bookingModal');
+  if (!modal) {
+    modal = document.createElement('div');
+    modal.id = 'bookingModal';
+    modal.className = 'modal';
+    document.body.appendChild(modal);
+  }
+
+  modal.innerHTML = `
+  <div class="modal-content">
+    <span class="close" onclick="bookingModal.style.display='none'">&times;</span>
+    <h2>Book ${item.title}</h2>
+
+    <label>Days</label>
+    <input id="days" type="number" min="1" value="1">
+    <p id="total">$${item.price}</p>
+
+    <button onclick="confirmBooking('${id}', ${item.price})">Confirm</button>
+  </div>`;
+
+  modal.style.display = 'block';
+
+  document.getElementById('days').oninput = e => {
+    document.getElementById('total').textContent =
+      '$' + (item.price * e.target.value);
+  };
+}
+
+function confirmBooking(id, price) {
+  alert('Booking confirmed for ' + id);
+  bookingModal.style.display = 'none';
+}
+
+/* ---------------- INIT ---------------- */
+
+document.addEventListener('DOMContentLoaded', renderGrid);

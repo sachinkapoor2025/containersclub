@@ -13,6 +13,29 @@
 
   <!-- Global config (centralized) -->
   <script src="/config.js"></script>
+
+  <!-- 🔒 PROTECT THIS PAGE (MUST BE FIRST) -->
+  <script>
+    function getAuth() {
+      try { return JSON.parse(localStorage.getItem("cognito_auth") || "null"); }
+      catch { return null; }
+    }
+    function isExpired(auth) {
+      if (!auth || !auth.exp) return true;
+      return Date.now() >= auth.exp - 5000;
+    }
+    const auth = getAuth();
+    if (!auth || isExpired(auth)) {
+      // If old code exists, try to login via callback
+      const code = localStorage.getItem("cognito_auth_code");
+      if (code) {
+        window.location.replace("/auth/login.html");
+      } else {
+        window.location.replace("/auth/login.html");
+      }
+    }
+  </script>
+
   <script>
     // Point generic var to rent-specific redirect (if present)
     if (window.COGNITO_REDIRECT_URI_RENT) {
