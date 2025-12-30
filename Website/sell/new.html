@@ -3,6 +3,7 @@
 <head>
   <meta charset="utf-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
+
   <title>Sell Your Container | Containers Club</title>
   <meta name="description" content="Login and list your used shipping container for sale with photos, videos, specs, and price."/>
   <link rel="canonical" href="https://containersclub.com/sell/new.html"/>
@@ -11,34 +12,30 @@
   <!-- Global stylesheet -->
   <link rel="stylesheet" href="/styles.css"/>
 
-  <!-- Global config (centralized) -->
+  <!-- Global config -->
   <script src="/config.js"></script>
 
-  <!-- 🔒 PROTECT THIS PAGE (MUST BE FIRST) -->
+  <!-- SELL auth (MUST load before protection) -->
+  <script src="./js/auth.js"></script>
+
+  <!-- 🔒 PROTECT THIS PAGE -->
   <script>
-    function getAuth() {
-      try { return JSON.parse(localStorage.getItem("cognito_auth") || "null"); }
-      catch { return null; }
-    }
-    function isExpired(auth) {
-      if (!auth || !auth.exp) return true;
-      return Date.now() >= auth.exp - 5000;
-    }
-    const auth = getAuth();
-    if (!auth || isExpired(auth)) {
-      window.location.replace("/auth/login.html");
+    const auth = JSON.parse(localStorage.getItem("cb_auth") || "null");
+    if (!auth || Date.now() > auth.exp) {
+      loginSell(); // redirect to Cognito Hosted UI
     }
   </script>
 
   <!-- Injects GA + header/footer partials -->
   <script src="/partials/include.js" defer></script>
 
-  <!-- App script (load AFTER config) -->
+  <!-- App script -->
   <script defer src="./js/app.js"></script>
 </head>
+
 <body>
 
-<!-- Shared header (injected) -->
+<!-- Shared header -->
 <div data-include="/partials/header.html" id="site-header"></div>
 
 <main class="container">
@@ -121,21 +118,19 @@
 
 </main>
 
-<!-- Shared footer (injected) -->
+<!-- Shared footer -->
 <div data-include="/partials/footer.html" id="site-footer"></div>
 
-<!-- Logout handler -->
+<!-- Logout -->
 <script>
-  document.addEventListener("DOMContentLoaded", () => {
-    const logoutBtn = document.getElementById("logoutBtn");
-    if (logoutBtn) {
-      logoutBtn.onclick = () => {
-        localStorage.removeItem("cognito_auth");
-        localStorage.removeItem("id_token");
-        window.location.href = "/auth/logout.html";
-      };
-    }
-  });
+document.addEventListener("DOMContentLoaded", () => {
+  const logoutBtn = document.getElementById("logoutBtn");
+  if (!logoutBtn) return;
+
+  logoutBtn.onclick = () => {
+    logoutSell(); // from auth.js
+  };
+});
 </script>
 
 </body>

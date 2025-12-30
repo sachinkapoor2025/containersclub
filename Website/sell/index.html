@@ -3,6 +3,7 @@
 <head>
   <meta charset="utf-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
+
   <title>Buy & Sell Shipping Containers | Containers Club</title>
   <meta name="description" content="Browse used shipping containers for sale. Filter by size, condition, location, specs and media."/>
   <link rel="canonical" href="https://containersclub.com/sell/"/>
@@ -11,156 +12,150 @@
   <!-- Global stylesheet -->
   <link rel="stylesheet" href="/styles.css"/>
 
-  <!-- Global config (centralized) -->
+  <!-- Global config -->
   <script src="/config.js"></script>
-  <script>
-    // Point generic var to sell-specific redirect (if present)
-    if (window.COGNITO_REDIRECT_URI_SELL) {
-      window.COGNITO_REDIRECT_URI = window.COGNITO_REDIRECT_URI_SELL;
-    }
-  </script>
+
+  <!-- SELL auth (MUST load before app.js) -->
+  <script src="./js/auth.js"></script>
 
   <!-- Injects GA + header/footer partials -->
   <script src="/partials/include.js" defer></script>
 
-  <!-- App script (load AFTER config) -->
+  <!-- App script -->
   <script defer src="./js/app.js"></script>
 </head>
+
 <body>
 
-<!-- Shared header (injected) -->
+<!-- Shared header -->
 <div data-include="/partials/header.html" id="site-header"></div>
 
 <main class="container">
 
-<section class="card hero">
-  <div>
-    <h1>Containers for Sale</h1>
+  <!-- HERO -->
+  <section class="card hero">
+    <div>
+      <h1>Containers for Sale</h1>
 
-    <ul class="muted" style="margin-top:10px; line-height:1.55;">
-      <li>Browse new, used, and refurbished shipping containers from verified sellers.</li>
-      <li>Compare prices, photos, and condition grades before purchasing.</li>
-      <li>Filter by size, location, and specifications to find the right container.</li>
-      <li>Schedule fast, reliable delivery anywhere in the USA.</li>
-      <li>List your own containers for sale and reach active nationwide buyers.</li>
-    </ul>
+      <ul class="muted" style="margin-top:10px; line-height:1.55;">
+        <li>Browse new, used, and refurbished shipping containers from verified sellers.</li>
+        <li>Compare prices, photos, and condition grades before purchasing.</li>
+        <li>Filter by size, location, and specifications to find the right container.</li>
+        <li>Schedule fast, reliable delivery anywhere in the USA.</li>
+        <li>List your own containers for sale and reach active nationwide buyers.</li>
+      </ul>
 
-    <!-- SELL CTA -->
+      <!-- SELL CTA -->
+      <p>
+        <a id="sellCta" class="primary" href="./new.html">
+          Sell your container
+        </a>
+      </p>
+    </div>
+
+    <div class="hero-ill">
+      <img src="/images/sell-hero.png" alt="Container sales illustration"/>
+    </div>
+  </section>
+
+  <!-- FILTERS -->
+  <section class="card">
+    <div class="grid" style="grid-template-columns: repeat(auto-fit, minmax(220px,1fr)); gap:16px;">
+      <input type="search" id="q" placeholder="Search by title/spec/location"/>
+      <select id="size">
+        <option value="">Any size</option>
+        <option>20ft</option>
+        <option>40ft</option>
+        <option>45ft</option>
+      </select>
+      <select id="condition">
+        <option value="">Any condition</option>
+        <option>New</option>
+        <option>Used (Cargo Worthy)</option>
+        <option>Wind & Watertight</option>
+        <option>As-Is</option>
+      </select>
+      <select id="location">
+        <option value="">Any location</option>
+      </select>
+    </div>
+  </section>
+
+  <!-- LISTINGS -->
+  <section class="card">
+    <div
+      id="listingGrid"
+      aria-live="polite"
+      style="display:flex;flex-direction:column;gap:20px;">
+    </div>
+  </section>
+
+  <!-- SEO CONTENT -->
+  <section class="content-panel content-intro">
+    <h1>Buy & Sell Shipping Containers in the USA — Secure Container Sales & Delivery</h1>
     <p>
-      <a id="sellCta" class="primary" href="./new.html">
-        Sell your container
-      </a>
+      Buying and selling shipping containers in the USA has never been easier. Our platform connects buyers and sellers nationwide,
+      offering high-quality new, used, and customized containers with fast, secure delivery options.
     </p>
-  </div>
 
-  <div class="hero-ill">
-    <img src="/images/sell-hero.png" alt="Container news illustration"/>
-  </div>
-</section>
+    <h2>Sell Used & New Shipping Containers — 20ft, 40ft, High Cube & Custom Units</h2>
+    <p>
+      We specialize in helping customers sell both used and new shipping containers, offering multiple sizes including 20ft, 40ft,
+      and 40ft High Cube options.
+    </p>
 
-<section class="card">
-  <div class="grid" style="grid-template-columns: repeat(auto-fit, minmax(220px,1fr)); gap:16px;">
-    <input type="search" id="q" placeholder="Search by title/spec/location"/>
-    <select id="size">
-      <option value="">Any size</option>
-      <option>20ft</option>
-      <option>40ft</option>
-      <option>45ft</option>
-    </select>
-    <select id="condition">
-      <option value="">Any condition</option>
-      <option>New</option>
-      <option>Used (Cargo Worthy)</option>
-      <option>Wind & Watertight</option>
-      <option>As-Is</option>
-    </select>
-    <select id="location">
-      <option value="">Any location</option>
-    </select>
-  </div>
-</section>
+    <h2>Nationwide Container Sales & Delivery Across Major U.S. Cities & Ports</h2>
+    <p>
+      We provide seamless container sales and delivery services across major U.S. cities including Los Angeles, Houston, Miami,
+      New York, Seattle, Chicago, Dallas, Atlanta, and more.
+    </p>
 
-<section class="card">
-  <div id="listingGrid" aria-live="polite" style="display: flex; flex-direction: column; gap: 20px;">
-  </div>
-</section>
+    <h2>Why Choose Us for Container Sales, Quality Assurance & Fast Delivery</h2>
+    <p>
+      We are committed to providing a trusted buying and selling experience backed by quality assurance,
+      transparent communication, and reliable customer service.
+    </p>
 
-<!-- SEO content panel -->
-<section class="content-panel content-intro">
-  <h1>Buy & Sell Shipping Containers in the USA — Secure Container Sales & Delivery</h1>
-  <p>
-    Buying and selling shipping containers in the USA has never been easier. Our platform connects buyers and sellers nationwide,
-    offering high-quality new, used, and customized containers with fast, secure delivery options.
-  </p>
+    <h3>Add-Ons: Container Customization, Modifications & Upgrades Available</h3>
+    <p>
+      Buyers looking for additional functionality can take advantage of our customization and modification services.
+    </p>
 
-  <h2>Sell Used & New Shipping Containers — 20ft, 40ft, High Cube & Custom Units</h2>
-  <p>
-    We specialize in helping customers sell both used and new shipping containers, offering multiple sizes including 20ft, 40ft,
-    and 40ft High Cube options.
-  </p>
+    <h3>Fast Shipping to U.S. Ports, Warehouses & Job Sites</h3>
+    <p>
+      Fast, dependable delivery is one of our core strengths.
+    </p>
 
-  <h2>Nationwide Container Sales & Delivery Across Major U.S. Cities & Ports</h2>
-  <p>
-    We provide seamless container sales and delivery services across major U.S. cities including Los Angeles, Houston, Miami,
-    New York, Seattle, Chicago, Dallas, Atlanta, and more.
-  </p>
-
-  <h2>Why Choose Us for Container Sales, Quality Assurance & Fast Delivery</h2>
-  <p>
-    We are committed to providing a trusted buying and selling experience backed by quality assurance,
-    transparent communication, and reliable customer service.
-  </p>
-
-  <h3>Add-Ons: Container Customization, Modifications & Upgrades Available</h3>
-  <p>
-    Buyers looking for additional functionality can take advantage of our customization and modification services.
-  </p>
-
-  <h3>Fast Shipping to U.S. Ports, Warehouses & Job Sites</h3>
-  <p>
-    Fast, dependable delivery is one of our core strengths.
-  </p>
-
-  <h3>Customer Support & After-Sale Services for Container Buyers & Sellers</h3>
-  <p>
-    We stand behind every transaction with dedicated customer support and after-sale assistance.
-  </p>
-</section>
+    <h3>Customer Support & After-Sale Services for Container Buyers & Sellers</h3>
+    <p>
+      We stand behind every transaction with dedicated customer support and after-sale assistance.
+    </p>
+  </section>
 
 </main>
 
-<!-- Shared footer (injected) -->
+<!-- Shared footer -->
 <div data-include="/partials/footer.html" id="site-footer"></div>
 
-<!-- Auth-aware CTA logic -->
+<!-- CTA AUTH LOGIC -->
 <script>
-  function getAuth() {
-    try { return JSON.parse(localStorage.getItem("cognito_auth") || "null"); }
-    catch { return null; }
-  }
-  function isExpired(auth) {
-    if (!auth || !auth.exp) return true;
-    return Date.now() >= auth.exp - 5000;
-  }
-  document.addEventListener("DOMContentLoaded", () => {
-    const sellCta = document.getElementById("sellCta");
-    if (!sellCta) return;
+document.addEventListener("DOMContentLoaded", () => {
+  const sellCta = document.getElementById("sellCta");
+  if (!sellCta) return;
 
-    const auth = getAuth();
-    const isLoggedIn = auth && !isExpired(auth);
-
-    sellCta.addEventListener("click", (e) => {
-      if (!isLoggedIn) {
-        e.preventDefault();
-        window.location.href = "/auth/login.html";
-      }
-    });
+  sellCta.addEventListener("click", (e) => {
+    const auth = JSON.parse(localStorage.getItem("cb_auth") || "null");
+    if (!auth || Date.now() > auth.exp) {
+      e.preventDefault();
+      loginSell(); // from auth.js
+    }
   });
+});
 </script>
 
-<!-- Optional dynamic year -->
+<!-- Dynamic year -->
 <script>
-  const y = document.getElementById('year');
+  const y = document.getElementById("year");
   if (y) y.textContent = new Date().getFullYear();
 </script>
 

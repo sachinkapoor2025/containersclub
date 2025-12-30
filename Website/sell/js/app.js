@@ -1,19 +1,53 @@
+/* ===============================
+   SELL APP.JS (FIXED, FULL)
+   =============================== */
+
 const CONFIG = {
   API_BASE: window.SELL_API_BASE || '/api'
 };
 
-function authToken() {
-  const auth = JSON.parse(localStorage.getItem('cognito_auth') || 'null');
-  return auth?.access_token || localStorage.getItem('id_token');
+/* ---------------- AUTH HELPERS ---------------- */
+
+const AUTH_KEY = "cb_auth";
+
+function getAuth() {
+  try {
+    return JSON.parse(localStorage.getItem(AUTH_KEY) || "null");
+  } catch {
+    return null;
+  }
 }
 
-async function api(path, options = {}) {
-  const headers = { 'Content-Type': 'application/json' };
-  const token = authToken();
-  if (token) headers.Authorization = token;
+function isExpired(auth) {
+  if (!auth || !auth.exp) return true;
+  return Date.now() >= auth.exp - 5000;
+}
 
-  const res = await fetch(CONFIG.API_BASE + path, { ...options, headers });
-  if (!res.ok) throw new Error(await res.text());
+function authToken() {
+  const auth = getAuth();
+  return auth && !isExpired(auth) ? auth.access_token : null;
+}
+
+/* ---------------- API ---------------- */
+
+async function api(path, options = {}) {
+  const headers = new Headers(options.headers || {});
+  headers.set("Content-Type", "application/json");
+
+  const token = authToken();
+  if (token) {
+    headers.set("Authorization", `Bearer ${token}`);
+  }
+
+  const res = await fetch(CONFIG.API_BASE + path, {
+    ...options,
+    headers
+  });
+
+  if (!res.ok) {
+    throw new Error(await res.text());
+  }
+
   return res.json();
 }
 

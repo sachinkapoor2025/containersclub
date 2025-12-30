@@ -80,7 +80,7 @@ window.COGNITO_CLIENT_ID = window.RENT_COGNITO_CLIENT_ID;
 
 // Redirect after successful login for sell (code flow)
 window.COGNITO_REDIRECT_URI_SELL =
-  "https://containersclub.com/auth/callback.html";
+  "https://containersclub.com/sell/new.html";
 
 // Redirect after successful login for rent (implicit flow)
 window.COGNITO_REDIRECT_URI_RENT =
