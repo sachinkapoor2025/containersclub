@@ -54,12 +54,46 @@ function isExpired(auth) {
   if (!auth || !auth.exp) return true;
   return Date.now() >= auth.exp - 5000; // small skew
 }
+
+function getUserEmail(auth) {
+  if (!auth || !auth.id_token) return null;
+  try {
+    const payload = JSON.parse(atob(auth.id_token.split('.')[1]));
+    return payload.email;
+  } catch {
+    return null;
+  }
+}
+
 function refreshUI() {
   const auth = getAuth();
   const loggedIn = auth && !isExpired(auth);
 
   if (loginBtn)  loginBtn.style.display  = loggedIn ? "none" : "inline-block";
   if (logoutBtn) logoutBtn.style.display = loggedIn ? "inline-block" : "none";
+
+  // Update auth message
+  const authMsgEl = document.getElementById("authMessage");
+  if (authMsgEl) {
+    if (loggedIn) {
+      const email = getUserEmail(auth);
+      authMsgEl.textContent = `Welcome ${email || 'User'}! You can now create and manage your listings.`;
+    } else {
+      authMsgEl.textContent = "Login is required to upload media and create listings.";
+    }
+  }
+
+  // Show welcome message on index page
+  const welcomeEl = document.getElementById("welcomeMessage");
+  if (welcomeEl) {
+    if (loggedIn) {
+      const email = getUserEmail(auth);
+      welcomeEl.textContent = `Welcome ${email || 'User'}!`;
+      welcomeEl.style.display = "block";
+    } else {
+      welcomeEl.style.display = "none";
+    }
+  }
 
   // Disable upload fields if not logged in
   if (formEl) {
@@ -130,6 +164,21 @@ if (formEl) {
   });
 }
 
+function toggleDescription(link) {
+  const p = link.parentElement;
+  const short = p.querySelector('.short-desc');
+  const full = p.querySelector('.full-desc');
+  if (full.style.display === 'none') {
+    full.style.display = 'inline';
+    short.style.display = 'none';
+    link.textContent = 'See Less';
+  } else {
+    full.style.display = 'none';
+    short.style.display = 'inline';
+    link.textContent = 'See More';
+  }
+}
+
 // ---- Wire up ----
 if (loginBtn)  loginBtn.addEventListener("click", login);
 if (logoutBtn) logoutBtn.addEventListener("click", logout);
@@ -171,24 +220,31 @@ async function listListings() {
 
 function cardHtml(it) {
   const images = it.images && it.images.length > 0 ? it.images : ["/media/placeholder.jpg"];
-  const imgHtml = images.map((img, idx) => `<img src="${img}" style="width:200px;height:140px;object-fit:cover;border-radius:10px;display:${idx === 0 ? 'block' : 'none'};">`).join('');
+  const imgHtml = images.map((img, idx) => `<img src="${img}" style="width:320px;height:240px;object-fit:cover;border-radius:10px;display:${idx === 0 ? 'block' : 'none'};">`).join('');
 
   return `
-  <article class="card" style="display:flex;gap:20px;padding:20px;">
+  <article class="card" style="display:flex;gap:20px;padding:20px;align-items:flex-start;">
     <div class="img-container" data-listing="${it.listingId}">
       ${imgHtml}
     </div>
 
     <div style="flex:1;">
-      <div class="badge">${it.size}</div>
       <h3 onclick="showDetails('${it.listingId}')" style="cursor:pointer;">${it.title}</h3>
-      <p><strong>${it.location}</strong> • <span style="color:#0ea5e9">$${it.price}</span></p>
-      <p>${it.description.slice(0,120)}...</p>
+      <p><strong>ID:</strong> ${it.listingId} • <strong>Status:</strong> ${it.status || 'N/A'}</p>
+      <p><strong>Location:</strong> ${it.location} • <span style="color:#0ea5e9;font-weight:bold;font-size:18px;">$${it.price || 'N/A'}</span></p>
+      <p><strong>Condition:</strong> ${it.condition} • <strong>Available:</strong> ${it.availableFrom || 'N/A'}</p>
+      <p><strong>Delivery:</strong> ${it.deliveryAvailable ? 'Yes' : 'No'} • <strong>Owner:</strong> ${it.ownerId || 'N/A'}</p>
+      <p><strong>Created:</strong> ${it.createdAt ? new Date(it.createdAt).toLocaleDateString() : 'N/A'}</p>
+      <p class="description">
+        <span class="short-desc">${it.description.slice(0,120)}${it.description.length > 120 ? '...' : ''}</span>
+        <span class="full-desc" style="display:none;">${it.description}</span>
+        ${it.description.length > 120 ? '<a href="#" onclick="toggleDescription(this); return false;" class="see-more">See More</a>' : ''}
+      </p>
     </div>
 
     <div style="display:flex;flex-direction:column;gap:10px;">
-      <button onclick="showDetails('${it.listingId}')">Details</button>
-      <button class="primary" onclick="window.location.href='/sell/book.html?id=${it.listingId}'">Book</button>
+      <button onclick="showVideo()" style="padding:12px 24px;font-size:16px;">Video</button>
+      <button class="primary" onclick="window.location.href='/sell/book.html?id=${it.listingId}'" style="padding:12px 24px;font-size:16px;">Book</button>
     </div>
   </article>`;
 }
@@ -223,6 +279,28 @@ function setupSlideshows() {
 
 async function getListingById(id) {
   return api(`/sell/listings/${id}`);
+}
+
+function showVideo() {
+  let modal = document.getElementById("videoModal");
+  if (!modal) {
+    modal = document.createElement("div");
+    modal.id = "videoModal";
+    modal.className = "modal";
+    modal.innerHTML = `
+      <div class="modal-content" style="max-width:800px;">
+        <span class="close" onclick="videoModal.style.display='none'; document.querySelector('#videoModal video').pause();">&times;</span>
+        <h2>Container Video</h2>
+        <video controls autoplay style="width:100%;max-height:500px;">
+          <source src="https://website-image-containersclub.s3.us-east-1.amazonaws.com/container.mp4" type="video/mp4">
+          Your browser does not support the video tag.
+        </video>
+      </div>
+    `;
+    document.body.appendChild(modal);
+  }
+
+  modal.style.display = "block";
 }
 
 async function showDetails(id) {
@@ -299,6 +377,45 @@ function confirmBooking(id, price) {
   bookingModal.style.display = "none";
 }
 
+/* ---------------- FILTERS ---------------- */
+
+async function populateFilters() {
+  const data = await listListings();
+  const locations = [...new Set(data.items.map(it => it.location).filter(Boolean))].sort();
+  const locationSelect = document.getElementById("location");
+  if (locationSelect) {
+    locationSelect.innerHTML = '<option value="">Any location</option>' +
+      locations.map(loc => `<option>${loc}</option>`).join("");
+  }
+}
+
+function filterListings() {
+  const q = document.getElementById("q").value.toLowerCase();
+  const size = document.getElementById("size").value;
+  const condition = document.getElementById("condition").value;
+  const location = document.getElementById("location").value;
+
+  const filtered = window.listings.filter(it => {
+    if (q && !it.title.toLowerCase().includes(q) && !it.description.toLowerCase().includes(q) && !it.location.toLowerCase().includes(q)) return false;
+    if (size && it.size !== size) return false;
+    if (condition && it.condition !== condition) return false;
+    if (location && it.location !== location) return false;
+    return true;
+  });
+
+  renderGrid({ items: filtered });
+}
+
 /* ---------------- INIT ---------------- */
 
-document.addEventListener("DOMContentLoaded", renderGrid);
+document.addEventListener("DOMContentLoaded", async () => {
+  await renderGrid();
+  await populateFilters();
+
+  // Filter event listeners
+  document.getElementById("q").addEventListener("input", filterListings);
+  document.getElementById("size").addEventListener("change", filterListings);
+  document.getElementById("condition").addEventListener("change", filterListings);
+  document.getElementById("location").addEventListener("change", filterListings);
+  document.getElementById("searchBtn").addEventListener("click", filterListings);
+});

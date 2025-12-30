@@ -12,6 +12,26 @@
   <!-- Global stylesheet -->
   <link rel="stylesheet" href="/styles.css"/>
 
+  <style>
+    /* Replace bullet points with container logo */
+    .muted li {
+      list-style: none;
+      position: relative;
+      padding-left: 30px;
+    }
+    .muted li:before {
+      content: "";
+      position: absolute;
+      left: 0;
+      top: 2px;
+      width: 20px;
+      height: 20px;
+      background-image: url('/images/logo.png');
+      background-size: contain;
+      background-repeat: no-repeat;
+    }
+  </style>
+
   <!-- Global config -->
   <script src="/config.js"></script>
 
@@ -35,6 +55,7 @@
   <!-- HERO -->
   <section class="card hero">
     <div>
+      <div id="welcomeMessage" style="display:none; margin-bottom:15px; padding:10px; background:#e8f4f8; border-radius:8px; text-align:center;"></div>
       <h1>Containers for Sale</h1>
 
       <ul class="muted" style="margin-top:10px; line-height:1.55;">
@@ -78,6 +99,7 @@
       <select id="location">
         <option value="">Any location</option>
       </select>
+      <button id="searchBtn">Search</button>
     </div>
   </section>
 
