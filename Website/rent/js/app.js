@@ -175,14 +175,14 @@ function cardHtml(it) {
 
     <div style="flex:1;">
       <div class="badge">${it.size}</div>
-      <h3>${it.title}</h3>
+      <h3 onclick="showDetails('${it.listingId}')" style="cursor:pointer;">${it.title}</h3>
       <p><strong>${it.location}</strong> • <span style="color:#0ea5e9">$${it.dailyRate}</span></p>
       <p>${it.description.slice(0,120)}...</p>
     </div>
 
     <div style="display:flex;flex-direction:column;gap:10px;">
       <button onclick="showDetails('${it.listingId}')">Details</button>
-      <button class="primary" onclick="showBooking('${it.listingId}')">Book</button>
+      <button class="primary" onclick="window.location.href='/rent/book.html?id=${it.listingId}'">Book</button>
     </div>
   </article>`;
 }

@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <title>Purchase Container | Containers Club</title>
+  <meta name="description" content="Complete your container purchase with payment and delivery details."/>
+  <link rel="canonical" href="https://containersclub.com/sell/book.html"/>
+  <meta name="robots" content="noindex, follow"/>
+
+  <!-- Global stylesheet -->
+  <link rel="stylesheet" href="/styles.css"/>
+
+  <!-- Global config -->
+  <script src="/config.js"></script>
+  <script>
+    // Set sell-specific redirect
+    if (window.COGNITO_REDIRECT_URI_SELL) {
+      window.COGNITO_REDIRECT_URI = window.COGNITO_REDIRECT_URI_SELL;
+    }
+  </script>
+
+  <!-- Injects GA + header/footer partials -->
+  <script src="/partials/include.js" defer></script>
+
+  <!-- App script -->
+  <script defer src="./book.js"></script>
+</head>
+<body>
+
+<!-- Shared header -->
+<div data-include="/partials/header.html" id="site-header"></div>
+
+<main class="container">
+
+  <section class="card">
+    <h1>Purchase Container</h1>
+    <p class="muted">Complete your container purchase below.</p>
+    <div style="display:flex; gap:12px;">
+      <button id="loginBtn" type="button">Login</button>
+      <button id="logoutBtn" type="button" style="display:none">Logout</button>
+    </div>
+  </section>
+
+  <!-- Container Details -->
+  <section class="card" id="containerDetails" style="display:none;">
+    <h2 id="containerTitle">Loading...</h2>
+    <div class="grid">
+      <div>
+        <p><strong>Size:</strong> <span id="containerSize"></span></p>
+        <p><strong>Condition:</strong> <span id="containerCondition"></span></p>
+        <p><strong>Location:</strong> <span id="containerLocation"></span></p>
+      </div>
+      <div>
+        <p><strong>Price:</strong> <span id="containerPrice"></span></p>
+        <p><strong>Available From:</strong> <span id="containerAvailableFrom"></span></p>
+      </div>
+    </div>
+    <p id="containerDescription"></p>
+  </section>
+
+  <!-- Purchase Form -->
+  <form id="bookingForm" class="card" style="display:none;">
+    <h2>Purchase Details</h2>
+
+    <div class="grid">
+      <input name="name" placeholder="Full Name" required/>
+      <input name="email" type="email" placeholder="Email Address" required/>
+    </div>
+
+    <div class="grid">
+      <input name="phone" placeholder="Phone Number" required/>
+      <input name="company" placeholder="Company (Optional)"/>
+    </div>
+
+    <div class="grid">
+      <select name="deliveryMethod" required>
+        <option value="">Delivery Method</option>
+        <option value="pickup">Self Pickup</option>
+        <option value="delivery">Delivery Service</option>
+      </select>
+      <input name="deliveryAddress" placeholder="Delivery Address (if applicable)"/>
+    </div>
+
+    <div class="grid">
+      <input name="inspectionDate" type="date" placeholder="Requested Inspection Date"/>
+      <input name="pickupDate" type="date" placeholder="Requested Pickup Date"/>
+    </div>
+
+    <textarea name="specialRequests" placeholder="Special requests or inspection notes" rows="3"></textarea>
+
+    <div style="margin:20px 0; padding:20px; background:#f9f9f9; border-radius:8px;">
+      <h3>Payment Information</h3>
+      <p>Secure payment processed by Stripe</p>
+      <div id="paymentElement"></div>
+    </div>
+
+    <button type="submit" class="primary">Complete Purchase</button>
+  </form>
+
+  <div id="loading" class="card">
+    <p>Loading container details...</p>
+  </div>
+
+  <div id="error" class="card" style="display:none;">
+    <p style="color:red;">Error loading container. Please check the URL and try again.</p>
+  </div>
+
+</main>
+
+<!-- Shared footer -->
+<div data-include="/partials/footer.html" id="site-footer"></div>
+
+</body>
+</html>
