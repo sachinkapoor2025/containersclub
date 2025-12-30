@@ -12,28 +12,17 @@
   <!-- Global stylesheet -->
   <link rel="stylesheet" href="/styles.css"/>
 
-  <!-- Global config -->
+  <!-- Global config (centralized) -->
   <script src="/config.js"></script>
-
-  <!-- SELL app (contains auth + token parsing) -->
-  <script src="./js/app.js"></script>
-
-  <!-- 🔒 PROTECT THIS PAGE (AFTER app.js parsed tokens) -->
   <script>
-    (function () {
-      const auth = JSON.parse(localStorage.getItem("cb_auth") || "null");
-
-      if (!auth || Date.now() > auth.exp) {
-        // Important: avoid redirect loop if tokens are still in URL
-        if (!location.hash.includes("access_token")) {
-          loginSell(); // defined in app.js
-        }
-      }
-    })();
+    // Point generic var to sell-specific redirect (if present)
+    if (window.COGNITO_REDIRECT_URI_SELL) {
+      window.COGNITO_REDIRECT_URI = window.COGNITO_REDIRECT_URI_SELL;
+    }
   </script>
 
-  <!-- Injects GA + header/footer partials -->
-  <script src="/partials/include.js" defer></script>
+  <!-- App script (load AFTER config) -->
+  <script defer src="./js/app.js"></script>
 </head>
 
 <body>
@@ -45,10 +34,10 @@
 
   <section class="card">
     <h1>Sell Your Container</h1>
-    <p class="muted">You are logged in. Create a container listing below.</p>
-
+    <p class="muted">Login is required to upload media and create listings.</p>
     <div style="display:flex; gap:12px;">
-      <button id="logoutBtn" type="button">Logout</button>
+      <button id="loginBtn" type="button">Login</button>
+      <button id="logoutBtn" type="button" style="display:none">Logout</button>
     </div>
   </section>
 
@@ -123,18 +112,6 @@
 
 <!-- Shared footer -->
 <div data-include="/partials/footer.html" id="site-footer"></div>
-
-<!-- Logout -->
-<script>
-document.addEventListener("DOMContentLoaded", () => {
-  const logoutBtn = document.getElementById("logoutBtn");
-  if (!logoutBtn) return;
-
-  logoutBtn.onclick = () => {
-    logoutSell(); // defined in app.js
-  };
-});
-</script>
 
 </body>
 </html>
