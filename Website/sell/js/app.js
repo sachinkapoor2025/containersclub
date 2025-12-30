@@ -170,22 +170,25 @@ async function listListings() {
 /* ---------------- RENDER ---------------- */
 
 function cardHtml(it) {
-  const img = it.images?.[0] || "/media/placeholder.jpg";
+  const images = it.images && it.images.length > 0 ? it.images : ["/media/placeholder.jpg"];
+  const imgHtml = images.map((img, idx) => `<img src="${img}" style="width:200px;height:140px;object-fit:cover;border-radius:10px;display:${idx === 0 ? 'block' : 'none'};">`).join('');
 
   return `
   <article class="card" style="display:flex;gap:20px;padding:20px;">
-    <img src="${img}" style="width:200px;height:140px;object-fit:cover;border-radius:10px;">
+    <div class="img-container" data-listing="${it.listingId}">
+      ${imgHtml}
+    </div>
 
     <div style="flex:1;">
       <div class="badge">${it.size}</div>
-      <h3>${it.title}</h3>
+      <h3 onclick="showDetails('${it.listingId}')" style="cursor:pointer;">${it.title}</h3>
       <p><strong>${it.location}</strong> • <span style="color:#0ea5e9">$${it.price}</span></p>
       <p>${it.description.slice(0,120)}...</p>
     </div>
 
     <div style="display:flex;flex-direction:column;gap:10px;">
       <button onclick="showDetails('${it.listingId}')">Details</button>
-      <button class="primary" onclick="showBooking('${it.listingId}')">Book</button>
+      <button class="primary" onclick="window.location.href='/sell/book.html?id=${it.listingId}'">Book</button>
     </div>
   </article>`;
 }
@@ -196,6 +199,24 @@ async function renderGrid() {
   const data = await listListings();
   window.listings = data.items;
   grid.innerHTML = data.items.map(cardHtml).join("");
+  setupSlideshows();
+}
+
+function setupSlideshows() {
+  const containers = document.querySelectorAll('.img-container');
+  containers.forEach(container => {
+    const imgs = container.querySelectorAll('img');
+    if (imgs.length <= 1) {
+      imgs[0].style.display = 'block';
+      return;
+    }
+    let current = 0;
+    setInterval(() => {
+      imgs[current].style.display = 'none';
+      current = (current + 1) % imgs.length;
+      imgs[current].style.display = 'block';
+    }, 5000);
+  });
 }
 
 /* ---------------- DETAILS ---------------- */

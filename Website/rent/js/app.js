@@ -1,5 +1,13 @@
 // rent/js/app.js
 
+/* ===============================
+   RENT APP.JS
+   =============================== */
+
+const CONFIG = {
+  API_BASE: window.RENT_API_BASE || "/api"
+};
+
 // ---- Config sanity ----
 (function ensureConfig() {
   if (!window.COGNITO_DOMAIN || !window.COGNITO_CLIENT_ID) {
@@ -96,20 +104,235 @@ function logout() {
 async function authFetch(url, options = {}) {
   const auth = getAuth();
   const headers = new Headers(options.headers || {});
+  if (!(options.body instanceof FormData)) {
+    headers.set("Content-Type", headers.get("Content-Type") || "application/json");
+  }
   if (auth && !isExpired(auth)) {
     headers.set("Authorization", `Bearer ${auth.access_token}`);
   }
-  headers.set("Content-Type", headers.get("Content-Type") || "application/json");
   return fetch(url, { ...options, headers });
 }
 
-// Example: attach to your form submit later
-// formEl.addEventListener("submit", async (e) => {
-//   e.preventDefault();
-//   const auth = getAuth();
-//   if (!auth || isExpired(auth)) { return login(); }
-//   // build FormData or JSON and call authFetch('<your-endpoint>', { method: 'POST', body: ... });
-// });
+// ---- Form submit ----
+if (formEl) {
+  formEl.addEventListener("submit", async (e) => {
+    e.preventDefault();
+    const auth = getAuth();
+    if (!auth || isExpired(auth)) { return login(); }
+    // Build FormData
+    const formData = new FormData(formEl);
+    try {
+      const result = await authFetch(CONFIG.API_BASE + "/rent/listings", { method: 'POST', body: formData });
+      alert("Listing created successfully!");
+      // Optionally reset form or redirect
+      formEl.reset();
+    } catch (err) {
+      alert("Error creating listing: " + err.message);
+    }
+  });
+}
+
+/* ---------------- API ---------------- */
+
+async function api(path, options = {}) {
+  const auth = getAuth();
+  const headers = new Headers(options.headers || {});
+  headers.set("Content-Type", "application/json");
+
+  if (auth && !isExpired(auth)) {
+    headers.set("Authorization", `Bearer ${auth.access_token}`);
+  }
+
+  const res = await fetch(CONFIG.API_BASE + path, {
+    ...options,
+    headers
+  });
+
+  if (!res.ok) {
+    throw new Error(await res.text());
+  }
+
+  return res.json();
+}
+
+/* ---------------- LIST ---------------- */
+
+async function listListings() {
+  return api("/rent/listings");
+}
+
+/* ---------------- RENDER ---------------- */
+
+function cardHtml(it) {
+  const images = it.images && it.images.length > 0 ? it.images : ["/rent/media/placeholder.jpg"];
+  const imgHtml = images.map((img, idx) => `<img src="${img}" style="width:200px;height:140px;object-fit:cover;border-radius:10px;display:${idx === 0 ? 'block' : 'none'};">`).join('');
+
+  return `
+  <article class="card" style="display:flex;gap:20px;padding:20px;">
+    <div class="img-container" data-listing="${it.listingId}">
+      ${imgHtml}
+    </div>
+
+    <div style="flex:1;">
+      <div class="badge">${it.size}</div>
+      <h3 onclick="showDetails('${it.listingId}')" style="cursor:pointer;">${it.title}</h3>
+      <p><strong>${it.location}</strong> • <span style="color:#0ea5e9">$${it.dailyRate}</span></p>
+      <p>${it.description.slice(0,120)}...</p>
+    </div>
+
+    <div style="display:flex;flex-direction:column;gap:10px;">
+      <button onclick="showDetails('${it.listingId}')">Details</button>
+      <button class="primary" onclick="window.location.href='/rent/book.html?id=${it.listingId}'">Book</button>
+    </div>
+  </article>`;
+}
+
+async function renderGrid(listings = null) {
+  const grid = document.getElementById("listingGrid");
+  if (!grid) return;
+  const data = listings || await listListings();
+  window.listings = data.items;
+  grid.innerHTML = data.items.map(cardHtml).join("");
+  setupSlideshows();
+}
+
+function setupSlideshows() {
+  const containers = document.querySelectorAll('.img-container');
+  containers.forEach(container => {
+    const imgs = container.querySelectorAll('img');
+    if (imgs.length <= 1) {
+      imgs[0].style.display = 'block';
+      return;
+    }
+    let current = 0;
+    setInterval(() => {
+      imgs[current].style.display = 'none';
+      current = (current + 1) % imgs.length;
+      imgs[current].style.display = 'block';
+    }, 5000);
+  });
+}
+
+/* ---------------- FILTERS ---------------- */
+
+async function populateFilters() {
+  const data = await listListings();
+  const locations = [...new Set(data.items.map(it => it.location).filter(Boolean))].sort();
+  const locationSelect = document.getElementById("location");
+  if (locationSelect) {
+    locationSelect.innerHTML = '<option value="">Any location</option>' +
+      locations.map(loc => `<option>${loc}</option>`).join("");
+  }
+}
+
+function filterListings() {
+  const q = document.getElementById("q").value.toLowerCase();
+  const size = document.getElementById("size").value;
+  const condition = document.getElementById("condition").value;
+  const location = document.getElementById("location").value;
+
+  const filtered = window.listings.filter(it => {
+    if (q && !it.title.toLowerCase().includes(q) && !it.description.toLowerCase().includes(q) && !it.location.toLowerCase().includes(q)) return false;
+    if (size && it.size !== size) return false;
+    if (condition && it.condition !== condition) return false;
+    if (location && it.location !== location) return false;
+    return true;
+  });
+
+  renderGrid({ items: filtered });
+}
+
+/* ---------------- DETAILS ---------------- */
+
+async function getListingById(id) {
+  return api(`/rent/listings/${id}`);
+}
+
+async function showDetails(id) {
+  const item = await getListingById(id);
+
+  let modal = document.getElementById("detailsModal");
+  if (!modal) {
+    modal = document.createElement("div");
+    modal.id = "detailsModal";
+    modal.className = "modal";
+    document.body.appendChild(modal);
+  }
+
+  const images = item.images?.map(i =>
+    `<img src="${i}" style="width:30%;margin:5px;border-radius:8px;">`
+  ).join("");
+
+  modal.innerHTML = `
+  <div class="modal-content">
+    <span class="close" onclick="detailsModal.style.display='none'">&times;</span>
+    <h2>${item.title}</h2>
+
+    <p><b>ID:</b> ${item.listingId}</p>
+    <p><b>Size:</b> ${item.size}</p>
+    <p><b>Condition:</b> ${item.condition}</p>
+    <p><b>Location:</b> ${item.location}</p>
+    <p><b>Daily Rate:</b> $${item.dailyRate} ${item.currency}</p>
+    <p><b>Available From:</b> ${item.availableFrom}</p>
+    <p><b>Description:</b> ${item.description}</p>
+
+    <h3>Images</h3>
+    <div style="display:flex;flex-wrap:wrap">${images}</div>
+  </div>`;
+
+  modal.style.display = "block";
+}
+
+/* ---------------- BOOKING ---------------- */
+
+async function showBooking(id) {
+  const item = await getListingById(id);
+
+  let modal = document.getElementById("bookingModal");
+  if (!modal) {
+    modal = document.createElement("div");
+    modal.id = "bookingModal";
+    modal.className = "modal";
+    document.body.appendChild(modal);
+  }
+
+  modal.innerHTML = `
+  <div class="modal-content">
+    <span class="close" onclick="bookingModal.style.display='none'">&times;</span>
+    <h2>Book ${item.title}</h2>
+
+    <label>Days</label>
+    <input id="days" type="number" min="1" value="1">
+    <p id="total">$${item.dailyRate}</p>
+
+    <button onclick="confirmBooking('${id}', ${item.dailyRate})">Confirm</button>
+  </div>`;
+
+  modal.style.display = "block";
+
+  document.getElementById("days").oninput = e => {
+    document.getElementById("total").textContent =
+      "$" + item.dailyRate * e.target.value;
+  };
+}
+
+function confirmBooking(id, rate) {
+  alert("Booking confirmed for " + id);
+  bookingModal.style.display = "none";
+}
+
+/* ---------------- INIT ---------------- */
+
+document.addEventListener("DOMContentLoaded", async () => {
+  await renderGrid();
+  await populateFilters();
+
+  // Filter event listeners
+  document.getElementById("q").addEventListener("input", filterListings);
+  document.getElementById("size").addEventListener("change", filterListings);
+  document.getElementById("condition").addEventListener("change", filterListings);
+  document.getElementById("location").addEventListener("change", filterListings);
+});
 
 // ---- Wire up ----
 if (loginBtn)  loginBtn.addEventListener("click", login);
