@@ -377,6 +377,45 @@ function confirmBooking(id, price) {
   bookingModal.style.display = "none";
 }
 
+/* ---------------- FILTERS ---------------- */
+
+async function populateFilters() {
+  const data = await listListings();
+  const locations = [...new Set(data.items.map(it => it.location).filter(Boolean))].sort();
+  const locationSelect = document.getElementById("location");
+  if (locationSelect) {
+    locationSelect.innerHTML = '<option value="">Any location</option>' +
+      locations.map(loc => `<option>${loc}</option>`).join("");
+  }
+}
+
+function filterListings() {
+  const q = document.getElementById("q").value.toLowerCase();
+  const size = document.getElementById("size").value;
+  const condition = document.getElementById("condition").value;
+  const location = document.getElementById("location").value;
+
+  const filtered = window.listings.filter(it => {
+    if (q && !it.title.toLowerCase().includes(q) && !it.description.toLowerCase().includes(q) && !it.location.toLowerCase().includes(q)) return false;
+    if (size && it.size !== size) return false;
+    if (condition && it.condition !== condition) return false;
+    if (location && it.location !== location) return false;
+    return true;
+  });
+
+  renderGrid({ items: filtered });
+}
+
 /* ---------------- INIT ---------------- */
 
-document.addEventListener("DOMContentLoaded", renderGrid);
+document.addEventListener("DOMContentLoaded", async () => {
+  await renderGrid();
+  await populateFilters();
+
+  // Filter event listeners
+  document.getElementById("q").addEventListener("input", filterListings);
+  document.getElementById("size").addEventListener("change", filterListings);
+  document.getElementById("condition").addEventListener("change", filterListings);
+  document.getElementById("location").addEventListener("change", filterListings);
+  document.getElementById("searchBtn").addEventListener("click", filterListings);
+});

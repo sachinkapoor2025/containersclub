@@ -11,6 +11,26 @@
   <!-- Global stylesheet -->
   <link rel="stylesheet" href="/styles.css"/>
 
+  <style>
+    /* Replace bullet points with container logo */
+    .muted li {
+      list-style: none;
+      position: relative;
+      padding-left: 30px;
+    }
+    .muted li:before {
+      content: "";
+      position: absolute;
+      left: 0;
+      top: 2px;
+      width: 20px;
+      height: 20px;
+      background-image: url('/images/logo.png');
+      background-size: contain;
+      background-repeat: no-repeat;
+    }
+  </style>
+
   <!-- Global config (centralized) -->
   <script src="/config.js"></script>
   <script>
@@ -78,6 +98,7 @@
       <select id="location">
         <option value="">Any location</option>
       </select>
+      <button id="searchBtn">Search</button>
     </div>
   </section>
 

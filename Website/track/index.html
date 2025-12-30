@@ -8,6 +8,26 @@
   <meta name="description" content="Track your shipping container. Enter carrier, container number, and contact details to fetch real-time milestones."/>
   <link rel="stylesheet" href="/styles.css"/>
 
+  <style>
+    /* Replace bullet points with container logo */
+    .track-hero-points li {
+      list-style: none;
+      position: relative;
+      padding-left: 30px;
+    }
+    .track-hero-points li:before {
+      content: "";
+      position: absolute;
+      left: 0;
+      top: 2px;
+      width: 20px;
+      height: 20px;
+      background-image: url('/images/logo.png');
+      background-size: contain;
+      background-repeat: no-repeat;
+    }
+  </style>
+
   <!-- Injects GA + shared header/footer (footer still used) -->
   <script src="/partials/include.js" defer></script>
 </head>
