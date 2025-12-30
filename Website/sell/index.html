@@ -139,17 +139,21 @@
 
 <!-- CTA AUTH LOGIC -->
 <script>
-document.addEventListener("DOMContentLoaded", () => {
-  const sellCta = document.getElementById("sellCta");
-  if (!sellCta) return;
+document.addEventListener("click", (e) => {
+  const btn = e.target.closest("#sellCta");
+  if (!btn) return;
 
-  sellCta.addEventListener("click", (e) => {
-    const auth = JSON.parse(localStorage.getItem("cb_auth") || "null");
-    if (!auth || Date.now() > auth.exp) {
-      e.preventDefault();
-      loginSell(); // from auth.js
+  const auth = JSON.parse(localStorage.getItem("cb_auth") || "null");
+  if (!auth || Date.now() > auth.exp) {
+    e.preventDefault();
+
+    if (typeof loginSell === "function") {
+      loginSell();        // Cognito Hosted UI
+    } else {
+      // fallback (should never happen, but safe)
+      window.location.href = "/sell/new.html";
     }
-  });
+  }
 });
 </script>
 
