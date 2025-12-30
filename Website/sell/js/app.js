@@ -130,6 +130,21 @@ if (formEl) {
   });
 }
 
+function toggleDescription(link) {
+  const p = link.parentElement;
+  const short = p.querySelector('.short-desc');
+  const full = p.querySelector('.full-desc');
+  if (full.style.display === 'none') {
+    full.style.display = 'inline';
+    short.style.display = 'none';
+    link.textContent = 'See Less';
+  } else {
+    full.style.display = 'none';
+    short.style.display = 'inline';
+    link.textContent = 'See More';
+  }
+}
+
 // ---- Wire up ----
 if (loginBtn)  loginBtn.addEventListener("click", login);
 if (logoutBtn) logoutBtn.addEventListener("click", logout);
@@ -171,7 +186,7 @@ async function listListings() {
 
 function cardHtml(it) {
   const images = it.images && it.images.length > 0 ? it.images : ["/media/placeholder.jpg"];
-  const imgHtml = images.map((img, idx) => `<img src="${img}" style="width:200px;height:140px;object-fit:cover;border-radius:10px;display:${idx === 0 ? 'block' : 'none'};">`).join('');
+  const imgHtml = images.map((img, idx) => `<img src="${img}" style="width:280px;height:200px;object-fit:cover;border-radius:10px;display:${idx === 0 ? 'block' : 'none'};">`).join('');
 
   return `
   <article class="card" style="display:flex;gap:20px;padding:20px;">
@@ -182,8 +197,16 @@ function cardHtml(it) {
     <div style="flex:1;">
       <div class="badge">${it.size}</div>
       <h3 onclick="showDetails('${it.listingId}')" style="cursor:pointer;">${it.title}</h3>
-      <p><strong>${it.location}</strong> • <span style="color:#0ea5e9">$${it.price}</span></p>
-      <p>${it.description.slice(0,120)}...</p>
+      <p><strong>ID:</strong> ${it.listingId} • <strong>Status:</strong> ${it.status || 'N/A'}</p>
+      <p><strong>Location:</strong> ${it.location} • <span style="color:#0ea5e9">$${it.price || 'N/A'}</span> ${it.currency || 'USD'}</p>
+      <p><strong>Condition:</strong> ${it.condition} • <strong>Available:</strong> ${it.availableFrom || 'N/A'}</p>
+      <p><strong>Delivery:</strong> ${it.deliveryAvailable ? 'Yes' : 'No'} • <strong>Owner:</strong> ${it.ownerId || 'N/A'}</p>
+      <p><strong>Created:</strong> ${it.createdAt ? new Date(it.createdAt).toLocaleDateString() : 'N/A'}</p>
+      <p class="description">
+        <span class="short-desc">${it.description.slice(0,120)}${it.description.length > 120 ? '...' : ''}</span>
+        <span class="full-desc" style="display:none;">${it.description}</span>
+        ${it.description.length > 120 ? '<a href="#" onclick="toggleDescription(this); return false;" class="see-more">See More</a>' : ''}
+      </p>
     </div>
 
     <div style="display:flex;flex-direction:column;gap:10px;">
