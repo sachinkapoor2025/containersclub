@@ -210,7 +210,7 @@ function cardHtml(it) {
     </div>
 
     <div style="display:flex;flex-direction:column;gap:10px;">
-      <button onclick="showDetails('${it.listingId}')">Details</button>
+      <button onclick="showVideo()">Video</button>
       <button class="primary" onclick="window.location.href='/sell/book.html?id=${it.listingId}'">Book</button>
     </div>
   </article>`;
@@ -246,6 +246,28 @@ function setupSlideshows() {
 
 async function getListingById(id) {
   return api(`/sell/listings/${id}`);
+}
+
+function showVideo() {
+  let modal = document.getElementById("videoModal");
+  if (!modal) {
+    modal = document.createElement("div");
+    modal.id = "videoModal";
+    modal.className = "modal";
+    modal.innerHTML = `
+      <div class="modal-content" style="max-width:800px;">
+        <span class="close" onclick="videoModal.style.display='none'; document.querySelector('#videoModal video').pause();">&times;</span>
+        <h2>Container Video</h2>
+        <video controls autoplay style="width:100%;max-height:500px;">
+          <source src="https://website-image-containersclub.s3.us-east-1.amazonaws.com/container.mp4" type="video/mp4">
+          Your browser does not support the video tag.
+        </video>
+      </div>
+    `;
+    document.body.appendChild(modal);
+  }
+
+  modal.style.display = "block";
 }
 
 async function showDetails(id) {
