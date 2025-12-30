@@ -176,7 +176,7 @@ function cardHtml(it) {
     <div style="flex:1;">
       <div class="badge">${it.size}</div>
       <h3>${it.title}</h3>
-      <p><strong>${it.location}</strong> • <span style="color:#0ea5e9">$${it.dailyRate}/day</span></p>
+      <p><strong>${it.location}</strong> • <span style="color:#0ea5e9">$${it.dailyRate}</span></p>
       <p>${it.description.slice(0,120)}...</p>
     </div>
 
