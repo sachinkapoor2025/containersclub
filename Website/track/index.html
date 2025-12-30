@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"/>
+  <meta content="width=device-width,initial-scale=1" name="viewport"/>
+  <title>Containers Club | Track Container</title>
+  <link rel="icon" href="/images/cc_logo.png"/>
+  <meta name="description" content="Track your shipping container. Enter carrier, container number, and contact details to fetch real-time milestones."/>
+  <link rel="stylesheet" href="/styles.css"/>
+
+  <!-- Injects GA + shared header/footer (footer still used) -->
+  <script src="/partials/include.js" defer></script>
+</head>
+<body>
+
+<!-- NOTE: Removed the injected site header per request -->
+<div data-include="/partials/header.html" id="site-header"></div>
+
+<main class="container">
+  
+  <!-- Hero/intro (kept minimal since main content above) -->
+  <section class="hero" style="align-items:flex-start; margin-bottom:18px;">
+    <div>
+      <h2 class="visually-hidden">Track Your Container</h2>
+<ul class="track-hero-points">
+  <li>Provide your container number and basic shipment details to begin tracking.</li>
+  <li>We fetch tracking data directly from the supported carrier on your behalf.</li>
+  <li>Get the current location of your container with the latest recorded movement.</li>
+  <li>View the exact date and time of departure from the origin port.</li>
+  <li>See the estimated date and time of arrival at the destination port.</li>
+  <li>Monitor vessel schedules, port activity, and milestone events in real time.</li>
+  <li>Sign up for our optional paid alerts to receive SMS & email updates whenever your container moves.</li>
+</ul>
+    </div>
+     <!-- NEW IMAGE SLOT ADDED -->
+  <div class="hero-ill">
+    <img src="/images/track-hero.png" alt="Container news illustration"/>
+  </div>
+  </section>
+
+  <!-- Form card -->
+  <section class="section">
+    <div class="card">
+      <form id="trackForm">
+        <div class="grid-2">
+          <div class="field">
+            <label for="company">Shipping company</label>
+            <select id="company">
+              <option value="">— Select company —</option>
+            </select>
+          </div>
+
+          <div class="field">
+            <label for="container">Container number</label>
+            <input id="container" placeholder="e.g., MSCU1234567" autocomplete="off" />
+            <small class="muted">Format: 4 letters + 7 digits (ISO 6346)</small>
+          </div>
+        </div>
+
+        <h3 style="margin-top:14px">Your details</h3>
+        <div class="grid-2">
+          <div class="field">
+            <label for="userName">Name <span class="req">*</span></label>
+            <input id="userName" placeholder="Your name" />
+          </div>
+
+          <div class="field">
+            <label for="userCompany">Company <span class="req">*</span></label>
+            <input id="userCompany" placeholder="Your company" />
+          </div>
+
+          <div class="field">
+            <label for="userEmail">Email (optional)</label>
+            <input id="userEmail" placeholder="you@example.com" />
+          </div>
+
+          <div class="field">
+            <label for="userRole">Role (optional)</label>
+            <select id="userRole">
+              <option value="">— Select —</option>
+              <option>Owner/Shipper</option>
+              <option>Consignee</option>
+              <option>Freight forwarder</option>
+              <option>CHA/Customs Broker</option>
+              <option>Other</option>
+            </select>
+          </div>
+
+          <!-- Phone row -->
+          <div class="field" style="grid-column:1/-1">
+            <label>Phone <span class="req">*</span></label>
+            <div style="display:flex; gap:8px">
+              <select id="phoneCountry" aria-label="Country code">
+                <option value="+91" >India (+91)</option>
+                <option value="+971">United Arab Emirates (+971)</option>
+                <option value="+1" selected>United States (+1)</option>
+                <option value="+44">United Kingdom (+44)</option>
+                <option value="+61">Australia (+61)</option>
+                <option value="+65">Singapore (+65)</option>
+                <option value="+81">Japan (+81)</option>
+                <option value="+86">China (+86)</option>
+                <option value="+49">Germany (+49)</option>
+                <option value="+33">France (+33)</option>
+              </select>
+              <input id="phoneLocal" inputmode="numeric" placeholder="9876543210" aria-label="Phone without country code" />
+            </div>
+            <small class="muted">Digits only — we’ll send +E.164 to the API.</small>
+          </div>
+        </div>
+
+        <label class="consent" style="display:flex; gap:8px; align-items:flex-start; margin-top:10px;">
+          <input type="checkbox" id="consent" />
+          <span>I agree this website will fetch my container details from the respective carrier on my behalf and store my inputs for future use.</span>
+        </label>
+
+        <div id="error" class="error"></div>
+
+        <button type="submit" class="primary" style="margin-top:12px">Track container</button>
+      </form>
+    </div>
+  </section>
+
+  <!-- Result card -->
+  <section id="result" class="section hidden">
+    <div class="card">
+      <div class="result-header" style="display:flex; justify-content:space-between; align-items:flex-end; gap:12px; flex-wrap:wrap;">
+        <div>
+          <h2 id="r-title" style="margin:0">Tracking</h2>
+          <div id="r-meta" class="muted"></div>
+        </div>
+        <div id="r-eta" class="muted"></div>
+      </div>
+
+      <div id="r-status" style="margin:12px 0"></div>
+
+      <h3>Milestones</h3>
+      <table id="r-table" class="table">
+        <thead>
+          <tr><th>Code</th><th>Event</th><th>Time</th><th>Location</th></tr>
+        </thead>
+        <tbody></tbody>
+      </table>
+    </div>
+  </section>
+  <!-- Top content from provided document -->
+  <section class="content-intro" style="margin-bottom:28px;">
+    <h1>Track Your Shipping Container Online in the USA</h1>
+    <p>
+      Tracking your shipping container in the USA has never been easier. With our advanced online container tracking system, you can instantly monitor shipment status, current container location, expected delivery timelines, and carrier updates—all in one place. Whether you're managing a single shipment or handling multiple containers across U.S. ports, our platform ensures real-time visibility and accuracy. Designed for shippers, freight forwarders, logistics companies, and individuals, this tool helps streamline your supply chain and reduce delays by offering fast and reliable tracking information. Stay informed at every step of the journey with comprehensive tracking features tailored for the U.S. market.
+    </p>
+
+    <h2>Enter Your Container Number for Real-Time Tracking</h2>
+    <p>
+      To begin tracking, simply enter your container number into the search bar. Our system immediately scans carrier databases to provide the most up-to-date information, including container movement, gate-in and gate-out records, vessel loading details, and port-handling updates. Real-time tracking helps you stay ahead of schedule, anticipate delays, and plan logistics more efficiently. This ensures seamless coordination whether your container is shipping domestically or arriving from an international route into a U.S. port.
+    </p>
+
+    <h2>How to Track Your Shipping Container Across U.S. Ports</h2>
+    <p>
+      Our tracking system is fully compatible with all major U.S. ports, including Los Angeles, Long Beach, Houston, New York–New Jersey, Savannah, Miami, and more. When you enter your container number, the platform automatically identifies the container's last recorded location and expected next movement. You can easily view carrier updates, vessel schedules, customs clearance progress, and drayage status. Designed for clarity and simplicity, the platform helps you monitor shipments with just a few clicks, eliminating the need to manually check multiple carrier websites.
+    </p>
+
+    <h2>View Live Container Status, Location & Delivery Updates</h2>
+    <p>
+      Once your tracking details load, you can access live container updates including current GPS-based location (if supported), port arrival confirmation, vessel berthing times, unloading updates, transit progress, and estimated delivery dates. This transparency ensures full control over your logistics operations. Whether your shipment is traveling by ocean, rail, or road within the United States, our tracking dashboard consolidates all updates in real time, helping you make informed decisions and reduce unexpected shipment disruptions.
+    </p>
+
+    <h3>Submit Container Number and Carrier Details</h3>
+    <p>
+      For accurate results, always submit the correct container number along with the shipping line associated with your shipment. This ensures our system retrieves the most relevant tracking data from the corresponding carrier. Supported carriers include Maersk, MSC, CMA CGM, Hapag-Lloyd, COSCO, Evergreen, ONE, ZIM, and many more. Providing accurate details helps speed up the tracking process and improves data precision.
+    </p>
+
+    <h3>Add Booking Reference or Bill of Lading (BOL) Information</h3>
+    <p>
+      In cases where additional verification is required, adding your booking reference or Bill of Lading (BOL) number can help refine tracking results. This option is especially useful for high-volume shipments, export-import documentation, and multi-container bookings. Including these details allows our platform to connect shipment data more efficiently, ensuring that all relevant container updates are captured.
+    </p>
+
+    <h3>Check Estimated Arrival Date & Current U.S. Port Location</h3>
+    <p>
+      The final section of your container tracking results displays the estimated arrival date, current port location, and upcoming transit milestones. This information helps businesses plan trucking schedules, warehouse availability, customs clearance, and final delivery operations. Whether your shipment is inbound or outbound, knowing the ETA and physical location of your container is essential for timely and well-coordinated logistics.
+    </p>
+  </section>
+
+</main>
+
+<!-- Shared footer (injected) -->
+<div data-include="/partials/footer.html" id="site-footer"></div>
+
+<!-- Page logic -->
+<script src="./app.js?v=20251026"></script>
+</body>
+</html>

@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Signing in...</title>
+  <script src="/config.js"></script>
+</head>
+<body>
+
+<p>Signing you in…</p>
+
+<script>
+  const params = new URLSearchParams(window.location.search);
+  const code = params.get("code");
+
+  if (!code) {
+    alert("Login failed. Please try again.");
+    window.location.href = "/auth/login.html";
+  } else {
+    // Store auth code (MVP approach)
+    localStorage.setItem("cognito_auth_code", code);
+
+    // Redirect to appropriate protected page based on cognito type
+    const cognitoType = localStorage.getItem('cognito_type') || 'rent';
+    if (cognitoType === 'sell') {
+      window.location.href = "/sell/new.html";
+    } else {
+      window.location.href = "/rent/new.html";
+    }
+  }
+</script>
+
+</body>
+</html>

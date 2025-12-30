@@ -1,0 +1,14 @@
+version = 0.1
+
+[dev.deploy.parameters]
+stack_name = "containersclub-chat"
+resolve_s3 = true
+s3_prefix = "containersclub-chat"
+region = "us-east-1"
+confirm_changeset = true
+capabilities = "CAPABILITY_IAM"
+disable_rollback = true
+image_repositories = []
+
+[dev.global.parameters]
+region = "us-east-1"

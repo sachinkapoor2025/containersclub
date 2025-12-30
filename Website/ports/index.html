@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Containers Club | Port Information</title>
+  <link rel="icon" href="/images/cc_logo.png" />
+
+  <meta name="description" content="Browse and explore port information across the US — view facilities, location details, and logistics operations data." />
+  <link rel="stylesheet" href="/styles.css" />
+  <script src="/config.js?v=20251026" defer></script>
+
+  <style>
+    .port-card {
+      border: 1px solid #ddd;
+      border-radius: 8px;
+      padding: 12px;
+      margin: 12px 0;
+      background: #fff;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+      cursor: pointer;
+      transition: box-shadow .15s ease;
+    }
+    .port-card:hover { box-shadow: 0 4px 10px rgba(0,0,0,0.08); }
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 16px;
+    }
+    .port-img {
+      width: 100%;
+      height: 160px;
+      object-fit: cover;
+      border-radius: 6px;
+      margin-bottom: 8px;
+      background: #f3f3f3;
+    }
+    .muted { color: #666; font-size: .9rem; }
+    .form-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr 1fr 1fr auto;
+      gap: 8px;
+      margin: 16px 0 12px;
+    }
+    .form-row {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 8px;
+      margin: 0 0 24px;
+      max-width: 560px;
+    }
+    select, input, button {
+      height: 40px;
+      padding: 0 10px;
+      border-radius: 8px;
+      border: 1px solid #ddd;
+      background: #fff;
+      font-size: 14px;
+    }
+    button { cursor: pointer; }
+    button.secondary { background: #f6f6f6; }
+
+    /* Drawer */
+    .drawer {
+      position: fixed;
+      top: 0; right: 0; bottom: 0;
+      width: min(560px, 90vw);
+      background: #fff;
+      box-shadow: -6px 0 20px rgba(0,0,0,.15);
+      transform: translateX(100%);
+      transition: transform .2s ease;
+      z-index: 50;
+      display: flex;
+      flex-direction: column;
+    }
+    .drawer.open { transform: translateX(0); }
+    .drawer-header {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 12px 16px; border-bottom: 1px solid #eee;
+    }
+    .drawer-body { padding: 16px; overflow-y: auto; }
+
+    .backdrop {
+      position: fixed; inset: 0;
+      background: rgba(0,0,0,.35);
+      opacity: 0; pointer-events: none;
+      transition: opacity .2s ease;
+      z-index: 40;
+    }
+    .backdrop.show { opacity: 1; pointer-events: auto; }
+  </style>
+
+  <script src="/partials/include.js" defer></script>
+</head>
+<body>
+
+<!-- Shared header -->
+<div data-include="/partials/header.html" id="site-header"></div>
+
+<main class="container">
+
+  
+  <!-- ================== END SEO CONTENT PANEL ================== -->
+
+  <section class="hero" style="align-items:flex-start;">
+    <div>
+      <h1>Port Information</h1>
+      <p class="sub">Browse ports by state, city, type, and pincode.</p>
+
+      <div class="form-grid">
+        <select id="stateSel"><option value="">State</option></select>
+        <select id="citySel" disabled><option value="">City</option></select>
+        <select id="portSel" disabled><option value="">Port</option></select>
+
+        <select id="typeSel" disabled>
+          <option value="">Port type</option>
+        </select>
+
+        <select id="pinSel" disabled><option value="">Pincode</option></select>
+        <button id="searchBtn">Search</button>
+      </div>
+
+      <div class="form-row">
+        <input id="nameQ" placeholder="Optional: exact port name" />
+        <button id="resetBtn" class="secondary">Reset</button>
+      </div>
+    </div>
+
+      <div class="hero-ill">
+    <img src="/images/port-information-hero.png" alt="Container news illustration"/>
+  </div>
+
+  </section>
+
+  <section class="section">
+    <div id="portsContainer" class="grid"></div>
+    <div id="portsPagination" style="margin-top:16px;"></div>
+  </section>
+  <!-- ================== SEO CONTENT PANEL (INSERTED) ================== -->
+  <section class="content-panel content-intro section" style="margin-bottom:24px;">
+    <h1>US Port Information Guide – Container Terminals, Facilities & Transport Access</h1>
+    <p>
+      The United States operates one of the world’s most extensive port networks, supporting global trade, 
+      containerized cargo movement, and domestic logistics. Whether you are a shipper, transporter, depot operator, 
+      or business owner, understanding port infrastructure and capabilities helps optimize routing decisions, reduce 
+      delays, and improve supply-chain planning. This guide provides details about port categories, operations, 
+      cargo-handling facilities, and how various terminals function across the US.
+    </p>
+
+    <h2>Types of Ports in the US – Cargo, Container Terminals, Inland Ports & ICDs</h2>
+    <p>
+      US ports vary widely in scale and specialization. Major deep-water ports handle container ships and 
+      international cargo, while inland ports and intermodal terminals support rail-based container movement. 
+      Some ports specialize in bulk cargo, Ro-Ro operations, or mixed-cargo handling. Each port’s infrastructure, 
+      storage yards, equipment availability, throughput, and connectivity determine its role in the logistics ecosystem.
+    </p>
+
+    <h2>How to Use Port Information for Logistics & Container Planning</h2>
+    <p>
+      Businesses rely on accurate port data to plan container pickup, offloading, trans-shipment, and intermodal routing. 
+      Key considerations include port congestion levels, operating hours, equipment availability, yard capacity, 
+      customs procedures, and proximity to industrial clusters. Understanding these factors helps reduce operational 
+      delays and ensures smoother container handling.
+    </p>
+
+    <h3>Frequently Asked Questions — Port Access, Handling Charges & Operational Timings</h3>
+    <p>
+      Common questions involve port fees, container examination processes, appointment systems, restrictions based on 
+      cargo type, and required documentation. Each port may follow unique procedures, making it important to review 
+      verified, up-to-date information before scheduling container movements.
+    </p>
+  </section>
+
+</main>
+
+<!-- Drawer -->
+<div class="backdrop" id="backdrop"></div>
+<aside class="drawer" id="drawer">
+  <div class="drawer-header">
+    <strong id="drawerTitle">Port details</strong>
+    <button id="drawerClose" class="secondary">Close</button>
+  </div>
+  <div class="drawer-body" id="drawerBody"></div>
+</aside>
+
+<!-- Shared footer -->
+<div data-include="/partials/footer.html" id="site-footer"></div>
+
+<script src="./ports.js?v=20251026" defer></script>
+</body>
+</html>

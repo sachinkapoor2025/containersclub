@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <title>Blog Post | Containers Club</title>
+  <link rel="stylesheet" href="/styles.css"/>
+  <link rel="icon" href="/images/cc_logo.png"/>
+  <script src="/partials/include.js" defer></script>
+</head>
+<body>
+
+<div data-include="/partials/header.html"></div>
+
+<main class="container">
+  <section class="card" id="blogContainer">
+    <h1 id="blogTitle"></h1>
+    <img id="blogCover" style="max-width:100%;margin:20px 0;display:none"/>
+    <div id="blogContent" class="blog-content"></div>
+  </section>
+</main>
+
+<div data-include="/partials/footer.html"></div>
+
+<script src="/blog/app-view.js"></script>
+
+</body>
+</html>

@@ -1,0 +1,125 @@
+/* Floating chat button */
+#cb-chat-launcher {
+  position: fixed;
+  right: 20px;
+  bottom: 30px;
+  z-index: 9999;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  background: #003366;
+  color: #fff;
+  padding: 10px 14px;
+  border-radius: 30px;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+  font-family: Arial, sans-serif;
+}
+
+#cb-chat-launcher img {
+  width: 32px;
+  height: 32px;
+  margin-right: 8px;
+}
+
+#cb-chat-launcher span {
+  font-weight: bold;
+}
+
+/* Chat window */
+#cb-chat-window {
+  position: fixed;
+  right: 20px;
+  bottom: 90px;
+  width: 320px;
+  height: 420px;
+  background: #fff;
+  border-radius: 10px;
+  box-shadow: 0 6px 20px rgba(0,0,0,0.3);
+  display: none;
+  flex-direction: column;
+  z-index: 9999;
+  font-family: Arial, sans-serif;
+}
+
+/* Header */
+#cb-chat-header {
+  background: #003366;
+  color: #fff;
+  padding: 8px 10px;
+  font-weight: bold;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+/* Header title */
+#cb-chat-header span:first-child {
+  flex: 1;
+  font-size: 14px;
+}
+
+/* Language selector */
+#cb-lang {
+  padding: 2px 6px;
+  font-size: 12px;
+  border-radius: 4px;
+  border: none;
+  outline: none;
+}
+
+/* Close button */
+#cb-close {
+  cursor: pointer;
+  font-size: 14px;
+}
+
+/* Messages */
+#cb-chat-messages {
+  flex: 1;
+  padding: 10px;
+  overflow-y: auto;
+  font-size: 14px;
+}
+
+/* User message */
+.cb-user {
+  text-align: right;
+  margin-bottom: 8px;
+  color: #003366;
+}
+
+/* Bot message */
+.cb-bot {
+  text-align: left;
+  margin-bottom: 8px;
+  color: #333;
+}
+
+/* Input area */
+#cb-chat-input {
+  display: flex;
+  border-top: 1px solid #ccc;
+}
+
+/* Input box (supports Enter / Shift+Enter) */
+#cb-chat-input input {
+  flex: 1;
+  padding: 10px;
+  border: none;
+  outline: none;
+  font-size: 14px;
+}
+
+/* Send button */
+#cb-chat-input button {
+  background: #003366;
+  color: #fff;
+  border: none;
+  padding: 10px 14px;
+  cursor: pointer;
+}
+
+.cb-typing {
+  font-style: italic;
+  opacity: 0.7;
+}

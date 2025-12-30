@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+
+  <title>Manage My Container | Containers Club</title>
+  <link rel="icon" href="/images/cc_logo.png"/>
+  <meta name="description" content="End-to-end container management — purchase, leasing, tracking and transparent monthly payouts."/>
+  <link rel="stylesheet" href="/styles.css"/>
+
+  <!-- Injects shared header/footer -->
+  <script src="/partials/include.js" defer></script>
+</head>
+
+<body>
+
+<!-- Shared header -->
+<div data-include="/partials/header.html" id="site-header"></div>
+
+<main class="container">
+
+  <!-- ================= HERO ================= -->
+  <section class="hero">
+    <div>
+      <h1>Manage My Container</h1>
+      <p>
+        Turn your containers into a predictable income stream. We help you purchase,
+        lease, track and get paid for your containers with full transparency.
+      </p>
+      <div style="display:flex;gap:12px;flex-wrap:wrap">
+        <a class="primary" href="mailto:contact@containersclub.com?subject=Manage%20My%20Container">
+          Get Started →
+        </a>
+        <a class="secondary" href="/a-pages/platform.html">
+          Explore Platform
+        </a>
+      </div>
+      <div class="badges">
+        <span class="badge">Standardized Containers</span>
+        <span class="badge">End-to-End Management</span>
+        <span class="badge">Real-time Tracking</span>
+        <span class="badge">Transparent Earnings</span>
+      </div>
+    </div>
+    <div class="hero-ill">
+      <img src="/images/manage-container-hero.png" alt="Container management"/>
+    </div>
+  </section>
+
+  <!-- ================= HOW IT WORKS ================= -->
+  <section class="section">
+    <h2 class="h">How It Works</h2>
+    <p class="sub">A simple journey from ownership to monthly earnings.</p>
+    <div class="grid-2">
+      <div class="card"><h3>1) Purchase Container</h3><div class="sub">New or pre-owned containers</div></div>
+      <div class="card"><h3>2) Sign Agreement</h3><div class="sub">Clear terms, no hidden clauses</div></div>
+      <div class="card"><h3>3) Leasing Managed</h3><div class="sub">Bookings & leasing handled by us</div></div>
+      <div class="card"><h3>4) Track Performance</h3><div class="sub">Utilization & movement visibility</div></div>
+      <div class="card"><h3>5) Notifications</h3><div class="sub">Booking & usage alerts</div></div>
+      <div class="card"><h3>6) Monthly Payouts</h3><div class="sub">Direct bank transfer</div></div>
+    </div>
+  </section>
+
+  <!-- ================= TRANSPARENCY ================= -->
+  <section class="section">
+    <h2 class="h">Transparent at Every Step</h2>
+    <div class="grid-3">
+      <div class="card"><h3>Clean Documentation</h3><div class="sub">Agreements & statements</div></div>
+      <div class="card"><h3>End-to-End View</h3><div class="sub">Lifecycle visibility</div></div>
+      <div class="card"><h3>No Hidden Charges</h3><div class="sub">Predefined revenue share</div></div>
+    </div>
+  </section>
+
+  <!-- ================= WHY US ================= -->
+  <section class="section">
+    <h2 class="h">Why Let Us Manage Your Containers?</h2>
+    <div class="grid-3">
+      <div class="card"><h3>Quality Standards</h3><div class="sub">Operational checks</div></div>
+      <div class="card"><h3>Demand Network</h3><div class="sub">Ports, ICDs, depots & shippers</div></div>
+      <div class="card"><h3>Operational Expertise</h3><div class="sub">We handle daily operations</div></div>
+    </div>
+  </section>
+
+  <!-- ================= CTA ================= -->
+  <section class="section">
+    <h2 class="h">Start Earning from Your Containers</h2>
+    <p class="sub">List your containers and earn with full transparency.</p>
+    <div style="display:flex;gap:12px;flex-wrap:wrap">
+      <a class="primary" href="mailto:contact@containersclub.com?subject=Manage%20My%20Container">
+        Talk to Our Team →
+      </a>
+      <a class="secondary" href="/contact.html">Contact Us</a>
+    </div>
+  </section>
+
+  <!-- ================= SEO CONTENT (DYNAMIC) ================= -->
+  <div id="seo-content"></div>
+
+</main>
+
+<!-- Shared footer -->
+<div data-include="/partials/footer.html" id="site-footer"></div>
+
+<!-- ================= SEO LOADER SCRIPT ================= -->
+<script>
+(function () {
+  const host = window.location.hostname;
+  const seoDiv = document.getElementById("seo-content");
+
+  if (!seoDiv) return;
+
+  let seoFile = "/partials/seo-in/mmc.html"; // default India
+
+  if (host.includes("containersclub")) {
+    seoFile = "/partials/seo-us/mmc.html";
+  }
+
+  fetch(seoFile)
+    .then(res => res.text())
+    .then(html => seoDiv.innerHTML = html)
+    .catch(err => console.error("SEO load error:", err));
+})();
+</script>
+
+</body>
+</html>

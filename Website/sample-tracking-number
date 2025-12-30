@@ -1,0 +1,66 @@
+
+# Universal Container Tracker (AWS)
+
+Features you asked for:
+- No redirects. We fetch via carrier adapters (mock by default).
+- Company list + auto-detect by first 4 chars.
+- Consent checkbox required.
+- Store **all user input** to DynamoDB (SubmissionsTable).
+- Try to capture useful user details (optional fields).
+- Cache tracking payloads in DynamoDB (CacheTable) for 6 hours.
+
+## Deploy
+```bash
+sam build
+sam deploy --guided --stack-name container-tracker-pro --capabilities CAPABILITY_IAM
+# Upload UI
+BUCKET=<WebBucketName from Outputs>
+aws s3 sync public/ s3://$BUCKET --delete
+```
+Open the CloudFrontURL and test `MSCU1234567`.
+
+To enable Terminal49 later: set `T49ApiKey` parameter during deploy and it will be used automatically.
+
+**Note:** Replace provider stubs with real carrier APIs to comply with ToS. Do not scrape websites.
+
+
+
+Sample Tracking with Status 
+
+Carrier	Code	Valid container numbers
+MSC	MSCU	MSCU1234566, MSCU7654329 (you already tested)
+Maersk	MAEU	MAEU9876542, MAEU2468106
+CMA CGM	CMAU	CMAU1122332, CMAU9988771
+OOCL / ONE	OOLU	OOLU4455664, OOLU7788993
+Hapag-Lloyd	HLCU	HLCU2233442, HLCU6677888
+Triton	TCLU	TCLU5566771, TCLU1122336
+Evergreen	EMCU	EMCU3456780, EMCU9876542
+Seaco	SEGU	SEGU7654321, SEGU1122337
+APZ / Apollo	APZU	APZU8765438, APZU2345675
+Mock (for demos)	MOCK	MOCK1234569, MOCK9876544
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Carrier	Code	Example Valid Numbers	Notes
+MSC	MSCU	MSCU1234566, MSCU7654329	Mediterranean Shipping Co.
+Maersk	MAEU	MAEU9876543, MAEU2468102	Maersk Line
+CMA CGM	CMAU	CMAU1122335, CMAU9988774	CMA CGM
+OOCL / ONE	OOLU	OOLU4455662, OOLU7788996	Ocean Network Express
+Hapag-Lloyd	HLCU	HLCU2233448, HLCU6677882	Hapag-Lloyd
+Triton	TCLU	TCLU5566778, TCLU1122335	Triton Containers
+Evergreen	EMCU	EMCU3456781, EMCU9876542	Evergreen Marine
+Seaco	SEGU	SEGU7654321, SEGU1122335	Seaco Global
+APZ	APZU	APZU8765438, APZU2345679	Apollo / APZ Containers
+Generic Test (mock)	MOCK	MOCK1234567, MOCK9876543	Always returns mock events for testing
+

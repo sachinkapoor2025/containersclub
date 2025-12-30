@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1" name="viewport"/>
+<title>Containers Club | Info</title>
+<style>
+    :root { --c1:#0f172a; --c2:#2563eb; --c3:#f1f5f9; --bd:#e5e7eb; }
+    body { margin:0; font-family:ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, Cantarell, Noto Sans, sans-serif; background:#f8fafc; color:#0f172a;}
+    .wrap { max-width:1200px; margin:0 auto; padding:20px;}
+    .card { background:#fff; border:1px solid var(--bd); border-radius:14px; box-shadow:0 1px 2px rgba(0,0,0,.04); }
+    .pad { padding:16px;}
+    .row { display:grid; gap:16px; grid-template-columns: 1fr; }
+    @media (min-width: 900px){ .row{ grid-template-columns: 300px 1fr; } }
+    .search { display:flex; gap:8px; align-items:center; border:1px solid var(--bd); border-radius:12px; padding:8px 12px;}
+    .search input{ border:0; outline:0; width:100%; }
+    .facet { border:1px solid var(--bd); border-radius:12px; padding:8px; }
+    .facet h4{ margin:0 0 6px 0; font-size:12px; text-transform:uppercase; letter-spacing:.04em; color:#334155;}
+    .chip { border:1px solid var(--bd); padding:4px 8px; border-radius:999px; font-size:12px; background:#fff; cursor:pointer;}
+    .chip.active { background:var(--c2); color:#fff; border-color:var(--c2); }
+    table{ width:100%; border-collapse:collapse; font-size:14px;}
+    th, td{ padding:10px; text-align:left; border-top:1px solid var(--bd); vertical-align:top;}
+    th{ background:#f8fafc; position:sticky; top:0;}
+    .btn { background:var(--c2); color:#fff; border:0; border-radius:10px; padding:8px 12px; cursor:pointer;}
+    .muted { color:#475569; font-size:12px;}
+    .drawer { position:fixed; inset:0; background:rgba(0,0,0,.4); display:none; }
+    .drawer.open{ display:block; }
+    .panel { position:absolute; right:0; top:0; height:100%;  background:#fff; box-shadow:-8px 0 24px rgba(0,0,0,.15); overflow:auto; }
+    .panel .head{ display:flex; align-items:center; justify-content:space-between; padding:12px 16px; border-bottom:1px solid var(--bd);}
+    .grid { display:grid; gap:12px; grid-template-columns: 1fr; }
+    @media (min-width: 900px){ .grid{ grid-template-columns: 1fr 1fr; } }
+    .kv { border:1px solid var(--bd); border-radius:12px; padding:10px;}
+    .kv .k { font-size:11px; color:#64748b; text-transform:uppercase; letter-spacing:.04em; }
+    .kv .v { margin-top:4px; white-space:pre-wrap; }
+    .thumbs { display:grid; gap:8px; grid-template-columns: repeat(3, 1fr); }
+    img.thumb{ width:100%; height:95px; object-fit:cover; border-radius:8px; border:1px solid var(--bd); }
+    video{ width:100%; border-radius:8px; border:1px solid var(--bd); }
+    a.inline { color:var(--c2); text-decoration:none; }
+    a.inline:hover{ text-decoration:underline; }
+    .alert { margin:10px 0; padding:10px 12px; border:1px solid #fecaca; background:#fee2e2; color:#7f1d1d; border-radius:10px; display:none; }
+    .alert.show { display:block; }
+
+    /* layout for top panel: left content + right image */
+    .top-panel {
+      display: grid;
+      grid-template-columns: 1fr 420px;
+      gap: 18px;
+      align-items: start;
+    }
+    @media (max-width: 980px) {
+      .top-panel { grid-template-columns: 1fr; }
+    }
+
+    .icon-list { margin:0; padding:0; list-style:none; display:block; }
+    .icon-list li { display:flex; gap:10px; align-items:flex-start; margin:10px 0; }
+    .icon-list img { width:18px; height:18px; flex:0 0 18px; margin-top:4px; }
+    .icon-list .text { color:var(--c1); line-height:1.35; }
+
+    .top-hero { width:100%; display:flex; align-items:center; justify-content:center; }
+    .top-hero img { max-width: 100%; height: auto; border-radius:8px; display:block; }
+
+    /* small visual tweak for heading inside panel */
+    .card .panel-heading { display:flex; justify-content:space-between; align-items:center; gap:12px; margin-bottom:8px; }
+</style>
+
+<link href="/styles.css" rel="stylesheet"/>
+<style>
+/* ===== Overrides (2025-10-21): visibility & drawer behavior ===== */
+.search input { color:#0f172a; }
+.search input::placeholder { color:#64748b; }
+.chip { color:#0f172a; background:#fff; }
+.chip.active { color:#fff; background:#2563eb; }
+.facet h4, .facet, .kv .k, .kv .v, table, th, td { color:#0f172a; }
+
+/* Drawer should always be above everything and full-screen */
+.drawer { position: fixed; inset: 0; background: rgba(0,0,0,.45); display: none; z-index: 10000; }
+.drawer.open { display:block; }
+.panel { position: fixed; left:0; top:0; width:100vw; height:100vh; background:#fff; overflow:auto; z-index:10001; box-shadow:none; }
+
+/* When drawer is open, avoid page behind from scrolling */
+body.drawer-open { overflow:hidden; }
+</style>
+
+<!-- Injects GA + header/footer partials -->
+<script src="/partials/include.js" defer></script>
+</head>
+
+<body>
+<!-- Shared header (injected) -->
+<div data-include="/partials/header.html" id="site-header"></div>
+
+
+
+<!-- Page content -->
+<div class="wrap container section">
+  <div class="card pad" style="margin-bottom:16px;">
+    <div class="panel-heading">
+      <h1 style="margin:0;">Container Library</h1>
+      <div class="muted" id="count" aria-live="polite" style="margin-left:12px;"></div>
+    </div>
+
+    <!-- NEW: top panel with content (left) and image (right) -->
+    <div class="top-panel" role="region" aria-label="Container library intro">
+      <!-- LEFT: icon bullet content -->
+      <div>
+        <ul class="icon-list" aria-hidden="false">
+          <li>
+            <img src="/images/logo.png" alt="" />
+            <div class="text"><strong>Browse complete technical details for all ISO-standard containers</strong><br/><span class="muted">Reference dimensions, volumes, and construction specs.</span></div>
+          </li>
+
+          <li>
+            <img src="/images/logo.png" alt="" />
+            <div class="text"><strong>Quickly filter containers by size, capacity, family, and purpose</strong><br/><span class="muted">Includes Dry Van, High Cube, Open-Top, Flat-Rack, Reefer, Tank, and more.</span></div>
+          </li>
+
+          <li>
+            <img src="/images/logo.png" alt="" />
+            <div class="text"><strong>Compare internal/external dimensions, payload, tare weight, and volume</strong><br/><span class="muted">Over 100+ common container variants available for comparison.</span></div>
+          </li>
+
+          <li>
+            <img src="/images/logo.png" alt="" />
+            <div class="text"><strong>Find the right container for your cargo</strong><br/><span class="muted">Recommendations by cargo type: general goods, oversize, refrigerated, hazardous, and project cargo.</span></div>
+          </li>
+
+          <li>
+            <img src="/images/logo.png" alt="" />
+            <div class="text"><strong>View purpose-based recommendations & diagrams</strong><br/><span class="muted">Storage, shipping, conversion, and on-site usage guidance at a glance.</span></div>
+          </li>
+
+          <li>
+            <img src="/images/logo.png" alt="" />
+            <div class="text"><strong>Access images, diagrams and quick reference cards</strong><br/><span class="muted">Fast-loading visual cards make comparison and selection simple.</span></div>
+          </li>
+        </ul>
+      </div>
+
+      <!-- RIGHT: illustrative image -->
+      <div class="top-hero" aria-hidden="true">
+        <img src="/images/Container-type-hero.png" alt="Container types illustration" />
+      </div>
+    </div>
+
+    <div class="alert" id="err">Failed to load Excel. Please refresh after a minute or check file paths in /info/.</div>
+  </div>
+
+  <!-- Filters + Table row (unchanged) -->
+  <div class="row" style="margin-top:14px;">
+    <!-- Left: Filters -->
+    <div class="card pad">
+      <div class="search">
+        <span>🔎</span>
+        <input id="q" placeholder="Search by any field…" />
+      </div>
+      <div id="facets" style="margin-top:10px; max-height:60vh; overflow:auto;"></div>
+    </div>
+
+    <!-- Right: Table -->
+    <div class="card pad">
+      <div class="muted" id="count-2"></div>
+      <div style="overflow:auto; max-height:70vh;">
+        <table id="tbl">
+          <thead>
+            <tr>
+              <th>Container Name</th>
+              <th>Type</th>
+              <th>Container Family</th>
+              <th>Dimension</th>
+              <th>Capacity (m³)</th>
+              <th>Max Gross (kg)</th>
+              <th>Purpose/Use</th>
+            </tr>
+          </thead>
+          <tbody></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Detail Drawer -->
+<div class="drawer" id="drawer">
+  <div class="panel">
+    <!-- Inject the same site header inside the drawer -->
+    <div data-include="/partials/header.html" id="drawer-header"></div>
+
+    <div class="head">
+      <div id="drawer-title" style="font-weight:600"></div>
+      <button class="btn" onclick="window.closeDrawer()" style="background:#e2e8f0;color:#0f172a">Close</button>
+    </div>
+    <div class="pad" id="drawer-body"></div>
+  </div>
+</div>
+
+<!-- Hidden React mount point -->
+<div id="root" style="display:none"></div>
+
+<!-- Excel load error handling -->
+<script type="module">
+  const errDiv = document.getElementById('err');
+  const observer = new MutationObserver(() => {
+    if (window.__EXCEL_ERROR__) {
+      errDiv.textContent = window.__EXCEL_ERROR__;
+      errDiv.classList.add('show');
+    }
+  });
+  observer.observe(document.documentElement, { attributes: true });
+
+  // update two count fields if your script sets counts elsewhere
+  function setCounts(n) {
+    const c = document.getElementById('count');
+    const c2 = document.getElementById('count-2');
+    if (c) c.textContent = `Showing ${n} containers`;
+    if (c2) c2.textContent = `Showing ${n} containers`;
+  }
+  // If your info/app.js sets a global count, call setCounts when available
+  window.setContainerCount = setCounts;
+</script>
+
+<!-- Make the injected header inside the drawer use a unique nav id -->
+<script>
+  (function () {
+    const dh = document.getElementById('drawer-header');
+    if (!dh) return;
+    const obs = new MutationObserver(() => {
+      const nav = dh.querySelector('#primary-nav');
+      const btn = dh.querySelector('.menu-btn');
+      if (nav && btn) {
+        nav.id = 'drawer-nav';
+        btn.setAttribute('aria-controls', 'drawer-nav');
+        obs.disconnect();
+      }
+    });
+    obs.observe(dh, { childList: true, subtree: true });
+  })();
+</script>
+<!-- ===== SEO intro content panel (added per SEO doc) ===== -->
+<div class="wrap container section" style="margin-bottom:18px;">
+  <section class="content-panel content-intro">
+    <h1>Shipping Container Info & Resources – USA Container Guide & FAQs</h1>
+    <p>
+      Shipping containers play a major role in transportation, storage, construction, and portable workspace solutions across the United States.
+      Whether you are a business owner, contractor, homeowner, or logistics professional, understanding container types, features, safety standards,
+      and usage guidelines is essential. This comprehensive guide provides detailed information on how containers are used, how to choose the right one,
+      and what to expect when buying, selling, or renting in the U.S. market. With accurate insights and practical tips, you can make confident
+      container-related decisions while ensuring compliance, safety, and long-term durability.
+    </p>
+
+    <h2>Container Types, Sizes & Uses — 20ft, 40ft, High Cube, Refrigerated, & More</h2>
+    <p>
+      Shipping containers come in various sizes and configurations designed for different applications. The most common units include 20ft and 40ft
+      standard containers, suitable for general storage and transportation. High Cube containers offer extra height, making them ideal for oversized
+      cargo and conversion projects. Refrigerated containers, also known as reefers, provide temperature-controlled storage for goods like food,
+      pharmaceuticals, and sensitive materials. Specialty containers such as open-top, flat-rack, double-door, and tunnel containers support industrial
+      and construction use cases. Selecting the right container depends on your storage needs, climate conditions, mobility requirements, and intended modifications.
+    </p>
+
+    <h2>Buying, Selling & Renting Containers in the USA — What You Should Know</h2>
+    <p>
+      The U.S. container market provides various options for purchasing, selling, or renting units. Buyers can choose from new, used, cargo-worthy, or one-trip
+      containers depending on budget and quality preferences. Sellers can list their containers online through industry platforms, making it easy to reach buyers nationwide.
+      Renting containers is often the most cost-efficient option for temporary storage, seasonal operations, or project-based needs. Understanding pricing factors such as
+      condition, age, availability, delivery distance, and customization requirements helps ensure fair and competitive transactions. Working with reputable suppliers
+      guarantees transparency, proper documentation, and safe delivery.
+    </p>
+
+    <h2>Container Maintenance, Safety & Best Practices for U.S. Use</h2>
+    <p>
+      Shipping containers are built to withstand harsh environments, but proper maintenance ensures long-lasting performance. Routine inspection is essential to identify rust,
+      dents, door alignment issues, and structural damage. Keeping doors lubricated, sealing leaks, and applying rust-resistant coatings help preserve container quality.
+      For businesses, following OSHA safety guidelines ensures compliance when containers are used on construction sites or as portable workspaces. Improper stacking, poor ventilation,
+      and overloading can lead to accidents or product damage. Regular upkeep extends the container's lifespan and ensures reliable use for storage, transport, or office conversions.
+    </p>
+
+    <h3>Essential Safety & Maintenance Guidelines for Containers in the USA</h3>
+    <p>
+      Safety should always be a priority when operating or modifying shipping containers. Before use, check the container’s CSC plate, structural condition, and locking mechanisms.
+      Ensure the container is placed on a level foundation to avoid instability. When converting containers into offices or workshops, proper electrical installation, insulation,
+      ventilation, and emergency exits are mandatory. Avoid exceeding the container's load capacity, especially when stacking multiple units. Regular inspections help prevent corrosion,
+      water intrusion, and hazardous structural issues. Following these guidelines promotes safer handling and prolongs the container’s functional lifespan.
+    </p>
+
+    <h3>Frequently Asked Questions (FAQ) — Shipping Container Rules, Regulations & Use Cases</h3>
+    <p>
+      Many U.S. customers often ask about container zoning laws, transportation rules, and modification regulations. Local building codes may require permits for using containers as offices,
+      homes, or permanent structures. Transportation regulations vary by state, especially regarding oversize loads and highway restrictions. Common use cases include storage, retail pop-ups,
+      construction offices, emergency shelters, portable workshops, and modular housing. Understanding local regulations, proper documentation, and industry standards ensures legal and safe use of shipping containers across the country.
+    </p>
+
+    <h3>Container Customization Options — Insulation, Ventilation, Shelving, Office Conversion</h3>
+    <p>
+      Container customization allows businesses and individuals to adapt units for specialized applications. Insulation improves climate control for office or workshop conversions.
+      Ventilation upgrades reduce moisture buildup, protecting stored goods from damage. Shelving and internal storage systems enhance organization for warehouses and job sites. Advanced
+      modifications such as electrical wiring, plumbing, windows, doors, HVAC, and full office conversion transform standard containers into functional workspaces or modular buildings.
+      These upgrades increase usability, comfort, and operational efficiency while preserving container durability.
+    </p>
+  </section>
+</div>
+
+<script src="/info/app.js" type="module"></script>
+
+<!-- Shared footer (injected) -->
+<div data-include="/partials/footer.html" id="site-footer"></div>
+
+</body>
+</html>

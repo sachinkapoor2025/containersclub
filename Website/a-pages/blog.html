@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1"/>
+  <title>Blog | Containers Club</title>
+  <link rel="icon" href="/images/cc_logo.png"/>
+  <meta name="description" content="Read and write blogs about shipping containers, logistics, ports, shipping lines, tracking technology, and global supply chain updates."/>
+  <link rel="stylesheet" href="/styles.css"/>
+
+  <!-- Header + Footer -->
+  <script src="/partials/include.js" defer></script>
+</head>
+
+<body>
+
+<!-- Shared header -->
+<div data-include="/partials/header.html" id="site-header"></div>
+
+<main class="container">
+
+  <!-- HERO -->
+  <section class="hero">
+    <div>
+      <h1>Containers Club Blog</h1>
+      <p>Insights, trends, stories, and expert opinions on shipping, tracking technology, ports, container logistics, buying & selling, and market updates. Publish your own articles and share knowledge with the community.</p>
+
+      <div style="display:flex;gap:12px;flex-wrap:wrap;margin-top:12px;">
+        <a class="primary" href="/a-pages/blog/new.html">Write a Blog →</a>
+        <a class="secondary" href="/a-pages/blog/list.html">Explore Categories</a>
+      </div>
+
+      <div class="badges">
+        <span class="badge">Logistics</span>
+        <span class="badge">Container Trading</span>
+        <span class="badge">Ports</span>
+        <span class="badge">Tracking Technology</span>
+        <span class="badge">Off/On-Hire</span>
+      </div>
+    </div>
+    <div class="hero-ill">
+      <img src="/images/blog-hero.png" alt="Blog illustration"/>
+    </div>
+  </section>
+
+  <!-- SEARCH + FILTER -->
+  <section class="card">
+    <div class="grid" style="grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:12px;">
+      <input type="search" id="searchBlog" placeholder="Search blogs — keywords, topics, authors"/>
+      <select id="blogCategory">
+        <option value="">All categories</option>
+        <option>Logistics</option>
+        <option>Container Trading</option>
+        <option>Tracking</option>
+        <option>Ports & Shipping Lines</option>
+        <option>Market Updates</option>
+      </select>
+      <select id="blogSort">
+        <option value="latest">Latest</option>
+        <option value="popular">Most Popular</option>
+        <option value="featured">Featured</option>
+      </select>
+    </div>
+  </section>
+
+  <!-- BLOG LISTING -->
+  <section class="section">
+    <h2 class="h">Latest Articles</h2>
+
+    <div id="blogGrid" class="grid-3" style="gap:20px;">
+      <!-- Blog card sample -->
+      <div class="card blog-card">
+        <img class="blog-thumb" src="/images/sample-blog1.jpg" alt="post"/>
+        <h3>How Container Tracking is Transforming Global Shipping</h3>
+        <p class="sub">Real-time tracking, predictive ETAs, milestone-based visibility — how modern tech reduces delays and increases transparency.</p>
+        <div class="blog-meta">
+          <span>📅 Jan 2025</span>
+          <span>👤 John Carter</span>
+        </div>
+        <a class="primary" href="/blog/blogpost1.html">Read More →</a>
+      </div>
+
+      <div class="card blog-card">
+        <img class="blog-thumb" src="/images/sample-blog2.jpg" alt="post"/>
+        <h3>Buying vs Renting Containers — What Should You Choose?</h3>
+        <p class="sub">A practical comparison for shippers, resellers, storage operators, and logistics companies.</p>
+        <div class="blog-meta">
+          <span>📅 Jan 2025</span>
+          <span>👤 Sarah Lee</span>
+        </div>
+        <a class="primary" href="/blog/blogpost2.html">Read More →</a>
+      </div>
+
+      <div class="card blog-card">
+        <img class="blog-thumb" src="/images/sample-blog3.jpg" alt="post"/>
+        <h3>Port Congestion Insights — What 2025 Looks Like</h3>
+        <p class="sub">West Coast, Gulf, and East Coast port updates, trends, capacity shifts, and operational tips.</p>
+        <div class="blog-meta">
+          <span>📅 Dec 2024</span>
+          <span>👤 Logistics Desk</span>
+        </div>
+        <a class="primary" href="/blog/blogpost3.html">Read More →</a>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- SIDEBAR + TRENDING -->
+  <section class="section">
+    <div class="grid-3" style="gap:20px;">
+      <!-- Categories -->
+      <div class="card">
+        <h3>Categories</h3>
+        <ul class="sub">
+          <li><a href="#">Logistics & Supply Chain</a></li>
+          <li><a href="#">Container Trading</a></li>
+          <li><a href="#">Tracking Technology</a></li>
+          <li><a href="#">Ports & Shipping Lines</a></li>
+          <li><a href="#">Market Insights</a></li>
+        </ul>
+      </div>
+
+      <!-- Trending posts -->
+      <div class="card">
+        <h3>Trending</h3>
+        <ul class="sub">
+          <li><a href="#">Why Storage Demand is Rising in 2025</a></li>
+          <li><a href="#">Top 7 Tips for First-Time Container Buyers</a></li>
+          <li><a href="#">Future of Digital Ports in North America</a></li>
+        </ul>
+      </div>
+
+      <!-- Tags -->
+      <div class="card">
+        <h3>Popular Tags</h3>
+        <div style="display:flex;flex-wrap:wrap;gap:8px;">
+          <span class="badge">Containers</span>
+          <span class="badge">Tracking</span>
+          <span class="badge">Tech</span>
+          <span class="badge">Ports</span>
+          <span class="badge">Leasing</span>
+          <span class="badge">Market</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA -->
+  <section class="section">
+    <h2 class="h">Want to Share Your Expertise?</h2>
+    <p class="sub">Write articles, guides, case studies, or market insights. Help the global logistics community learn and grow.</p>
+    <a class="primary" href="/a-pages/blog/new.html">Start Writing →</a>
+  </section>
+</main>
+
+<!-- Footer -->
+<div data-include="/partials/footer.html" id="site-footer"></div>
+
+</body>
+</html>

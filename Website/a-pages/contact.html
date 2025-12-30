@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <title>Contact Us | Containers Club</title>
+  <link rel="icon" href="/images/cc_logo.png"/>
+  <meta name="description" content="Contact Containers Club for platform demos, partnerships, or support. Reach us by phone or email to learn how we can simplify your container logistics operations."/>
+  <link rel="stylesheet" href="/styles.css"/>
+
+  <!-- Injects GA + shared header/footer -->
+  <script src="/partials/include.js" defer></script>
+</head>
+<body>
+
+<!-- Shared header (injected) -->
+<div data-include="/partials/header.html" id="site-header"></div>
+
+<main class="container">
+  <section class="hero">
+    <div>
+      <h1>Contact Containers Club</h1>
+      <p>We’d love to hear from you! Whether you’re a terminal, depot, transporter, or shipper — our team is here to help you digitize and optimize your container operations across US.</p>
+    </div>
+    <div class="hero-ill">
+      <img alt="Contact illustration" src="/images/contact-hero.png"/>
+    </div>
+  </section>
+
+  <section class="section">
+    <h2 class="h">Get in Touch</h2>
+    <div class="grid-2">
+      <div>
+        <div class="card">
+          <h3>Reach Us Directly</h3>
+          <div class="sub">
+            <p><strong>📞 Mobile:</strong> <a href="tel:+919650457697">+1 (669) 260-3819</a></p>
+            <p><strong>✉️ Email:</strong> <a href="mailto:contact@containersclub.com">contact@containersclub.com</a></p>
+            <p><strong>📍 Office:</strong>  San Jose California</p>
+          </div>
+        </div>
+
+        <div class="card">
+          <h3>Support</h3>
+          <div class="sub">For product support or onboarding queries, please reach our helpdesk at <a href="mailto:support@containersclub.com">support@containersclub.com</a>.</div>
+        </div>
+      </div>
+
+      <div>
+        <div class="card">
+          <h3>Send Us a Message</h3>
+          <form id="contact-form" class="contact-form" onsubmit="event.preventDefault(); alert('Thank you for reaching out! We will get back to you soon.');">
+            <label for="name">Full Name</label>
+            <input type="text" id="name" name="name" placeholder="Your name" required/>
+
+            <label for="email">Email Address</label>
+            <input type="email" id="email" name="email" placeholder="Your email" required/>
+
+            <label for="message">Message</label>
+            <textarea id="message" name="message" rows="5" placeholder="Your message" required></textarea>
+
+            <button class="primary" type="submit">Send Message →</button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <h2 class="h">Business Enquiries</h2>
+    <p class="sub">Interested in partnerships, integrations, or enterprise deployments? Contact our business team for demos, API access, or collaboration opportunities.</p>
+    <a class="primary" href="mailto:contact@containersclub.com?subject=Business%20Enquiry">Email Business Team →</a>
+  </section>
+</main>
+
+<!-- Shared footer (injected) -->
+<div data-include="/partials/footer.html" id="site-footer"></div>
+
+</body>
+</html>
