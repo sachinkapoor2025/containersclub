@@ -54,12 +54,46 @@ function isExpired(auth) {
   if (!auth || !auth.exp) return true;
   return Date.now() >= auth.exp - 5000; // small skew
 }
+
+function getUserEmail(auth) {
+  if (!auth || !auth.id_token) return null;
+  try {
+    const payload = JSON.parse(atob(auth.id_token.split('.')[1]));
+    return payload.email;
+  } catch {
+    return null;
+  }
+}
+
 function refreshUI() {
   const auth = getAuth();
   const loggedIn = auth && !isExpired(auth);
 
   if (loginBtn)  loginBtn.style.display  = loggedIn ? "none" : "inline-block";
   if (logoutBtn) logoutBtn.style.display = loggedIn ? "inline-block" : "none";
+
+  // Update auth message
+  const authMsgEl = document.getElementById("authMessage");
+  if (authMsgEl) {
+    if (loggedIn) {
+      const email = getUserEmail(auth);
+      authMsgEl.textContent = `Welcome ${email || 'User'}! You can now create and manage your listings.`;
+    } else {
+      authMsgEl.textContent = "Login is required to upload media and create listings.";
+    }
+  }
+
+  // Show welcome message on index page
+  const welcomeEl = document.getElementById("welcomeMessage");
+  if (welcomeEl) {
+    if (loggedIn) {
+      const email = getUserEmail(auth);
+      welcomeEl.textContent = `Welcome ${email || 'User'}!`;
+      welcomeEl.style.display = "block";
+    } else {
+      welcomeEl.style.display = "none";
+    }
+  }
 
   // Disable upload fields if not logged in
   if (formEl) {
