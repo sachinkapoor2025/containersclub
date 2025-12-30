@@ -165,16 +165,15 @@ async function listListings() {
 
 function cardHtml(it) {
   const images = it.images && it.images.length > 0 ? it.images : ["/rent/media/placeholder.jpg"];
-  const imgHtml = images.map((img, idx) => `<img src="${img}" style="width:280px;height:200px;object-fit:cover;border-radius:10px;display:${idx === 0 ? 'block' : 'none'};">`).join('');
+  const imgHtml = images.map((img, idx) => `<img src="${img}" style="width:320px;height:240px;object-fit:cover;border-radius:10px;display:${idx === 0 ? 'block' : 'none'};">`).join('');
 
   return `
-  <article class="card" style="display:flex;gap:20px;padding:20px;">
+  <article class="card" style="display:flex;gap:20px;padding:20px;align-items:flex-start;">
     <div class="img-container" data-listing="${it.listingId}">
       ${imgHtml}
     </div>
 
     <div style="flex:1;">
-      <div class="badge">${it.size}</div>
       <h3 onclick="showDetails('${it.listingId}')" style="cursor:pointer;">${it.title}</h3>
       <p><strong>ID:</strong> ${it.listingId} • <strong>Status:</strong> ${it.status || 'N/A'}</p>
       <p><strong>Location:</strong> ${it.location} • <span style="color:#0ea5e9">$${it.dailyRate || 'N/A'}</span> ${it.currency || 'USD'}</p>
@@ -189,8 +188,8 @@ function cardHtml(it) {
     </div>
 
     <div style="display:flex;flex-direction:column;gap:10px;">
-      <button onclick="showVideo()">Video</button>
-      <button class="primary" onclick="window.location.href='/rent/book.html?id=${it.listingId}'">Book</button>
+      <button onclick="showVideo()" style="padding:12px 24px;font-size:16px;">Video</button>
+      <button class="primary" onclick="window.location.href='/rent/book.html?id=${it.listingId}'" style="padding:12px 24px;font-size:16px;">Book</button>
     </div>
   </article>`;
 }
