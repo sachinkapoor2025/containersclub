@@ -197,7 +197,7 @@ function cardHtml(it) {
     <div style="flex:1;">
       <h3 onclick="showDetails('${it.listingId}')" style="cursor:pointer;">${it.title}</h3>
       <p><strong>ID:</strong> ${it.listingId} • <strong>Status:</strong> ${it.status || 'N/A'}</p>
-      <p><strong>Location:</strong> ${it.location} • <span style="color:#0ea5e9">$${it.price || 'N/A'}</span> ${it.currency || 'USD'}</p>
+      <p><strong>Location:</strong> ${it.location} • <span style="color:#0ea5e9;font-weight:bold;font-size:18px;">$${it.price || 'N/A'}</span></p>
       <p><strong>Condition:</strong> ${it.condition} • <strong>Available:</strong> ${it.availableFrom || 'N/A'}</p>
       <p><strong>Delivery:</strong> ${it.deliveryAvailable ? 'Yes' : 'No'} • <strong>Owner:</strong> ${it.ownerId || 'N/A'}</p>
       <p><strong>Created:</strong> ${it.createdAt ? new Date(it.createdAt).toLocaleDateString() : 'N/A'}</p>
