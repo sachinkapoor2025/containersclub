@@ -1,13 +1,16 @@
 def detect_intent(message: str) -> str:
     msg = message.lower()
 
-    if "track" in msg:
+    if any(k in msg for k in ["track", "tracking", "location", "where is my container"]):
         return "TRACK"
-    if "rent" in msg:
+
+    if any(k in msg for k in ["rent", "rental", "lease", "leasing"]):
         return "RENT"
-    if "buy" in msg or "sell" in msg:
+
+    if any(k in msg for k in ["buy", "sell", "purchase", "sale"]):
         return "BUY_SELL"
-    if "insurance" in msg:
+
+    if any(k in msg for k in ["insurance", "insured", "coverage", "policy"]):
         return "INSURANCE"
 
     return "GENERAL"

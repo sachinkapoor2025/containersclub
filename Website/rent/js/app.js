@@ -13,7 +13,7 @@ const logoutBtn = document.getElementById("logoutBtn");
 const formEl    = document.getElementById("listingForm");
 
 // ---- Auth storage helpers ----
-const AUTH_KEY = "cognito_auth";
+const AUTH_KEY = "cb_auth";
 
 function getAuth() {
   try { return JSON.parse(localStorage.getItem(AUTH_KEY) || "null"); }
@@ -66,7 +66,7 @@ function refreshUI() {
 function login() {
   const domain   = window.COGNITO_DOMAIN;
   const clientId = window.COGNITO_CLIENT_ID;
-  const redirect = window.COGNITO_REDIRECT_URI_SELL; // Use callback
+  const redirect = window.COGNITO_REDIRECT_URI_RENT || location.href;
   const scope    = "openid profile email";
 
   if (!domain || !clientId) {
@@ -79,7 +79,7 @@ function login() {
     `&client_id=${encodeURIComponent(clientId)}` +
     `&redirect_uri=${encodeURIComponent(redirect)}` +
     `&scope=${encodeURIComponent(scope)}` +
-    `&state=rent`;
+    `&state=${encodeURIComponent(location.pathname)}`;
 
   location.assign(url);
 }
