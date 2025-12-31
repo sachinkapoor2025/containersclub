@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <title>Rent Login Callback | Containers Club</title>
+  <meta name="description" content="Processing login for container rentals."/>
+  <meta name="robots" content="noindex, nofollow"/>
+</head>
+<body>
+  <div style="text-align: center; padding: 50px;">
+    <h2>Processing login...</h2>
+    <p>Please wait while we redirect you back to your booking.</p>
+  </div>
+
+  <script>
+    // Parse tokens from hash and handle state-based redirect
+    const hashParams = new URLSearchParams(window.location.hash.substring(1));
+    const accessToken = hashParams.get("access_token");
+    const idToken = hashParams.get("id_token");
+    const tokenType = hashParams.get("token_type") || "Bearer";
+    const expiresIn = parseInt(hashParams.get("expires_in") || "3600");
+    const state = hashParams.get("state");
+
+    // Store tokens in localStorage if available
+    if (accessToken) {
+      const authData = {
+        access_token: accessToken,
+        id_token: idToken,
+        token_type: tokenType,
+        exp: Date.now() + (expiresIn * 1000)
+      };
+      localStorage.setItem("cb_auth", JSON.stringify(authData));
+    }
+
+    // Handle redirect based on state
+    if (state) {
+      try {
+        const decoded = JSON.parse(decodeURIComponent(state));
+
+        if (decoded.returnTo && decoded.id) {
+          window.location.replace(
+            `${decoded.returnTo}?id=${decoded.id}`
+          );
+        } else {
+          window.location.replace("/rent/new.html");
+        }
+      } catch (e) {
+        window.location.replace("/rent/new.html");
+      }
+    } else {
+      window.location.replace("/rent/new.html");
+    }
+  </script>
+</body>
+</html>

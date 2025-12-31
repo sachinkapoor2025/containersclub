@@ -1,4 +1,4 @@
-name: Deploy Employee Portal (Backend + Frontend)
+name: Deploy Containers Club  (Backend + Frontend)
 
 on:
   push:

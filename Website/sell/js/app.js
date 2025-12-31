@@ -244,7 +244,8 @@ function cardHtml(it) {
 
     <div style="display:flex;flex-direction:column;gap:10px;">
       <button onclick="showVideo()" style="padding:12px 24px;font-size:16px;">Video</button>
-      <button class="primary" onclick="window.location.href='/sell/book.html?id=${it.listingId}'" style="padding:12px 24px;font-size:16px;">Book</button>
+      <button class="primary" onclick="window.location.href='/sell/book.html?id=${it.listingId}&action=buy'" style="padding:12px 24px;font-size:16px;">Buy</button>
+      <button class="secondary" onclick="window.location.href='/sell/book.html?id=${it.listingId}&action=lock'" style="padding:12px 24px;font-size:16px;background:#f59e0b;color:white;border:1px solid #f59e0b;">Lock Deal</button>
     </div>
   </article>`;
 }
