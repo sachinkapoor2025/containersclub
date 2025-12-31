@@ -133,13 +133,16 @@ async function loadContainerDetails() {
     const pricePeriod = item.pricePeriod || 'month';
     document.getElementById("containerPrice").textContent = `Deposit: $${deposit} | $${price}/${pricePeriod}`;
 
-    // Show details and form
+    // Show details, form, and media section
     document.getElementById("containerDetails").style.display = "block";
     document.getElementById("bookingForm").style.display = "block";
     document.getElementById("loading").style.display = "none";
 
     // Store item for form submission
     window.currentItem = item;
+
+    // Show images and video
+    showMediaSection();
 
   } catch (error) {
     console.error("Error loading container:", error);
@@ -167,14 +170,17 @@ function setupForm() {
     const endDate = new Date(endDateInput.value);
 
     if (startDate && endDate && startDate <= endDate) {
-      // Calculate months difference (simplified)
-      const months = Math.max(1, Math.ceil((endDate - startDate) / (1000 * 60 * 60 * 24 * 30)));
-      daysInput.value = months * 30; // Approximate days for display
+      // Calculate actual number of days between dates
+      const diffTime = Math.abs(endDate - startDate);
+      const actualDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24)) + 1; // Include both start and end dates
+      daysInput.value = actualDays;
 
       const deposit = window.currentItem?.deposit || 0;
-      const price = window.currentItem?.price || 0;
-      const total = deposit + (price * months);
-      document.getElementById("totalCost").textContent = `$${total}`;
+      const monthlyPrice = window.currentItem?.price || 0;
+      const daysInMonth = 30; // Standard assumption
+      const dailyRate = monthlyPrice / daysInMonth;
+      const total = deposit + (dailyRate * actualDays);
+      document.getElementById("totalCost").textContent = `$${Math.round(total)}`;
     }
   }
 
@@ -235,22 +241,187 @@ function showMediaSection() {
   const item = window.currentItem;
   if (!item) return;
 
-  // Show images
-  const imagesContainer = document.getElementById("containerImages");
-  if (imagesContainer && item.images && item.images.length > 0) {
-    imagesContainer.innerHTML = item.images.map(img =>
-      `<img src="${img}" alt="Container image" style="width:100%;height:200px;object-fit:cover;border-radius:8px;">`
-    ).join("");
+  // Show images carousel
+  if (item.images && item.images.length > 0) {
+    setupImageCarousel(item.images);
+    document.getElementById("imagesContainer").style.display = "block";
   }
 
-  // Show video
-  const videoContainer = document.getElementById("containerVideo");
-  if (videoContainer) {
-    videoContainer.style.display = "block";
-  }
+  // Show videos carousel (using the same video for now, but can be extended for multiple videos)
+  setupVideoCarousel([item.video || "https://website-image-containersclub.s3.us-east-1.amazonaws.com/container.mp4"]);
+  document.getElementById("videosContainer").style.display = "block";
 
   // Show the media section
   document.getElementById("mediaSection").style.display = "block";
+}
+
+// ---- Image Carousel (5 images at a time) ----
+function setupImageCarousel(images) {
+  const track = document.getElementById("imagesTrack");
+  const prevBtn = document.getElementById("imagesPrevBtn");
+  const nextBtn = document.getElementById("imagesNextBtn");
+  const container = document.getElementById("imagesContainer").querySelector(".carousel-container");
+
+  // Create image items
+  track.innerHTML = images.map((img, index) =>
+    `<div class="carousel-item">
+      <img src="${img}" alt="Container image ${index + 1}">
+    </div>`
+  ).join("");
+
+  let currentIndex = 0;
+  const itemsPerView = 5;
+  const totalItems = images.length;
+  const maxIndex = Math.max(0, totalItems - itemsPerView);
+
+  function updateCarousel() {
+    const translateX = -currentIndex * 156; // 150px width + 6px margin
+    track.style.transform = `translateX(${translateX}px)`;
+
+    prevBtn.disabled = currentIndex === 0;
+    nextBtn.disabled = currentIndex >= maxIndex;
+  }
+
+  // Add hover event listeners to manage zoom-active class
+  const carouselItems = track.querySelectorAll('.carousel-item');
+  carouselItems.forEach(item => {
+    item.addEventListener('mouseenter', () => {
+      container.classList.add('zoom-active');
+    });
+    item.addEventListener('mouseleave', () => {
+      // Check if mouse is still over any carousel item
+      const stillHovering = Array.from(carouselItems).some(item => item.matches(':hover'));
+      if (!stillHovering) {
+        container.classList.remove('zoom-active');
+      }
+    });
+  });
+
+  prevBtn.addEventListener("click", () => {
+    if (currentIndex > 0) {
+      currentIndex--;
+      updateCarousel();
+    }
+  });
+
+  nextBtn.addEventListener("click", () => {
+    if (currentIndex < maxIndex) {
+      currentIndex++;
+      updateCarousel();
+    }
+  });
+
+  updateCarousel();
+}
+
+// ---- Video Carousel (1 video at a time) ----
+function setupVideoCarousel(videos) {
+  const track = document.getElementById("videosTrack");
+  const prevBtn = document.getElementById("videosPrevBtn");
+  const nextBtn = document.getElementById("videosNextBtn");
+  const container = document.getElementById("videosContainer").querySelector(".carousel-container");
+
+  // Create video items
+  track.innerHTML = videos.map((video, index) =>
+    `<div class="carousel-item">
+      <video controls>
+        <source src="${video}" type="video/mp4">
+        Your browser does not support the video tag.
+      </video>
+    </div>`
+  ).join("");
+
+  let currentIndex = 0;
+  const totalItems = videos.length;
+
+  function updateCarousel() {
+    const translateX = -currentIndex * 210; // 200px width + 10px margin
+    track.style.transform = `translateX(${translateX}px)`;
+
+    prevBtn.disabled = currentIndex === 0;
+    nextBtn.disabled = currentIndex >= totalItems - 1;
+  }
+
+  // Add hover event listeners to manage zoom-active class for videos
+  const carouselItems = track.querySelectorAll('.carousel-item');
+  carouselItems.forEach(item => {
+    item.addEventListener('mouseenter', () => {
+      container.classList.add('zoom-active');
+    });
+    item.addEventListener('mouseleave', () => {
+      // Check if mouse is still over any carousel item or if a video is playing
+      const stillHovering = Array.from(carouselItems).some(item => item.matches(':hover'));
+      const videoPlaying = Array.from(carouselItems).some(item => item.querySelector('video.playing'));
+      if (!stillHovering && !videoPlaying) {
+        container.classList.remove('zoom-active');
+      }
+    });
+  });
+
+  prevBtn.addEventListener("click", () => {
+    if (currentIndex > 0) {
+      // Pause current video and remove playing class
+      const currentVideo = track.children[currentIndex].querySelector('video');
+      if (currentVideo) {
+        currentVideo.pause();
+        currentVideo.classList.remove('playing');
+      }
+
+      currentIndex--;
+      updateCarousel();
+    }
+  });
+
+  nextBtn.addEventListener("click", () => {
+    if (currentIndex < totalItems - 1) {
+      // Pause current video and remove playing class
+      const currentVideo = track.children[currentIndex].querySelector('video');
+      if (currentVideo) {
+        currentVideo.pause();
+        currentVideo.classList.remove('playing');
+      }
+
+      currentIndex++;
+      updateCarousel();
+    }
+  });
+
+  // Add video event listeners for zoom effect
+  const videoElements = track.querySelectorAll('video');
+  videoElements.forEach(video => {
+    video.addEventListener('play', () => {
+      video.classList.add('playing');
+      container.classList.add('zoom-active');
+    });
+
+    video.addEventListener('pause', () => {
+      video.classList.remove('playing');
+      // Check if any other video is still playing
+      const stillPlaying = Array.from(videoElements).some(v => v.classList.contains('playing'));
+      if (!stillPlaying) {
+        // Check if mouse is still hovering
+        const stillHovering = Array.from(carouselItems).some(item => item.matches(':hover'));
+        if (!stillHovering) {
+          container.classList.remove('zoom-active');
+        }
+      }
+    });
+
+    video.addEventListener('ended', () => {
+      video.classList.remove('playing');
+      // Check if any other video is still playing
+      const stillPlaying = Array.from(videoElements).some(v => v.classList.contains('playing'));
+      if (!stillPlaying) {
+        // Check if mouse is still hovering
+        const stillHovering = Array.from(carouselItems).some(item => item.matches(':hover'));
+        if (!stillHovering) {
+          container.classList.remove('zoom-active');
+        }
+      }
+    });
+  });
+
+  updateCarousel();
 }
 
 // ---- Wire up ----
