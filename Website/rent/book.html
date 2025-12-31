@@ -52,7 +52,7 @@
         <p><strong>Location:</strong> <span id="containerLocation"></span></p>
       </div>
       <div>
-        <p><strong>Daily Rate:</strong> <span id="containerPrice"></span></p>
+        <p><strong>Pricing:</strong> <span id="containerPrice" style="color:#0ea5e9;font-weight:bold;font-size:18px;"></span></p>
         <p><strong>Available From:</strong> <span id="containerAvailableFrom"></span></p>
       </div>
     </div>
@@ -74,8 +74,8 @@
     </div>
 
     <div class="grid">
-      <input name="startDate" type="date" placeholder="Rental Start Date" required/>
-      <input name="endDate" type="date" placeholder="Rental End Date" required/>
+      <input name="startDate" type="date" placeholder="Required From" required/>
+      <input name="endDate" type="date" placeholder="Required Till" required/>
     </div>
 
     <div class="grid">
@@ -118,6 +118,19 @@
 
     <button type="submit" class="primary">Complete Booking</button>
   </form>
+
+  <!-- Images and Video Section (shown after form submission) -->
+  <section class="card" id="mediaSection" style="display:none;">
+    <h2>Container Images & Video</h2>
+    <div id="containerImages" class="grid" style="grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap:16px; margin-bottom:20px;"></div>
+    <div id="containerVideo" style="display:none;">
+      <h3>Container Video</h3>
+      <video controls style="width:100%;max-height:400px;">
+        <source src="https://website-image-containersclub.s3.us-east-1.amazonaws.com/container.mp4" type="video/mp4">
+        Your browser does not support the video tag.
+      </video>
+    </div>
+  </section>
 
   <div id="loading" class="card">
     <p>Loading container details...</p>

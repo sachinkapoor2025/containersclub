@@ -127,8 +127,11 @@ async function loadContainerDetails() {
     document.getElementById("containerAvailableFrom").textContent = item.availableFrom;
     document.getElementById("containerDescription").textContent = item.description;
 
-    // Show daily rate
-    document.getElementById("containerPrice").textContent = `$${item.dailyRate}/day`;
+    // Show deposit and monthly price
+    const deposit = item.deposit || 0;
+    const price = item.price || 0;
+    const pricePeriod = item.pricePeriod || 'month';
+    document.getElementById("containerPrice").textContent = `Deposit: $${deposit} | $${price}/${pricePeriod}`;
 
     // Show details and form
     document.getElementById("containerDetails").style.display = "block";
@@ -164,12 +167,14 @@ function setupForm() {
     const endDate = new Date(endDateInput.value);
 
     if (startDate && endDate && startDate <= endDate) {
-      const diffTime = Math.abs(endDate - startDate);
-      const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24)) + 1; // Include both start and end dates
-      daysInput.value = diffDays;
+      // Calculate months difference (simplified)
+      const months = Math.max(1, Math.ceil((endDate - startDate) / (1000 * 60 * 60 * 24 * 30)));
+      daysInput.value = months * 30; // Approximate days for display
 
-      const rate = window.currentItem?.dailyRate || 0;
-      document.getElementById("totalCost").textContent = `$${diffDays * rate}`;
+      const deposit = window.currentItem?.deposit || 0;
+      const price = window.currentItem?.price || 0;
+      const total = deposit + (price * months);
+      document.getElementById("totalCost").textContent = `$${total}`;
     }
   }
 
@@ -213,15 +218,39 @@ function setupForm() {
         body: JSON.stringify(bookingData)
       });
 
-      alert("Booking submitted successfully!");
-      // Redirect or show confirmation
-      window.location.href = "/";
+      // Show images and video after successful booking
+      showMediaSection();
+
+      alert("Booking submitted successfully! Check out the container images and video below.");
 
     } catch (error) {
       console.error("Booking error:", error);
       alert("Booking failed: " + error.message);
     }
   });
+}
+
+// ---- Show Media Section ----
+function showMediaSection() {
+  const item = window.currentItem;
+  if (!item) return;
+
+  // Show images
+  const imagesContainer = document.getElementById("containerImages");
+  if (imagesContainer && item.images && item.images.length > 0) {
+    imagesContainer.innerHTML = item.images.map(img =>
+      `<img src="${img}" alt="Container image" style="width:100%;height:200px;object-fit:cover;border-radius:8px;">`
+    ).join("");
+  }
+
+  // Show video
+  const videoContainer = document.getElementById("containerVideo");
+  if (videoContainer) {
+    videoContainer.style.display = "block";
+  }
+
+  // Show the media section
+  document.getElementById("mediaSection").style.display = "block";
 }
 
 // ---- Wire up ----
