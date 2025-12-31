@@ -4,7 +4,7 @@ on:
   push:
     branches:
       - main
-      - feature-*
+      - feature/*
 
 jobs:
   deploy-backend:
@@ -58,3 +58,10 @@ jobs:
           aws s3 sync website/ s3://containers-club-dev-webbucket-elh1uro4wffs \
             --delete \
             --exact-timestamps
+
+
+      - name: Invalidate CloudFront cache
+        run: |
+          aws cloudfront create-invalidation \
+            --distribution-id E18YOLZYXQWBEI \
+            --paths "/*"

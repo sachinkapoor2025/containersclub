@@ -11,7 +11,7 @@ Globals:
   Function:
     # Default for most Python lambdas
     Runtime: python3.12
-    Timeout: 30
+    Timeout: 60
     MemorySize: 512
     Architectures: [arm64]
 
@@ -294,7 +294,7 @@ Resources:
   #################################
   # Cognito (rent/sell)
   #################################
-  CognitoUserPool:
+  RentCognitoUserPool:
     Type: AWS::Cognito::UserPool
     Properties:
       UserPoolName: rent-club-user-pool
@@ -309,42 +309,59 @@ Resources:
           RequireLowercase: true
           RequireNumbers: true
 
-  CognitoUserPoolClient:
+  RentCognitoUserPoolClient:
     Type: AWS::Cognito::UserPoolClient
     Properties:
       ClientName: rent-club-client
-      UserPoolId: !Ref CognitoUserPool
+      UserPoolId: !Ref RentCognitoUserPool
       GenerateSecret: false
+
+      # REQUIRED for Hosted UI
       AllowedOAuthFlowsUserPoolClient: true
-      AllowedOAuthFlows: [ implicit ]
-      AllowedOAuthScopes: [ email, openid ]
+      AllowedOAuthFlows:
+        - implicit
+        - code
+
+      AllowedOAuthScopes:
+        - openid
+        - email
+        - profile
+
+      SupportedIdentityProviders:
+      - COGNITO
+      - Google   # 👈 THIS AUTOMATES THE UI SELECTION
+
       ExplicitAuthFlows:
+        - ALLOW_USER_PASSWORD_AUTH
         - ALLOW_USER_SRP_AUTH
         - ALLOW_REFRESH_TOKEN_AUTH
-      CallbackURLs:
-        - http://localhost:3000/auth/callback
-        - !Sub "https://${FrontendDomainName}/rent/new.html"
-      LogoutURLs:
-        - http://localhost:3000
-        - !Sub "https://${FrontendDomainName}"
 
-  CognitoDomain:
+      CallbackURLs:
+        - !Sub "https://${FrontendDomainName}/rent/callback"
+        - !Sub "https://${FrontendDomainName}/rent/new.html
+
+      LogoutURLs:
+        - !Sub "https://${FrontendDomainName}
+        - !Sub "https://${FrontendDomainName}/auth/logout-success.html
+
+  RentCognitoDomain:
     Type: AWS::Cognito::UserPoolDomain
     Properties:
       Domain: rent-club-auth
-      UserPoolId: !Ref CognitoUserPool
+      UserPoolId: !Ref RentCognitoUserPool
 
-  CognitoAdminGroup:
+  RentCognitoAdminGroup:
     Type: AWS::Cognito::UserPoolGroup
     Properties:
       GroupName: Admin
-      UserPoolId: !Ref CognitoUserPool
+      UserPoolId: !Ref RentCognitoUserPool
 
-  CognitoEmployeeGroup:
+  RentCognitoEmployeeGroup:
     Type: AWS::Cognito::UserPoolGroup
     Properties:
       GroupName: Employee
-      UserPoolId: !Ref CognitoUserPool
+      UserPoolId: !Ref RentCognitoUserPool
+
 
   SellCognitoUserPool:
     Type: AWS::Cognito::UserPool
@@ -379,18 +396,23 @@ Resources:
         - email
         - profile
 
+      SupportedIdentityProviders:
+      - COGNITO
+      - Google   # 👈 THIS AUTOMATES THE UI SELECTION
+
       ExplicitAuthFlows:
         - ALLOW_USER_PASSWORD_AUTH
         - ALLOW_USER_SRP_AUTH
         - ALLOW_REFRESH_TOKEN_AUTH
 
       CallbackURLs:
-        - http://localhost:3000/sell/new.html
-        - https://containersclub.com/sell/new.html
+        - !Sub "https://${FrontendDomainName}/auth/callback
+        - !Sub "https://${FrontendDomainName}/sell/callback
+        - !Sub "https://${FrontendDomainName}/sell/new.html
 
       LogoutURLs:
-        - http://localhost:3000
-        - https://containersclub.com
+        - !Sub "https://${FrontendDomainName}
+        - !Sub "https://${FrontendDomainName}/auth/logout-success.html
 
   SellCognitoDomain:
     Type: AWS::Cognito::UserPoolDomain
