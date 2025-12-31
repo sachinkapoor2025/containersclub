@@ -28,7 +28,7 @@ jobs:
       # Backend: SAM Build
       # ----------------------------
       - name: SAM Build
-        working-directory: backend
+        working-directory: Backend
         run: |
           sam build
 
@@ -36,7 +36,7 @@ jobs:
       # Backend: SAM Deploy (uses samconfig.toml)
       # ----------------------------
       - name: SAM Deploy (dev)
-        working-directory: backend
+        working-directory: Backend
         run: |
           sam deploy --config-env dev
 
@@ -54,7 +54,7 @@ jobs:
       # ----------------------------
       - name: Deploy frontend to S3
         run: |
-          aws s3 sync website/ s3://containers-club-dev-webbucket-elh1uro4wffs \
+          aws s3 sync Website/ s3://containers-club-dev-webbucket-elh1uro4wffs \
             --delete \
             --exact-timestamps
 
