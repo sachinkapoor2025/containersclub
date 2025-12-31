@@ -19,6 +19,16 @@ function isExpired(auth) {
   return Date.now() >= auth.exp - 5000;
 }
 
+function getUserEmail(auth) {
+  if (!auth || !auth.id_token) return null;
+  try {
+    const payload = JSON.parse(atob(auth.id_token.split('.')[1]));
+    return payload.email;
+  } catch {
+    return null;
+  }
+}
+
 // ---- DOM ----
 const loginBtn  = document.getElementById("loginBtn");
 const logoutBtn = document.getElementById("logoutBtn");
@@ -51,27 +61,40 @@ function refreshUI() {
 
   if (loginBtn)  loginBtn.style.display  = loggedIn ? "none" : "inline-block";
   if (logoutBtn) logoutBtn.style.display = loggedIn ? "inline-block" : "none";
+
+  // Update welcome message
+  const welcomeEl = document.getElementById("welcomeMessage");
+  if (welcomeEl) {
+    if (loggedIn) {
+      const email = getUserEmail(auth);
+      welcomeEl.textContent = `Welcome ${email || 'User'}!`;
+      welcomeEl.style.display = "block";
+    } else {
+      welcomeEl.style.display = "none";
+    }
+  }
 }
 
 // ---- Auth actions ----
 function login() {
-  const domain   = window.SELL_COGNITO_DOMAIN;
-  const clientId = window.SELL_COGNITO_CLIENT_ID;
-  const redirect = window.COGNITO_REDIRECT_URI_SELL || location.href;
+  const containerId = new URLSearchParams(window.location.search).get("id");
 
-  if (!domain || !clientId) {
-    alert("Login not configured.");
-    return;
-  }
+  const redirectState = encodeURIComponent(
+    JSON.stringify({
+      returnTo: "/sell/book.html",
+      id: containerId
+    })
+  );
 
-  const url = `${domain}/oauth2/authorize` +
-    `?response_type=token` +
-    `&client_id=${encodeURIComponent(clientId)}` +
-    `&redirect_uri=${encodeURIComponent(redirect)}` +
-    `&scope=${encodeURIComponent("openid profile email")}` +
-    `&state=${encodeURIComponent(location.pathname + location.search)}`;
+  const cognitoLoginUrl =
+    "https://sell-club-auth.auth.us-east-1.amazoncognito.com/oauth2/authorize" +
+    "?client_id=3264ar1beegeb84aodivq3poeh" +
+    "&response_type=token" +
+    "&scope=openid+email+profile" +
+    "&redirect_uri=https://containersclub.com/sell/new.html" +
+    "&state=" + redirectState;
 
-  location.assign(url);
+  window.location.href = cognitoLoginUrl;
 }
 
 function logout() {
