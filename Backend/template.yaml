@@ -45,8 +45,8 @@ Resources:
       StageName: prod
       Cors:
         AllowMethods: "'GET,POST,OPTIONS'"
-        AllowHeaders: "'Content-Type,Authorization'"
-        AllowOrigin: "'https://containersclub.com'"
+        AllowHeaders: "'*'"
+        AllowOrigin: "'*'"
 
   SellApi:
     Type: AWS::Serverless::Api
@@ -55,8 +55,8 @@ Resources:
       StageName: prod
       Cors:
         AllowMethods: "'GET,POST,OPTIONS'"
-        AllowHeaders: "'Content-Type,Authorization'"
-        AllowOrigin: "'https://containersclub.com'"
+        AllowHeaders: "'*'"
+        AllowOrigin: "'*'"
 
   #################################
   # DynamoDB Tables
@@ -534,7 +534,7 @@ Resources:
             OriginRequestPolicyId: 216adef6-5c7f-47e4-b989-5492eafa07d3
 
           # Rent service paths
-          - PathPattern: "/rent/*"
+          - PathPattern: "/rent/api/*"
             TargetOriginId: RentApiOrigin
             ViewerProtocolPolicy: https-only
             AllowedMethods: [ GET, HEAD, OPTIONS, PUT, POST, PATCH, DELETE ]
@@ -543,7 +543,7 @@ Resources:
             OriginRequestPolicyId: 216adef6-5c7f-47e4-b989-5492eafa07d3
 
           # Sell service paths
-          - PathPattern: "/sell/*"
+          - PathPattern: "/sell/api/*"
             TargetOriginId: SellApiOrigin
             ViewerProtocolPolicy: https-only
             AllowedMethods: [ GET, HEAD, OPTIONS, PUT, POST, PATCH, DELETE ]
@@ -673,47 +673,6 @@ Resources:
             RestApiId: !Ref SellApi
             Path: /sell/listings/{listingId}
             Method: GET
-
-  RentBookingFunction:
-    Type: AWS::Serverless::Function
-    Properties:
-      CodeUri: lambda/list/book/
-      Handler: app.handler
-      Runtime: python3.12
-      Policies:
-        - DynamoDBWritePolicy:
-            TableName: !Ref BookingsTable
-      Environment:
-        Variables:
-          BOOKINGS_TABLE: !Ref BookingsTable
-      Events:
-        ApiPost:
-          Type: Api
-          Properties:
-            RestApiId: !Ref RentApi
-            Path: /rent/book
-            Method: POST
-
-  SellPurchaseFunction:
-    Type: AWS::Serverless::Function
-    Properties:
-      CodeUri: lambda/sell/purchase/
-      Handler: app.handler
-      Runtime: python3.12
-      Policies:
-        - DynamoDBWritePolicy:
-            TableName: !Ref BookingsTable
-      Environment:
-        Variables:
-          BOOKINGS_TABLE: !Ref BookingsTable
-      Events:
-        ApiPost:
-          Type: Api
-          Properties:
-            RestApiId: !Ref SellApi
-            Path: /sell/purchase
-            Method: POST
-
 
   BookingFunction:
     Type: AWS::Serverless::Function
