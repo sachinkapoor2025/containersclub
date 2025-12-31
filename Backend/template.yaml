@@ -338,11 +338,11 @@ Resources:
 
       CallbackURLs:
         - !Sub "https://${FrontendDomainName}/rent/callback"
-        - !Sub "https://${FrontendDomainName}/rent/new.html
+        - !Sub "https://${FrontendDomainName}/rent/new.html"
 
       LogoutURLs:
-        - !Sub "https://${FrontendDomainName}
-        - !Sub "https://${FrontendDomainName}/auth/logout-success.html
+        - !Sub "https://${FrontendDomainName}"
+        - !Sub "https://${FrontendDomainName}/auth/logout-success.html"
 
   RentCognitoDomain:
     Type: AWS::Cognito::UserPoolDomain
@@ -406,13 +406,13 @@ Resources:
         - ALLOW_REFRESH_TOKEN_AUTH
 
       CallbackURLs:
-        - !Sub "https://${FrontendDomainName}/auth/callback
-        - !Sub "https://${FrontendDomainName}/sell/callback
-        - !Sub "https://${FrontendDomainName}/sell/new.html
+        - !Sub "https://${FrontendDomainName}/auth/callback"
+        - !Sub "https://${FrontendDomainName}/sell/callback"
+        - !Sub "https://${FrontendDomainName}/sell/new.html"
 
       LogoutURLs:
-        - !Sub "https://${FrontendDomainName}
-        - !Sub "https://${FrontendDomainName}/auth/logout-success.html
+        - !Sub "https://${FrontendDomainName}"
+        - !Sub "https://${FrontendDomainName}/auth/logout-success.html"
 
   SellCognitoDomain:
     Type: AWS::Cognito::UserPoolDomain
