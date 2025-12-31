@@ -257,16 +257,16 @@ Resources:
       TableName: !Sub "${AWS::StackName}-SellListings"
 
   RentBookingsTable:
-  Type: AWS::DynamoDB::Table
-  Properties:
-    BillingMode: PAY_PER_REQUEST
-    AttributeDefinitions:
-      - AttributeName: booking_id
-        AttributeType: S
-    KeySchema:
-      - AttributeName: booking_id
-        KeyType: HASH
-    TableName: !Sub "${AWS::StackName}-rent-bookings"
+    Type: AWS::DynamoDB::Table
+    Properties:
+      BillingMode: PAY_PER_REQUEST
+      AttributeDefinitions:
+        - AttributeName: booking_id
+          AttributeType: S
+      KeySchema:
+        - AttributeName: booking_id
+          KeyType: HASH
+      TableName: !Sub "${AWS::StackName}-rent-bookings"
 
   SellBookingsTable:
     Type: AWS::DynamoDB::Table
@@ -279,6 +279,18 @@ Resources:
         - AttributeName: booking_id
           KeyType: HASH
       TableName: !Sub "${AWS::StackName}-sell-bookings"
+
+  BookingNotificationsTopic:
+    Type: AWS::SNS::Topic
+    Properties:
+      TopicName: !Sub "${AWS::StackName}-booking-notifications"
+
+  BookingAdminEmailSubscription:
+    Type: AWS::SNS::Subscription
+    Properties:
+      TopicArn: !Ref BookingNotificationsTopic
+      Protocol: email
+      Endpoint: sachinkapoor2025@gmail.com
 
   #################################
   # S3 Buckets
@@ -707,8 +719,11 @@ Resources:
       Policies:
         - DynamoDBWritePolicy:
             TableName: !Ref RentBookingsTable
-        - SNSPublishMessagePolicy:
-            TopicName: booking-notifications
+        - Statement:
+            - Effect: Allow
+              Action:
+                - sns:Publish
+              Resource: !Ref BookingNotificationsTopic
       Environment:
         Variables:
           BOOKINGS_TABLE: !Ref RentBookingsTable
@@ -730,8 +745,11 @@ Resources:
       Policies:
         - DynamoDBWritePolicy:
             TableName: !Ref SellBookingsTable
-        - SNSPublishMessagePolicy:
-            TopicName: booking-notifications
+        - Statement:
+            - Effect: Allow
+              Action:
+                - sns:Publish
+              Resource: !Ref BookingNotificationsTopic
       Environment:
         Variables:
           BOOKINGS_TABLE: !Ref SellBookingsTable
@@ -1076,19 +1094,9 @@ Resources:
           ONLOAD_TABLE: !Ref PricesOnloadTable
           OFFLOAD_TABLE: !Ref PricesOffloadTable
 
-  BookingNotificationsTopic:
-    Type: AWS::SNS::Topic
-    Properties:
-      TopicName: !Sub "${AWS::StackName}-booking-notifications"
 
-  BookingAdminEmailSubscription:
-    Type: AWS::SNS::Subscription
-    Properties:
-      TopicArn: !Ref BookingNotificationsTopic
-      Protocol: email
-      Endpoint: sachinkapoor2025@gmail.com
 
-    #################################
+  #################################
   # BLOG SERVICE (DynamoDB + S3 + Lambda + API)
   #################################
 
