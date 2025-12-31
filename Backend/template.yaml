@@ -677,9 +677,15 @@ Resources:
   RentBookingFunction:
     Type: AWS::Serverless::Function
     Properties:
-      CodeUri: lambda/list/book/
+      CodeUri: lambda/rent/book/
       Handler: app.handler
       Runtime: python3.12
+      Policies:
+        - DynamoDBWritePolicy:
+            TableName: !Ref BookingsTable
+      Environment:
+        Variables:
+          BOOKINGS_TABLE: !Ref BookingsTable
       Events:
         ApiPost:
           Type: Api
@@ -694,6 +700,12 @@ Resources:
       CodeUri: lambda/sell/purchase/
       Handler: app.handler
       Runtime: python3.12
+      Policies:
+        - DynamoDBWritePolicy:
+            TableName: !Ref BookingsTable
+      Environment:
+        Variables:
+          BOOKINGS_TABLE: !Ref BookingsTable
       Events:
         ApiPost:
           Type: Api
@@ -701,6 +713,7 @@ Resources:
             RestApiId: !Ref SellApi
             Path: /sell/purchase
             Method: POST
+
 
   BookingFunction:
     Type: AWS::Serverless::Function
