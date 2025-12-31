@@ -23,26 +23,41 @@ def response(status, body=None):
 
 
 def handler(event, context):
-    # ---- Handle CORS preflight (REST + HTTP API safe) ----
     method = event.get("httpMethod") or event.get("requestContext", {}).get("http", {}).get("method")
 
     if method == "OPTIONS":
         return response(200)
 
     try:
-        body = event.get("body")
-        if not body:
+        if not event.get("body"):
             return response(400, {
                 "success": False,
                 "message": "Missing request body"
             })
 
-        data = json.loads(body)
+        data = json.loads(event["body"])
 
-        # ---- Basic validation ----
-        required_fields = ["listingId", "name", "email", "address"]
-        for field in required_fields:
-            if not data.get(field):
+        # ---- Normalize address (frontend-safe) ----
+        address = (
+            data.get("address")
+            or ", ".join(filter(None, [
+                data.get("street"),
+                data.get("city"),
+                data.get("state"),
+                data.get("zip")
+            ]))
+        )
+
+        # ---- Validate required fields ----
+        required = {
+            "listingId": data.get("listingId"),
+            "name": data.get("name"),
+            "email": data.get("email"),
+            "address": address,
+        }
+
+        for field, value in required.items():
+            if not value:
                 return response(400, {
                     "success": False,
                     "message": f"Missing required field: {field}"
@@ -60,7 +75,7 @@ def handler(event, context):
                 "email": data.get("email"),
                 "phone": data.get("phone")
             },
-            "delivery_address": data.get("address"),
+            "delivery_address": address,
             "location": data.get("location"),
             "price": data.get("total"),
             "notes": data.get("notes"),
@@ -75,7 +90,7 @@ def handler(event, context):
         })
 
     except Exception as e:
-        print("PURCHASE ERROR:", str(e))
+        print("SELL PURCHASE ERROR:", str(e))
         return response(500, {
             "success": False,
             "message": "Failed to complete purchase"

@@ -23,23 +23,44 @@ def response(status, body=None):
 
 
 def handler(event, context):
-    # ---- Handle CORS preflight ----
+    # ---- REST + HTTP API safe method detection ----
     method = event.get("httpMethod") or event.get("requestContext", {}).get("http", {}).get("method")
 
     if method == "OPTIONS":
         return response(200)
 
     try:
-        body = event.get("body")
-        if not body:
+        if not event.get("body"):
             return response(400, {"success": False, "message": "Missing request body"})
 
-        data = json.loads(body)
+        data = json.loads(event["body"])
 
-        # ---- Basic validation ----
-        required_fields = ["listingId", "name", "email", "fromDate"]
-        for field in required_fields:
-            if not data.get(field):
+        # ---- Normalize dates (frontend-safe) ----
+        from_date = (
+            data.get("fromDate")
+            or data.get("from")
+            or data.get("requiredFrom")
+            or data.get("startDate")
+        )
+
+        to_date = (
+            data.get("toDate")
+            or data.get("to")
+            or data.get("requiredTill")
+            or data.get("endDate")
+        )
+
+        # ---- Validate required fields ----
+        required = {
+            "listingId": data.get("listingId"),
+            "name": data.get("name"),
+            "email": data.get("email"),
+            "fromDate": from_date,
+            "toDate": to_date,
+        }
+
+        for field, value in required.items():
+            if not value:
                 return response(400, {
                     "success": False,
                     "message": f"Missing required field: {field}"
@@ -58,8 +79,8 @@ def handler(event, context):
                 "phone": data.get("phone")
             },
             "dates": {
-                "from": data.get("fromDate"),
-                "to": data.get("toDate")
+                "from": from_date,
+                "to": to_date
             },
             "location": data.get("location"),
             "price": data.get("total"),
@@ -75,7 +96,7 @@ def handler(event, context):
         })
 
     except Exception as e:
-        print("BOOKING ERROR:", str(e))
+        print("RENT BOOKING ERROR:", str(e))
         return response(500, {
             "success": False,
             "message": "Failed to create rental booking"
