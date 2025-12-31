@@ -397,7 +397,6 @@ Resources:
 
       SupportedIdentityProviders:
       - COGNITO
-      - Google   # 👈 THIS AUTOMATES THE UI SELECTION
 
       ExplicitAuthFlows:
         - ALLOW_USER_PASSWORD_AUTH
