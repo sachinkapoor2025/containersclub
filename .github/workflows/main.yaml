@@ -42,7 +42,10 @@ jobs:
       - name: SAM Deploy (dev)
         working-directory: Backend
         run: |
-          sam deploy --config-env dev
+          sam deploy \
+            --config-env dev \
+            --no-confirm-changeset \
+            --no-fail-on-empty-changeset
 
   deploy-frontend:
     name: Deploy Frontend (S3)
