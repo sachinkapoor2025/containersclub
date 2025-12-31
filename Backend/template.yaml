@@ -635,44 +635,44 @@ Resources:
             Method: POST
 
   GetRentListingFunction:
-  Type: AWS::Serverless::Function
-  Properties:
-    CodeUri: lambda/list/get_listing/
-    Handler: app.handler
-    Runtime: python3.12
-    Policies:
-      - DynamoDBReadPolicy:
-          TableName: !Ref RentListingsTable
-    Environment:
-      Variables:
-        TABLE_NAME: !Ref RentListingsTable
-    Events:
-      ApiGet:
-        Type: Api
-        Properties:
-          RestApiId: !Ref RentApi
-          Path: /rent/listings/{listingId}
-          Method: GET
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: lambda/list/get_listing/
+      Handler: app.handler
+      Runtime: python3.12
+      Policies:
+        - DynamoDBReadPolicy:
+            TableName: !Ref RentListingsTable
+      Environment:
+        Variables:
+          TABLE_NAME: !Ref RentListingsTable
+      Events:
+        ApiGet:
+          Type: Api
+          Properties:
+            RestApiId: !Ref RentApi
+            Path: /rent/listings/{listingId}
+            Method: GET
   
   GetSellListingFunction:
-  Type: AWS::Serverless::Function
-  Properties:
-    CodeUri: lambda/sell/get_listing/
-    Handler: app.handler
-    Runtime: python3.12
-    Policies:
-      - DynamoDBReadPolicy:
-          TableName: !Ref SellListingsTable
-    Environment:
-      Variables:
-        TABLE_NAME: !Ref SellListingsTable
-    Events:
-      ApiGet:
-        Type: Api
-        Properties:
-          RestApiId: !Ref SellApi
-          Path: /sell/listings/{listingId}
-          Method: GET
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: lambda/sell/get_listing/
+      Handler: app.handler
+      Runtime: python3.12
+      Policies:
+        - DynamoDBReadPolicy:
+            TableName: !Ref SellListingsTable
+      Environment:
+        Variables:
+          TABLE_NAME: !Ref SellListingsTable
+      Events:
+        ApiGet:
+          Type: Api
+          Properties:
+            RestApiId: !Ref SellApi
+            Path: /sell/listings/{listingId}
+            Method: GET
 
   BookingFunction:
     Type: AWS::Serverless::Function
