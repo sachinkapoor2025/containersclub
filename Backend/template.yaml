@@ -674,6 +674,34 @@ Resources:
             Path: /sell/listings/{listingId}
             Method: GET
 
+  RentBookingFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: lambda/list/book/
+      Handler: app.handler
+      Runtime: python3.12
+      Events:
+        ApiPost:
+          Type: Api
+          Properties:
+            RestApiId: !Ref RentApi
+            Path: /rent/book
+            Method: POST
+
+  SellPurchaseFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: lambda/sell/purchase/
+      Handler: app.handler
+      Runtime: python3.12
+      Events:
+        ApiPost:
+          Type: Api
+          Properties:
+            RestApiId: !Ref SellApi
+            Path: /sell/purchase
+            Method: POST
+
   BookingFunction:
     Type: AWS::Serverless::Function
     Properties:

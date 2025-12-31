@@ -9,6 +9,7 @@ table = dynamodb.Table(os.environ["BOOKINGS_TABLE"])
 
 ALLOWED_ORIGIN = "https://containersclub.com"
 
+
 def response(status, body=None):
     return {
         "statusCode": status,
@@ -20,21 +21,40 @@ def response(status, body=None):
         "body": json.dumps(body) if body else ""
     }
 
+
 def handler(event, context):
-    # Preflight
-    if event["httpMethod"] == "OPTIONS":
+    # ---- Handle CORS preflight (REST + HTTP API safe) ----
+    method = event.get("httpMethod") or event.get("requestContext", {}).get("http", {}).get("method")
+
+    if method == "OPTIONS":
         return response(200)
 
     try:
-        data = json.loads(event.get("body", "{}"))
+        body = event.get("body")
+        if not body:
+            return response(400, {
+                "success": False,
+                "message": "Missing request body"
+            })
+
+        data = json.loads(body)
+
+        # ---- Basic validation ----
+        required_fields = ["listingId", "name", "email", "address"]
+        for field in required_fields:
+            if not data.get(field):
+                return response(400, {
+                    "success": False,
+                    "message": f"Missing required field: {field}"
+                })
 
         purchase_id = f"sell-{uuid.uuid4()}"
         now = int(time.time())
 
         item = {
             "booking_id": purchase_id,
-            "type": "sell",
-            "listing_id": data.get("listingId"),
+            "service": "sell",
+            "listing_id": data["listingId"],
             "customer": {
                 "name": data.get("name"),
                 "email": data.get("email"),
@@ -55,7 +75,7 @@ def handler(event, context):
         })
 
     except Exception as e:
-        print("ERROR:", str(e))
+        print("PURCHASE ERROR:", str(e))
         return response(500, {
             "success": False,
             "message": "Failed to complete purchase"
