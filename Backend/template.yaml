@@ -677,7 +677,7 @@ Resources:
   RentBookingFunction:
     Type: AWS::Serverless::Function
     Properties:
-      CodeUri: lambda/rent/book/
+      CodeUri: lambda/list/book/
       Handler: app.handler
       Runtime: python3.12
       Policies:
