@@ -29,6 +29,29 @@ function getUserEmail(auth) {
   }
 }
 
+function guessNameFromEmail(email) {
+  if (!email) return null;
+
+  // Extract part before @ and clean it up
+  const username = email.split('@')[0];
+
+  // Replace dots, underscores, hyphens with spaces
+  let name = username.replace(/[._-]/g, ' ');
+
+  // Capitalize each word
+  name = name.split(' ')
+    .map(word => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase())
+    .join(' ');
+
+  // Remove common email prefixes/suffixes
+  name = name.replace(/\b(seo|admin|user|test|mail|email|contact|info|support|sales|marketing)\b/gi, '').trim();
+
+  // If name is too short or empty, return null
+  if (name.length < 2) return null;
+
+  return name;
+}
+
 // ---- DOM ----
 const loginBtn  = document.getElementById("loginBtn");
 const logoutBtn = document.getElementById("logoutBtn");
@@ -67,7 +90,12 @@ function refreshUI() {
   if (welcomeEl) {
     if (loggedIn) {
       const email = getUserEmail(auth);
-      welcomeEl.textContent = `Welcome ${email || 'User'}!`;
+      const guessedName = guessNameFromEmail(email);
+      if (guessedName) {
+        welcomeEl.textContent = `Welcome ${guessedName}! Logged in as: ${email}`;
+      } else {
+        welcomeEl.textContent = `Welcome! Logged in as: ${email}`;
+      }
       welcomeEl.style.display = "block";
     } else {
       welcomeEl.style.display = "none";
@@ -180,6 +208,19 @@ function showError(message) {
 function setupForm() {
   if (!formEl) return;
 
+  // Show deal terms when Lock the Deal button is clicked
+  const lockBtn = formEl.querySelector('button[value="lock"]');
+  if (lockBtn) {
+    lockBtn.addEventListener('click', (e) => {
+      const dealTerms = document.getElementById('dealTerms');
+      if (dealTerms) {
+        dealTerms.style.display = 'block';
+        // Scroll to terms
+        dealTerms.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+      }
+    });
+  }
+
   formEl.addEventListener("submit", async (e) => {
     e.preventDefault();
 
@@ -191,37 +232,76 @@ function setupForm() {
 
     // Collect form data
     const formData = new FormData(formEl);
-    const purchaseData = {
-      listingId: window.currentItem.listingId,
-      name: formData.get('name'),
-      email: formData.get('email'),
-      phone: formData.get('phone'),
-      company: formData.get('company'),
-      deliveryMethod: formData.get('deliveryMethod'),
-      addressLine1: formData.get('addressLine1'),
-      addressLine2: formData.get('addressLine2'),
-      city: formData.get('city'),
-      state: formData.get('state'),
-      zipCode: formData.get('zipCode'),
-      specialRequests: formData.get('specialRequests'),
-      purchase: true,
-      totalCost: window.currentItem.price
-    };
+    const action = formData.get('action');
+
+    let purchaseData;
+
+    if (action === 'lock') {
+      // Deal locking with 10% deposit
+      const containerPrice = window.currentItem.price;
+      const depositAmount = Math.round(containerPrice * 0.1); // 10% of price
+
+      purchaseData = {
+        listingId: window.currentItem.listingId,
+        name: formData.get('name'),
+        email: formData.get('email'),
+        phone: formData.get('phone'),
+        company: formData.get('company'),
+        deliveryMethod: formData.get('deliveryMethod'),
+        addressLine1: formData.get('addressLine1'),
+        addressLine2: formData.get('addressLine2'),
+        city: formData.get('city'),
+        state: formData.get('state'),
+        zipCode: formData.get('zipCode'),
+        specialRequests: formData.get('specialRequests'),
+        lockDeal: true,
+        depositAmount: depositAmount,
+        totalCost: depositAmount
+      };
+    } else {
+      // Full purchase
+      purchaseData = {
+        listingId: window.currentItem.listingId,
+        name: formData.get('name'),
+        email: formData.get('email'),
+        phone: formData.get('phone'),
+        company: formData.get('company'),
+        deliveryMethod: formData.get('deliveryMethod'),
+        addressLine1: formData.get('addressLine1'),
+        addressLine2: formData.get('addressLine2'),
+        city: formData.get('city'),
+        state: formData.get('state'),
+        zipCode: formData.get('zipCode'),
+        specialRequests: formData.get('specialRequests'),
+        purchase: true,
+        totalCost: window.currentItem.price
+      };
+    }
 
     try {
-      // Submit purchase
-      const result = await api('/sell/purchase', {
+      let endpoint, successMessage;
+
+      if (action === 'lock') {
+        endpoint = '/sell/lock-deal';
+        successMessage = `Deal locked successfully! You have 3 days to complete the remaining payment of $${Math.round(window.currentItem.price * 0.9)}.`;
+      } else {
+        endpoint = '/sell/purchase';
+        successMessage = "Purchase completed successfully!";
+      }
+
+      // Submit request
+      const result = await api(endpoint, {
         method: 'POST',
         body: JSON.stringify(purchaseData)
       });
 
-      alert("Purchase submitted successfully!");
+      alert(successMessage);
       // Redirect or show confirmation
       window.location.href = "/";
 
     } catch (error) {
-      console.error("Purchase error:", error);
-      alert("Purchase failed: " + error.message);
+      console.error("Request error:", error);
+      alert(`${action === 'lock' ? 'Deal locking' : 'Purchase'} failed: ${error.message}`);
     }
   });
 }

@@ -29,6 +29,29 @@ function getUserEmail(auth) {
   }
 }
 
+function guessNameFromEmail(email) {
+  if (!email) return null;
+
+  // Extract part before @ and clean it up
+  const username = email.split('@')[0];
+
+  // Replace dots, underscores, hyphens with spaces
+  let name = username.replace(/[._-]/g, ' ');
+
+  // Capitalize each word
+  name = name.split(' ')
+    .map(word => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase())
+    .join(' ');
+
+  // Remove common email prefixes/suffixes
+  name = name.replace(/\b(seo|admin|user|test|mail|email|contact|info|support|sales|marketing)\b/gi, '').trim();
+
+  // If name is too short or empty, return null
+  if (name.length < 2) return null;
+
+  return name;
+}
+
 // ---- DOM ----
 const loginBtn  = document.getElementById("loginBtn");
 const logoutBtn = document.getElementById("logoutBtn");
@@ -67,7 +90,12 @@ function refreshUI() {
   if (welcomeEl) {
     if (loggedIn) {
       const email = getUserEmail(auth);
-      welcomeEl.textContent = `Welcome ${email || 'User'}!`;
+      const guessedName = guessNameFromEmail(email);
+      if (guessedName) {
+        welcomeEl.textContent = `Welcome ${guessedName}! Logged in as: ${email}`;
+      } else {
+        welcomeEl.textContent = `Welcome! Logged in as: ${email}`;
+      }
       welcomeEl.style.display = "block";
     } else {
       welcomeEl.style.display = "none";

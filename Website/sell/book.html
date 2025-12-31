@@ -320,7 +320,23 @@
       <div id="paymentElement"></div>
     </div>
 
-    <button type="submit" class="primary">Complete Purchase</button>
+    <div style="display:flex; gap:12px; margin-top:20px;">
+      <button type="submit" name="action" value="buy" class="primary">Buy</button>
+      <button type="submit" name="action" value="lock" class="secondary" style="background:#f59e0b; color:white;">Lock the Deal</button>
+    </div>
+
+    <!-- Deal Locking Terms (shown when locking deal) -->
+    <div id="dealTerms" style="display:none; margin-top:20px; padding:20px; background:#fef3c7; border:1px solid #f59e0b; border-radius:8px;">
+      <h4 style="margin-top:0; color:#92400e;">Deal Locking Terms & Conditions</h4>
+      <ul style="color:#92400e; margin-bottom:0;">
+        <li><strong>10% Deposit:</strong> Locks this container for 3 days exclusively for you</li>
+        <li><strong>Payment Deadline:</strong> You must pay the remaining 90% within 3 days</li>
+        <li><strong>Refund Policy:</strong> If you fail to complete payment, you will receive a 5% refund (after deducting 5% as container holding charges and miscellaneous expenses)</li>
+        <li><strong>Deal Exclusivity:</strong> During the 3-day period, this container will not be available to other buyers</li>
+        <li><strong>Cancellation:</strong> Deal can be cancelled within 24 hours for full refund of the 10% deposit</li>
+      </ul>
+      <p style="margin-bottom:0; font-size:14px; color:#92400e;"><em>By proceeding, you agree to these terms and conditions.</em></p>
+    </div>
   </form>
 
   <!-- Images and Video Section -->
