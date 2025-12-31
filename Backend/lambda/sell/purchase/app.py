@@ -4,8 +4,15 @@ import uuid
 import time
 import boto3
 
+# AWS clients
 dynamodb = boto3.resource("dynamodb")
-table = dynamodb.Table(os.environ["BOOKINGS_TABLE"])
+sns = boto3.client("sns")
+
+# Environment variables
+TABLE_NAME = os.environ["BOOKINGS_TABLE"]
+TOPIC_ARN = os.environ["NOTIFY_TOPIC_ARN"]
+
+table = dynamodb.Table(TABLE_NAME)
 
 ALLOWED_ORIGIN = "https://containersclub.com"
 
@@ -23,6 +30,7 @@ def response(status, body=None):
 
 
 def handler(event, context):
+    # ---- REST + HTTP API safe method detection ----
     method = event.get("httpMethod") or event.get("requestContext", {}).get("http", {}).get("method")
 
     if method == "OPTIONS":
@@ -44,7 +52,8 @@ def handler(event, context):
                 data.get("street"),
                 data.get("city"),
                 data.get("state"),
-                data.get("zip")
+                data.get("zip"),
+                data.get("pincode")
             ]))
         )
 
@@ -82,7 +91,29 @@ def handler(event, context):
             "created_at": now
         }
 
+        # ---- Save purchase ----
         table.put_item(Item=item)
+
+        # ---- Notify via SNS ----
+        sns.publish(
+            TopicArn=TOPIC_ARN,
+            Subject="New SELL Purchase | ContainersClub",
+            Message=f"""
+NEW SELL PURCHASE RECEIVED
+
+Purchase ID: {purchase_id}
+Name: {data.get('name')}
+Email: {data.get('email')}
+Phone: {data.get('phone')}
+Delivery Address: {address}
+Location: {data.get('location')}
+Amount: {data.get('total')}
+
+Customer Confirmation:
+Thank you for purchasing from ContainersClub.
+Our representative will contact you shortly.
+"""
+        )
 
         return response(200, {
             "success": True,
