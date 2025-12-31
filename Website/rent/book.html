@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <title>Book Container Rental | Containers Club</title>
+  <meta name="description" content="Complete your container rental booking with dates and payment details."/>
+  <link rel="canonical" href="https://containersclub.com/rent/book.html"/>
+  <meta name="robots" content="noindex, follow"/>
+
+  <!-- Global stylesheet -->
+  <link rel="stylesheet" href="/styles.css"/>
+
+  <!-- Global config -->
+  <script src="/config.js"></script>
+  <script>
+    // Set rent-specific redirect
+    if (window.COGNITO_REDIRECT_URI_RENT) {
+      window.COGNITO_REDIRECT_URI = window.COGNITO_REDIRECT_URI_RENT;
+    }
+  </script>
+
+  <!-- Injects GA + header/footer partials -->
+  <script src="/partials/include.js" defer></script>
+
+  <style>
+    /* Carousel Styles */
+    .carousel-container {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      max-width: 800px;
+      margin: 0 auto;
+    }
+
+    .carousel-viewport {
+      overflow: visible;
+      width: 800px;
+      border-radius: 8px;
+      border: 2px solid #e5e7eb;
+      position: relative;
+    }
+
+    .carousel-track {
+      display: flex;
+      transition: transform 0.3s ease;
+    }
+
+    .carousel-item {
+      flex: 0 0 150px;
+      margin: 0 3px;
+      position: relative;
+      z-index: 1;
+    }
+
+    .carousel-item img,
+    .carousel-item video {
+      width: 100%;
+      height: 200px;
+      object-fit: cover;
+      border-radius: 6px;
+      display: block;
+      transition: transform 0.3s ease, z-index 0.3s ease;
+      cursor: pointer;
+      position: relative;
+    }
+
+    .carousel-item img:hover {
+      transform: scale(2.0);
+      z-index: 10;
+    }
+
+    .carousel-item video:hover {
+      transform: scale(1.5);
+      z-index: 10;
+    }
+
+    .carousel-item video.playing {
+      transform: scale(2.0);
+      z-index: 10;
+    }
+
+    /* Hide non-hovered items only when actively zooming */
+    .carousel-container.zoom-active .carousel-item:not(:hover) img:not(:hover),
+    .carousel-container.zoom-active .carousel-item:not(:hover) video:not(.playing) {
+      opacity: 0.3;
+      pointer-events: none;
+    }
+
+    .carousel-container.zoom-active .carousel-item:hover img,
+    .carousel-container.zoom-active .carousel-item video.playing {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    .carousel-btn {
+      background: #2563eb;
+      color: white;
+      border: none;
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      cursor: pointer;
+      font-size: 18px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: background 0.2s;
+    }
+
+    .carousel-btn:hover {
+      background: #1d4ed8;
+    }
+
+    .carousel-btn:disabled {
+      background: #9ca3af;
+      cursor: not-allowed;
+    }
+
+    .media-container {
+      border: 1px solid #e5e7eb;
+      border-radius: 8px;
+      padding: 20px;
+      background: #f9fafb;
+    }
+
+    .media-container h3 {
+      margin-top: 0;
+      margin-bottom: 15px;
+      color: #1f2937;
+    }
+
+    /* Mobile responsiveness for container listings */
+    @media (max-width: 768px) {
+      .card article {
+        flex-direction: column !important;
+        text-align: center;
+      }
+      .card article img {
+        width: 100% !important;
+        height: auto !important;
+        max-height: 200px;
+      }
+      .card article .img-container {
+        margin-bottom: 15px;
+      }
+
+      .carousel-container {
+        max-width: 100%;
+      }
+
+      .carousel-viewport {
+        width: 250px;
+      }
+
+      .carousel-item {
+        flex: 0 0 150px;
+      }
+
+      .carousel-item img,
+      .carousel-item video {
+        height: 150px;
+      }
+    }
+
+    /* Replace bullet points with container logo */
+    .muted li {
+      list-style: none;
+      position: relative;
+      padding-left: 30px;
+    }
+    .muted li:before {
+      content: "";
+      position: absolute;
+      left: 0;
+      top: 2px;
+      width: 20px;
+      height: 20px;
+      background-image: url('/images/logo.png');
+      background-size: contain;
+      background-repeat: no-repeat;
+    }
+  </style>
+
+  <!-- App script -->
+  <script defer src="./book.js"></script>
+</head>
+<body>
+
+<!-- Shared header -->
+<div data-include="/partials/header.html" id="site-header"></div>
+
+<main class="container">
+
+  <section class="card">
+    <h1>Book Container Rental</h1>
+    <p class="muted">Complete your container rental booking below.</p>
+    <div style="display:flex; gap:12px;">
+      <button id="loginBtn" type="button">Login</button>
+      <button id="logoutBtn" type="button" style="display:none">Logout</button>
+    </div>
+  </section>
+
+  <!-- Container Details -->
+  <section class="card" id="containerDetails" style="display:none;">
+    <h2 id="containerTitle">Loading...</h2>
+    <div class="grid">
+      <div>
+        <p><strong>Size:</strong> <span id="containerSize"></span></p>
+        <p><strong>Condition:</strong> <span id="containerCondition"></span></p>
+        <p><strong>Location:</strong> <span id="containerLocation"></span></p>
+      </div>
+      <div>
+        <p><strong>Pricing:</strong> <span id="containerPrice" style="color:#0ea5e9;font-weight:bold;font-size:18px;"></span></p>
+        <p><strong>Available From:</strong> <span id="containerAvailableFrom"></span></p>
+      </div>
+    </div>
+    <p id="containerDescription"></p>
+  </section>
+
+  <!-- Booking Form -->
+  <form id="bookingForm" class="card" style="display:none;">
+    <h2>Rental Details</h2>
+
+    <div class="grid">
+      <input name="name" placeholder="Full Name" required/>
+      <input name="email" type="email" placeholder="Email Address" required/>
+    </div>
+
+    <div class="grid">
+      <input name="phone" placeholder="Phone Number" required/>
+      <input name="company" placeholder="Company (Optional)"/>
+    </div>
+
+    <div class="grid">
+      <div class="field">
+        <label for="startDate">Container Required From <span class="req">*</span></label>
+        <input id="startDate" name="startDate" type="date" required/>
+      </div>
+      <div class="field">
+        <label for="endDate">Container Required Till <span class="req">*</span></label>
+        <input id="endDate" name="endDate" type="date" required/>
+      </div>
+    </div>
+
+    <div class="grid">
+      <input name="days" type="number" min="1" placeholder="Number of days" readonly/>
+      <p>Total: <span id="totalCost">$0</span></p>
+    </div>
+
+    <div class="grid">
+      <select name="deliveryMethod" required>
+        <option value="">Delivery Method</option>
+        <option value="pickup">Self Pickup</option>
+        <option value="delivery">Delivery & Setup</option>
+        <option value="dropoff">Drop-off Only</option>
+      </select>
+      <input name="deliveryAddress" placeholder="Delivery Address" required/>
+    </div>
+
+    <div class="grid">
+      <select name="insurance" required>
+        <option value="">Insurance Option</option>
+        <option value="basic">Basic Coverage</option>
+        <option value="premium">Premium Coverage</option>
+        <option value="none">No Insurance</option>
+      </select>
+      <select name="maintenance">
+        <option value="">Maintenance Package</option>
+        <option value="none">No Maintenance</option>
+        <option value="basic">Basic Maintenance</option>
+        <option value="premium">Premium Maintenance</option>
+      </select>
+    </div>
+
+    <textarea name="specialRequests" placeholder="Special requests, access requirements, or usage details" rows="3"></textarea>
+
+    <div style="margin:20px 0; padding:20px; background:#f9f9f9; border-radius:8px;">
+      <h3>Payment Information</h3>
+      <p>Secure payment processed by Stripe</p>
+      <div id="paymentElement"></div>
+    </div>
+
+    <button type="submit" class="primary">Complete Booking</button>
+  </form>
+
+  <!-- Images and Video Section -->
+  <section class="card" id="mediaSection" style="display:none;">
+    <h2>Container Images & Video</h2>
+
+    <!-- Images Carousel -->
+    <div class="media-container" id="imagesContainer" style="display:none; margin-bottom:30px;">
+      <h3>Container Images</h3>
+      <div class="carousel-container">
+        <button class="carousel-btn prev-btn" id="imagesPrevBtn">‹</button>
+        <div class="carousel-viewport">
+          <div class="carousel-track" id="imagesTrack"></div>
+        </div>
+        <button class="carousel-btn next-btn" id="imagesNextBtn">›</button>
+      </div>
+    </div>
+
+    <!-- Videos Carousel -->
+    <div class="media-container" id="videosContainer" style="display:none;">
+      <h3>Container Videos</h3>
+      <div class="carousel-container">
+        <button class="carousel-btn prev-btn" id="videosPrevBtn">‹</button>
+        <div class="carousel-viewport">
+          <div class="carousel-track" id="videosTrack"></div>
+        </div>
+        <button class="carousel-btn next-btn" id="videosNextBtn">›</button>
+      </div>
+    </div>
+  </section>
+
+  <div id="loading" class="card">
+    <p>Loading container details...</p>
+  </div>
+
+  <div id="error" class="card" style="display:none;">
+    <p style="color:red;">Error loading container. Please check the URL and try again.</p>
+  </div>
+
+</main>
+
+<!-- Shared footer -->
+<div data-include="/partials/footer.html" id="site-footer"></div>
+
+</body>
+</html>
