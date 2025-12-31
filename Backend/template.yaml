@@ -294,7 +294,7 @@ Resources:
   #################################
   # Cognito (rent/sell)
   #################################
-  RentCognitoUserPool:
+  CognitoUserPool:
     Type: AWS::Cognito::UserPool
     Properties:
       UserPoolName: rent-club-user-pool
@@ -309,11 +309,11 @@ Resources:
           RequireLowercase: true
           RequireNumbers: true
 
-  RentCognitoUserPoolClient:
+  CognitoUserPoolClient:
     Type: AWS::Cognito::UserPoolClient
     Properties:
       ClientName: rent-club-client
-      UserPoolId: !Ref RentCognitoUserPool
+      UserPoolId: !Ref CognitoUserPool
       GenerateSecret: false
 
       # REQUIRED for Hosted UI
@@ -343,23 +343,23 @@ Resources:
         - !Sub "https://${FrontendDomainName}"
         - !Sub "https://${FrontendDomainName}/auth/logout-success.html"
 
-  RentCognitoDomain:
+  CognitoDomain:
     Type: AWS::Cognito::UserPoolDomain
     Properties:
       Domain: rent-club-auth
-      UserPoolId: !Ref RentCognitoUserPool
+      UserPoolId: !Ref CognitoUserPool
 
-  RentCognitoAdminGroup:
+  CognitoAdminGroup:
     Type: AWS::Cognito::UserPoolGroup
     Properties:
       GroupName: Admin
-      UserPoolId: !Ref RentCognitoUserPool
+      UserPoolId: !Ref CognitoUserPool
 
-  RentCognitoEmployeeGroup:
+  CognitoEmployeeGroup:
     Type: AWS::Cognito::UserPoolGroup
     Properties:
       GroupName: Employee
-      UserPoolId: !Ref RentCognitoUserPool
+      UserPoolId: !Ref CognitoUserPool
 
 
   SellCognitoUserPool:
