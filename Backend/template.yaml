@@ -11,7 +11,7 @@ Globals:
   Function:
     # Default for most Python lambdas
     Runtime: python3.12
-    Timeout: 30
+    Timeout: 60
     MemorySize: 512
     Architectures: [arm64]
 
@@ -315,18 +315,33 @@ Resources:
       ClientName: rent-club-client
       UserPoolId: !Ref CognitoUserPool
       GenerateSecret: false
+
+      # REQUIRED for Hosted UI
       AllowedOAuthFlowsUserPoolClient: true
-      AllowedOAuthFlows: [ implicit ]
-      AllowedOAuthScopes: [ email, openid ]
+      AllowedOAuthFlows:
+        - implicit
+        - code
+
+      AllowedOAuthScopes:
+        - openid
+        - email
+        - profile
+
+      SupportedIdentityProviders:
+      - COGNITO
+
       ExplicitAuthFlows:
+        - ALLOW_USER_PASSWORD_AUTH
         - ALLOW_USER_SRP_AUTH
         - ALLOW_REFRESH_TOKEN_AUTH
+
       CallbackURLs:
-        - http://localhost:3000/auth/callback
+        - !Sub "https://${FrontendDomainName}/rent/callback"
         - !Sub "https://${FrontendDomainName}/rent/new.html"
+
       LogoutURLs:
-        - http://localhost:3000
         - !Sub "https://${FrontendDomainName}"
+        - !Sub "https://${FrontendDomainName}/auth/logout-success.html"
 
   CognitoDomain:
     Type: AWS::Cognito::UserPoolDomain
@@ -345,6 +360,7 @@ Resources:
     Properties:
       GroupName: Employee
       UserPoolId: !Ref CognitoUserPool
+
 
   SellCognitoUserPool:
     Type: AWS::Cognito::UserPool
@@ -379,18 +395,22 @@ Resources:
         - email
         - profile
 
+      SupportedIdentityProviders:
+      - COGNITO
+
       ExplicitAuthFlows:
         - ALLOW_USER_PASSWORD_AUTH
         - ALLOW_USER_SRP_AUTH
         - ALLOW_REFRESH_TOKEN_AUTH
 
       CallbackURLs:
-        - http://localhost:3000/sell/new.html
-        - https://containersclub.com/sell/new.html
+        - !Sub "https://${FrontendDomainName}/auth/callback"
+        - !Sub "https://${FrontendDomainName}/sell/callback"
+        - !Sub "https://${FrontendDomainName}/sell/new.html"
 
       LogoutURLs:
-        - http://localhost:3000
-        - https://containersclub.com
+        - !Sub "https://${FrontendDomainName}"
+        - !Sub "https://${FrontendDomainName}/auth/logout-success.html"
 
   SellCognitoDomain:
     Type: AWS::Cognito::UserPoolDomain
@@ -613,6 +633,46 @@ Resources:
             RestApiId: !Ref Api
             Path: /prices
             Method: POST
+
+  GetRentListingFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: lambda/list/get_listing/
+      Handler: app.handler
+      Runtime: python3.12
+      Policies:
+        - DynamoDBReadPolicy:
+            TableName: !Ref RentListingsTable
+      Environment:
+        Variables:
+          TABLE_NAME: !Ref RentListingsTable
+      Events:
+        ApiGet:
+          Type: Api
+          Properties:
+            RestApiId: !Ref RentApi
+            Path: /rent/listings/{listingId}
+            Method: GET
+  
+  GetSellListingFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: lambda/sell/get_listing/
+      Handler: app.handler
+      Runtime: python3.12
+      Policies:
+        - DynamoDBReadPolicy:
+            TableName: !Ref SellListingsTable
+      Environment:
+        Variables:
+          TABLE_NAME: !Ref SellListingsTable
+      Events:
+        ApiGet:
+          Type: Api
+          Properties:
+            RestApiId: !Ref SellApi
+            Path: /sell/listings/{listingId}
+            Method: GET
 
   BookingFunction:
     Type: AWS::Serverless::Function

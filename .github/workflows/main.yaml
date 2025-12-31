@@ -4,7 +4,8 @@ on:
   push:
     branches:
       - main
-      - feature-*
+      - dev
+      - feature/*
 
 jobs:
   deploy-backend:
@@ -23,13 +24,16 @@ jobs:
         with:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          aws-region: us-east-1
+          aws-region: ${{ secrets.AWS_REGION }}
 
+      - name: SAM Validate
+        working-directory: Backend
+        run: sam validate
       # ----------------------------
       # Backend: SAM Build
       # ----------------------------
       - name: SAM Build
-        working-directory: backend
+        working-directory: Backend
         run: |
           sam build
 
@@ -37,9 +41,12 @@ jobs:
       # Backend: SAM Deploy (uses samconfig.toml)
       # ----------------------------
       - name: SAM Deploy (dev)
-        working-directory: backend
+        working-directory: Backend
         run: |
-          sam deploy --config-env dev
+          sam deploy \
+            --config-env dev \
+            --no-confirm-changeset \
+            --no-fail-on-empty-changeset
 
   deploy-frontend:
     name: Deploy Frontend (S3)
@@ -50,11 +57,25 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ secrets.AWS_REGION }}
+
       # ----------------------------
       # Frontend: Upload website to S3
       # ----------------------------
       - name: Deploy frontend to S3
         run: |
-          aws s3 sync website/ s3://containers-club-dev-webbucket-elh1uro4wffs \
+          aws s3 sync Website/ s3://containers-club-dev-webbucket-elh1uro4wffs \
             --delete \
             --exact-timestamps
+
+
+      - name: Invalidate CloudFront cache
+        run: |
+          aws cloudfront create-invalidation \
+            --distribution-id E18YOLZYXQWBEI \
+            --paths "/*"

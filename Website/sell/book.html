@@ -23,6 +23,165 @@
   <!-- Injects GA + header/footer partials -->
   <script src="/partials/include.js" defer></script>
 
+  <style>
+    /* Carousel Styles */
+    .carousel-container {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      max-width: 800px;
+      margin: 0 auto;
+    }
+
+    .carousel-viewport {
+      overflow: visible;
+      width: 800px;
+      border-radius: 8px;
+      border: 2px solid #e5e7eb;
+      position: relative;
+    }
+
+    .carousel-track {
+      display: flex;
+      transition: transform 0.3s ease;
+    }
+
+    .carousel-item {
+      flex: 0 0 150px;
+      margin: 0 3px;
+      position: relative;
+      z-index: 1;
+    }
+
+    .carousel-item img,
+    .carousel-item video {
+      width: 100%;
+      height: 200px;
+      object-fit: cover;
+      border-radius: 6px;
+      display: block;
+      transition: transform 0.3s ease, z-index 0.3s ease;
+      cursor: pointer;
+      position: relative;
+    }
+
+    .carousel-item img:hover {
+      transform: scale(2.0);
+      z-index: 10;
+    }
+
+    .carousel-item video:hover {
+      transform: scale(1.5);
+      z-index: 10;
+    }
+
+    .carousel-item video.playing {
+      transform: scale(2.0);
+      z-index: 10;
+    }
+
+    /* Hide non-hovered items only when actively zooming */
+    .carousel-container.zoom-active .carousel-item:not(:hover) img:not(:hover),
+    .carousel-container.zoom-active .carousel-item:not(:hover) video:not(.playing) {
+      opacity: 0.3;
+      pointer-events: none;
+    }
+
+    .carousel-container.zoom-active .carousel-item:hover img,
+    .carousel-container.zoom-active .carousel-item video.playing {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    .carousel-btn {
+      background: #2563eb;
+      color: white;
+      border: none;
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      cursor: pointer;
+      font-size: 18px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: background 0.2s;
+    }
+
+    .carousel-btn:hover {
+      background: #1d4ed8;
+    }
+
+    .carousel-btn:disabled {
+      background: #9ca3af;
+      cursor: not-allowed;
+    }
+
+    .media-container {
+      border: 1px solid #e5e7eb;
+      border-radius: 8px;
+      padding: 20px;
+      background: #f9fafb;
+    }
+
+    .media-container h3 {
+      margin-top: 0;
+      margin-bottom: 15px;
+      color: #1f2937;
+    }
+
+    /* Mobile responsiveness for container listings */
+    @media (max-width: 768px) {
+      .card article {
+        flex-direction: column !important;
+        text-align: center;
+      }
+      .card article img {
+        width: 100% !important;
+        height: auto !important;
+        max-height: 200px;
+      }
+      .card article .img-container {
+        margin-bottom: 15px;
+      }
+
+      .carousel-container {
+        max-width: 100%;
+      }
+
+      .carousel-viewport {
+        width: 250px;
+      }
+
+      .carousel-item {
+        flex: 0 0 150px;
+      }
+
+      .carousel-item img,
+      .carousel-item video {
+        height: 150px;
+      }
+    }
+
+    /* Replace bullet points with container logo */
+    .muted li {
+      list-style: none;
+      position: relative;
+      padding-left: 30px;
+    }
+    .muted li:before {
+      content: "";
+      position: absolute;
+      left: 0;
+      top: 2px;
+      width: 20px;
+      height: 20px;
+      background-image: url('/images/logo.png');
+      background-size: contain;
+      background-repeat: no-repeat;
+    }
+  </style>
+
   <!-- App script -->
   <script defer src="./book.js"></script>
 </head>
@@ -42,6 +201,14 @@
     </div>
   </section>
 
+  <!-- Deal of the Week Banner -->
+  <section class="card" style="background: linear-gradient(135deg, #e8f4f8, #b3e5fc); color: #0f172a; border: 2px solid #0ea5e9; margin-bottom: 20px;">
+    <div style="text-align: center; padding: 20px;">
+      <h2 style="margin: 0; font-size: 28px; color: #0ea5e9;">🎉 Deal of the Week! 🎉</h2>
+      <p style="margin: 10px 0 0 0; font-size: 18px; font-weight: bold; color: #1e293b;">Save 15% on selected containers this week only!</p>
+    </div>
+  </section>
+
   <!-- Container Details -->
   <section class="card" id="containerDetails" style="display:none;">
     <h2 id="containerTitle">Loading...</h2>
@@ -52,7 +219,7 @@
         <p><strong>Location:</strong> <span id="containerLocation"></span></p>
       </div>
       <div>
-        <p><strong>Price:</strong> <span id="containerPrice"></span></p>
+        <p><strong>Price:</strong> <span id="containerPrice" style="color:#0ea5e9;font-weight:bold;font-size:24px;"></span></p>
         <p><strong>Available From:</strong> <span id="containerAvailableFrom"></span></p>
       </div>
     </div>
@@ -79,12 +246,69 @@
         <option value="pickup">Self Pickup</option>
         <option value="delivery">Delivery Service</option>
       </select>
-      <input name="deliveryAddress" placeholder="Delivery Address (if applicable)"/>
+      <input name="addressLine1" placeholder="Address Line 1" required/>
     </div>
 
     <div class="grid">
-      <input name="inspectionDate" type="date" placeholder="Requested Inspection Date"/>
-      <input name="pickupDate" type="date" placeholder="Requested Pickup Date"/>
+      <input name="addressLine2" placeholder="Address Line 2 (Optional)"/>
+      <input name="city" placeholder="City" required/>
+    </div>
+
+    <div class="grid">
+      <select name="state" required>
+        <option value="">State</option>
+        <option value="AL">Alabama</option>
+        <option value="AK">Alaska</option>
+        <option value="AZ">Arizona</option>
+        <option value="AR">Arkansas</option>
+        <option value="CA">California</option>
+        <option value="CO">Colorado</option>
+        <option value="CT">Connecticut</option>
+        <option value="DE">Delaware</option>
+        <option value="FL">Florida</option>
+        <option value="GA">Georgia</option>
+        <option value="HI">Hawaii</option>
+        <option value="ID">Idaho</option>
+        <option value="IL">Illinois</option>
+        <option value="IN">Indiana</option>
+        <option value="IA">Iowa</option>
+        <option value="KS">Kansas</option>
+        <option value="KY">Kentucky</option>
+        <option value="LA">Louisiana</option>
+        <option value="ME">Maine</option>
+        <option value="MD">Maryland</option>
+        <option value="MA">Massachusetts</option>
+        <option value="MI">Michigan</option>
+        <option value="MN">Minnesota</option>
+        <option value="MS">Mississippi</option>
+        <option value="MO">Missouri</option>
+        <option value="MT">Montana</option>
+        <option value="NE">Nebraska</option>
+        <option value="NV">Nevada</option>
+        <option value="NH">New Hampshire</option>
+        <option value="NJ">New Jersey</option>
+        <option value="NM">New Mexico</option>
+        <option value="NY">New York</option>
+        <option value="NC">North Carolina</option>
+        <option value="ND">North Dakota</option>
+        <option value="OH">Ohio</option>
+        <option value="OK">Oklahoma</option>
+        <option value="OR">Oregon</option>
+        <option value="PA">Pennsylvania</option>
+        <option value="RI">Rhode Island</option>
+        <option value="SC">South Carolina</option>
+        <option value="SD">South Dakota</option>
+        <option value="TN">Tennessee</option>
+        <option value="TX">Texas</option>
+        <option value="UT">Utah</option>
+        <option value="VT">Vermont</option>
+        <option value="VA">Virginia</option>
+        <option value="WA">Washington</option>
+        <option value="WV">West Virginia</option>
+        <option value="WI">Wisconsin</option>
+        <option value="WY">Wyoming</option>
+      </select>
+      <input name="zipCode" placeholder="ZIP Code" pattern="[0-9]{5}" title="5-digit ZIP code" required/>
     </div>
 
     <textarea name="specialRequests" placeholder="Special requests or inspection notes" rows="3"></textarea>
@@ -97,6 +321,35 @@
 
     <button type="submit" class="primary">Complete Purchase</button>
   </form>
+
+  <!-- Images and Video Section -->
+  <section class="card" id="mediaSection" style="display:none;">
+    <h2>Container Images & Video</h2>
+
+    <!-- Images Carousel -->
+    <div class="media-container" id="imagesContainer" style="display:none; margin-bottom:30px;">
+      <h3>Container Images</h3>
+      <div class="carousel-container">
+        <button class="carousel-btn prev-btn" id="imagesPrevBtn">‹</button>
+        <div class="carousel-viewport">
+          <div class="carousel-track" id="imagesTrack"></div>
+        </div>
+        <button class="carousel-btn next-btn" id="imagesNextBtn">›</button>
+      </div>
+    </div>
+
+    <!-- Videos Carousel -->
+    <div class="media-container" id="videosContainer" style="display:none;">
+      <h3>Container Videos</h3>
+      <div class="carousel-container">
+        <button class="carousel-btn prev-btn" id="videosPrevBtn">‹</button>
+        <div class="carousel-viewport">
+          <div class="carousel-track" id="videosTrack"></div>
+        </div>
+        <button class="carousel-btn next-btn" id="videosNextBtn">›</button>
+      </div>
+    </div>
+  </section>
 
   <div id="loading" class="card">
     <p>Loading container details...</p>
