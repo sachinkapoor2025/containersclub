@@ -45,6 +45,7 @@ jobs:
         run: |
           sam deploy \
             --config-env dev \
+            --capabilities CAPABILITY_IAM CAPABILITY_NAMED_IAM \
             --no-confirm-changeset \
             --no-fail-on-empty-changeset
 
