@@ -147,41 +147,65 @@ async function authFetch(url, options = {}) {
   return fetch(url, { ...options, headers });
 }
 
-// ---- Image upload helper ----
-async function uploadImagesToS3(images) {
-  if (!images || images.length === 0) return [];
+// ---- Image/Video upload helper ----
+async function uploadFilesToS3(files) {
+  if (!files || files.length === 0) return [];
 
   const uploadedUrls = [];
+  const uploadPromises = [];
 
-  for (const file of images) {
-    try {
-      // Get presigned URL
-      const presignedResponse = await api('/rent/presign', {
-        method: 'POST',
-        body: JSON.stringify({
-          fileName: file.name,
-          fileType: file.type,
-          bucket: 'containers-club-dev-rentmediabucket-jzfqcnbsvelt'
-        })
-      });
+  console.log(`Starting upload of ${files.length} files...`);
 
-      // Upload to S3
-      await fetch(presignedResponse.uploadUrl, {
-        method: 'PUT',
-        body: file,
-        headers: {
-          'Content-Type': file.type
+  for (const file of files) {
+    const uploadPromise = (async () => {
+      try {
+        console.log(`Getting presigned URL for ${file.name}...`);
+
+        // Get presigned URL - use correct field names
+        const presignedResponse = await api('/rent/presign-upload', {
+          method: 'POST',
+          body: JSON.stringify({
+            filename: file.name,
+            contentType: file.type
+          })
+        });
+
+        console.log(`Got presigned URL for ${file.name}, uploading to S3...`);
+
+        // Upload to S3 using presigned URL
+        const uploadResponse = await fetch(presignedResponse.uploadUrl, {
+          method: 'PUT',
+          body: file,
+          headers: {
+            'Content-Type': file.type
+          }
+        });
+
+        if (!uploadResponse.ok) {
+          throw new Error(`S3 upload failed: ${uploadResponse.status} ${uploadResponse.statusText}`);
         }
-      });
 
-      uploadedUrls.push(presignedResponse.fileUrl);
-    } catch (error) {
-      console.error('Image upload failed:', error);
-      throw new Error(`Failed to upload ${file.name}: ${error.message}`);
-    }
+        console.log(`Successfully uploaded ${file.name} to S3`);
+        return presignedResponse.fileUrl;
+
+      } catch (error) {
+        console.error(`File upload failed for ${file.name}:`, error);
+        throw new Error(`Failed to upload ${file.name}: ${error.message}`);
+      }
+    })();
+
+    uploadPromises.push(uploadPromise);
   }
 
-  return uploadedUrls;
+  try {
+    // Wait for all uploads to complete
+    const results = await Promise.all(uploadPromises);
+    console.log('All files uploaded successfully:', results);
+    return results;
+  } catch (error) {
+    console.error('One or more file uploads failed:', error);
+    throw error;
+  }
 }
 
 // ---- Form submit ----
@@ -201,9 +225,20 @@ if (formEl) {
       // Get form data
       const formData = new FormData(formEl);
       const imageFiles = formData.getAll('images');
+      const videoFile = formData.get('video');
 
-      // Upload images first
-      const imageUrls = await uploadImagesToS3(imageFiles);
+      // Collect all files to upload
+      const allFiles = [...imageFiles];
+      if (videoFile && videoFile.size > 0) {
+        allFiles.push(videoFile);
+      }
+
+      // Upload all files first
+      const fileUrls = await uploadFilesToS3(allFiles);
+
+      // Separate image and video URLs
+      const imageUrls = imageFiles.length > 0 ? fileUrls.slice(0, imageFiles.length) : [];
+      const videoUrl = videoFile && videoFile.size > 0 ? fileUrls[fileUrls.length - 1] : null;
 
       // Prepare JSON payload
       const listingData = {
