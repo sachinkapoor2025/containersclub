@@ -147,21 +147,96 @@ async function authFetch(url, options = {}) {
   return fetch(url, { ...options, headers });
 }
 
+// ---- Image upload helper ----
+async function uploadImagesToS3(images) {
+  if (!images || images.length === 0) return [];
+
+  const uploadedUrls = [];
+
+  for (const file of images) {
+    try {
+      // Get presigned URL
+      const presignedResponse = await api('/rent/presign', {
+        method: 'POST',
+        body: JSON.stringify({
+          fileName: file.name,
+          fileType: file.type,
+          bucket: 'containers-club-dev-rentmediabucket-jzfqcnbsvelt'
+        })
+      });
+
+      // Upload to S3
+      await fetch(presignedResponse.uploadUrl, {
+        method: 'PUT',
+        body: file,
+        headers: {
+          'Content-Type': file.type
+        }
+      });
+
+      uploadedUrls.push(presignedResponse.fileUrl);
+    } catch (error) {
+      console.error('Image upload failed:', error);
+      throw new Error(`Failed to upload ${file.name}: ${error.message}`);
+    }
+  }
+
+  return uploadedUrls;
+}
+
 // ---- Form submit ----
 if (formEl) {
   formEl.addEventListener("submit", async (e) => {
     e.preventDefault();
     const auth = getAuth();
     if (!auth || isExpired(auth)) { return login(); }
-    // Build FormData
-    const formData = new FormData(formEl);
+
     try {
-      const result = await authFetch(CONFIG.API_BASE + "/rent/listings", { method: 'POST', body: formData });
+      // Show loading state
+      const submitBtn = formEl.querySelector('button[type="submit"]');
+      const originalText = submitBtn.textContent;
+      submitBtn.textContent = 'Uploading images...';
+      submitBtn.disabled = true;
+
+      // Get form data
+      const formData = new FormData(formEl);
+      const imageFiles = formData.getAll('images');
+
+      // Upload images first
+      const imageUrls = await uploadImagesToS3(imageFiles);
+
+      // Prepare JSON payload
+      const listingData = {
+        title: formData.get('title'),
+        size: formData.get('size'),
+        condition: formData.get('condition'),
+        location: formData.get('location'),
+        description: formData.get('description'),
+        specs: formData.get('specs'),
+        images: imageUrls,
+        dailyRate: parseFloat(formData.get('dailyRate')) || 0,
+        availabilityFrom: formData.get('availabilityFrom')
+      };
+
+      // Submit JSON payload
+      const result = await authFetch(CONFIG.API_BASE + "/rent/listings", {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(listingData)
+      });
+
       alert("Listing created successfully!");
-      // Optionally reset form or redirect
       formEl.reset();
+
     } catch (err) {
       alert("Error creating listing: " + err.message);
+    } finally {
+      // Reset button state
+      const submitBtn = formEl.querySelector('button[type="submit"]');
+      submitBtn.textContent = 'Publish Listing';
+      submitBtn.disabled = false;
     }
   });
 }
