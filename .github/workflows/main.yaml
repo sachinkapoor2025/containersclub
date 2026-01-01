@@ -37,6 +37,24 @@ jobs:
         run: |
           sam build
 
+      - name: Ensure CloudFormation rollback is enabled
+        run: |
+          STACK_NAME=containers-club-dev
+          STATUS=$(aws cloudformation describe-stacks \
+            --stack-name $STACK_NAME \
+            --query "Stacks[0].StackStatus" \
+            --output text)
+
+          echo "Current stack status: $STATUS"
+
+          if [[ "$STATUS" == "UPDATE_FAILED" || "$STATUS" == "ROLLBACK_PAUSED" ]]; then
+            echo "Re-enabling rollback for $STACK_NAME"
+            aws cloudformation continue-update-rollback \
+              --stack-name $STACK_NAME
+          else
+            echo "Stack is healthy, continuing deploy"
+          fi
+
       # ----------------------------
       # Backend: SAM Deploy (uses samconfig.toml)
       # ----------------------------
