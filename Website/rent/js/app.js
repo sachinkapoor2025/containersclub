@@ -325,8 +325,15 @@ if (formEl) {
         specs: formData.get('specs'),
         images: imageUrls,
         video: videoUrl,
-        dailyRate: parseFloat(formData.get('dailyRate')) || 0,
-        availabilityFrom: formData.get('availabilityFrom')
+        price: parseFloat(formData.get('price')) || 0,
+        pricePeriod: formData.get('pricePeriod'),
+        deposit: parseFloat(formData.get('deposit')) || 0,
+        minRentalDuration: parseInt(formData.get('minRentalDuration')) || 1,
+        availableFrom: formData.get('availableFrom'),
+        deliveryAvailable: formData.has('deliveryAvailable'),
+        rentalTerms: formData.get('rentalTerms'),
+        status: 'active',
+        currency: 'USD'
       };
 
       const result = await authFetch(CONFIG.API_BASE + "/rent/listings", {
@@ -521,9 +528,14 @@ async function showDetails(id) {
     <p><b>Size:</b> ${item.size}</p>
     <p><b>Condition:</b> ${item.condition}</p>
     <p><b>Location:</b> ${item.location}</p>
-    <p><b>Daily Rate:</b> $${item.dailyRate} ${item.currency}</p>
+    <p><b>Price:</b> $${item.price}/${item.pricePeriod} ${item.currency}</p>
+    <p><b>Deposit:</b> $${item.deposit}</p>
+    <p><b>Min Rental Duration:</b> ${item.minRentalDuration} days</p>
     <p><b>Available From:</b> ${item.availableFrom}</p>
+    <p><b>Delivery:</b> ${item.deliveryAvailable ? 'Yes' : 'No'}</p>
+    <p><b>Status:</b> ${item.status}</p>
     <p><b>Description:</b> ${item.description}</p>
+    ${item.rentalTerms ? `<p><b>Rental Terms:</b> ${item.rentalTerms}</p>` : ''}
 
     <h3>Images</h3>
     <div style="display:flex;flex-wrap:wrap">${images}</div>
@@ -550,23 +562,25 @@ async function showBooking(id) {
     <span class="close" onclick="bookingModal.style.display='none'">&times;</span>
     <h2>Book ${item.title}</h2>
 
-    <label>Days</label>
-    <input id="days" type="number" min="1" value="1">
-    <p id="total">$${item.dailyRate}</p>
+    <label>Duration (${item.pricePeriod}s)</label>
+    <input id="duration" type="number" min="${item.minRentalDuration || 1}" value="${item.minRentalDuration || 1}">
+    <p id="total">$${item.price * (item.minRentalDuration || 1)}</p>
 
-    <button onclick="confirmBooking('${id}', ${item.dailyRate})">Confirm</button>
+    <button onclick="confirmBooking('${id}', ${item.price})">Confirm</button>
   </div>`;
 
   modal.style.display = "block";
 
-  document.getElementById("days").oninput = e => {
-    document.getElementById("total").textContent =
-      "$" + item.dailyRate * e.target.value;
+  document.getElementById("duration").oninput = e => {
+    const duration = parseInt(e.target.value) || 1;
+    const periods = item.pricePeriod === 'day' ? duration : item.pricePeriod === 'week' ? Math.ceil(duration / 7) : Math.ceil(duration / 30);
+    document.getElementById("total").textContent = "$" + (item.price * periods);
   };
 }
 
-function confirmBooking(id, rate) {
-  alert("Booking confirmed for " + id);
+function confirmBooking(id, price) {
+  const duration = parseInt(document.getElementById("duration").value) || 1;
+  alert(`Booking confirmed for ${id} - Duration: ${duration} periods, Total: $${price * duration}`);
   bookingModal.style.display = "none";
 }
 

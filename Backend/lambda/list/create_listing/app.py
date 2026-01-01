@@ -38,7 +38,20 @@ def handler(event, context):
         body = json.loads(raw_body or "{}")
         log(body, "PARSED BODY:")
 
+        # 4️⃣ Get owner ID from JWT
+        auth_header = event.get("headers", {}).get("Authorization") or event.get("headers", {}).get("authorization")
+        owner_id = None
+        if auth_header and auth_header.startswith("Bearer "):
+            try:
+                token = auth_header.split(" ")[1]
+                import jwt
+                decoded = jwt.decode(token, options={"verify_signature": False})
+                owner_id = decoded.get("sub") or decoded.get("username")
+            except Exception as e:
+                logger.warning("Failed to decode JWT: %s", str(e))
+
         # 4️⃣ Build item
+        from datetime import datetime
         listing = {
             "listingId": str(uuid.uuid4()),
             "title": body.get("title"),
@@ -49,9 +62,17 @@ def handler(event, context):
             "specs": body.get("specs"),
             "images": body.get("images") or [],
             "video": body.get("video"),
-            "dailyRate": body.get("dailyRate"),
-            "availabilityFrom": body.get("availabilityFrom"),
-            "createdAt": int(time.time()),
+            "price": body.get("price"),
+            "pricePeriod": body.get("pricePeriod"),
+            "deposit": body.get("deposit"),
+            "minRentalDuration": body.get("minRentalDuration"),
+            "availableFrom": body.get("availableFrom"),
+            "deliveryAvailable": body.get("deliveryAvailable", False),
+            "rentalTerms": body.get("rentalTerms"),
+            "status": body.get("status", "active"),
+            "currency": body.get("currency", "USD"),
+            "createdAt": datetime.utcnow().isoformat() + "Z",
+            "ownerId": owner_id,
         }
 
         log(listing, "ITEM TO WRITE:")

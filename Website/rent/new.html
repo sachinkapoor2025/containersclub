@@ -130,9 +130,29 @@
     </label>
 
     <div class="grid">
-      <input name="dailyRate" placeholder="Daily rate (USD)" type="number" min="0" step="0.01"/>
-      <input name="availabilityFrom" placeholder="Available from (YYYY-MM-DD)" type="date"/>
+      <input name="price" placeholder="Price (USD)" type="number" min="0" step="0.01" required/>
+      <select name="pricePeriod" required>
+        <option value="">Period</option>
+        <option>day</option>
+        <option>week</option>
+        <option>month</option>
+      </select>
     </div>
+
+    <div class="grid">
+      <input name="deposit" placeholder="Deposit (USD)" type="number" min="0" step="0.01"/>
+      <input name="minRentalDuration" placeholder="Min rental duration (days)" type="number" min="1"/>
+    </div>
+
+    <div class="grid">
+      <input name="availableFrom" placeholder="Available from (YYYY-MM-DD)" type="date"/>
+      <label style="display:flex; align-items:center; gap:8px;">
+        <input name="deliveryAvailable" type="checkbox" checked>
+        <span>Delivery available</span>
+      </label>
+    </div>
+
+    <textarea name="rentalTerms" placeholder="Rental terms and conditions" rows="3"></textarea>
 
     <button type="submit">Publish Listing</button>
   </form>
