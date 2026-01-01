@@ -20,6 +20,73 @@ const loginBtn  = document.getElementById("loginBtn");
 const logoutBtn = document.getElementById("logoutBtn");
 const formEl    = document.getElementById("listingForm");
 
+// ---- File Validation Logic ----
+function validateFile(file, allowedExtensions) {
+  if (!file) return { valid: false, error: "No file provided" };
+
+  const extension = file.name.toLowerCase().split('.').pop();
+  if (!allowedExtensions.includes(extension)) {
+    return {
+      valid: false,
+      error: `Invalid file type. Allowed: ${allowedExtensions.join(', ')}`
+    };
+  }
+
+  // Check file size (10MB limit)
+  const maxSize = 10 * 1024 * 1024; // 10MB
+  if (file.size > maxSize) {
+    return {
+      valid: false,
+      error: "File too large. Maximum size: 10MB"
+    };
+  }
+
+  return { valid: true };
+}
+
+function validateImageFiles(files) {
+  const allowedExtensions = ['jpg', 'jpeg', 'png', 'webp'];
+  const errors = [];
+
+  for (const file of files) {
+    const validation = validateFile(file, allowedExtensions);
+    if (!validation.valid) {
+      errors.push(`${file.name}: ${validation.error}`);
+    }
+  }
+
+  return {
+    valid: errors.length === 0,
+    errors: errors
+  };
+}
+
+function validateVideoFile(file) {
+  if (!file) return { valid: true }; // Video is optional
+
+  const allowedExtensions = ['mp4'];
+  return validateFile(file, allowedExtensions);
+}
+
+// ---- UI Toggle Logic ----
+function toggleListingMode() {
+  const modeRadios = document.querySelectorAll('input[name="listingMode"]');
+  const normalForm = document.getElementById("listingForm");
+  const bulkSection = document.getElementById("bulkListingSection");
+
+  modeRadios.forEach(radio => {
+    radio.addEventListener('change', (e) => {
+      if (e.target.value === 'normal') {
+        normalForm.style.display = 'block';
+        bulkSection.style.display = 'none';
+      } else {
+        normalForm.style.display = 'none';
+        bulkSection.style.display = 'block';
+      }
+    });
+  });
+}
+
 // ---- Auth storage helpers ----
 const AUTH_KEY = "cb_auth";
 
@@ -97,11 +164,7 @@ function refreshUI() {
     }
   }
 
-  // Disable upload fields if not logged in
-  if (formEl) {
-    const uploadInputs = formEl.querySelectorAll('input[type="file"]');
-    uploadInputs.forEach(i => i.disabled = !loggedIn);
-  }
+  // File inputs are always enabled (don't depend on login)
 }
 
 // ---- Auth actions ----
@@ -148,64 +211,49 @@ async function authFetch(url, options = {}) {
 }
 
 // ---- Image/Video upload helper ----
-async function uploadFilesToS3(files) {
+async function uploadFilesToS3(files, progressCallback) {
   if (!files || files.length === 0) return [];
 
+  // Step 2: Request pre-signed URLs
+  const fileData = files.map(file => ({
+    fileName: file.name,
+    contentType: file.type
+  }));
+
+  const presignedResponse = await api('/rent/presign', {
+    method: 'POST',
+    body: JSON.stringify({
+      listingType: "NORMAL",
+      files: fileData
+    })
+  });
+
+  // Step 3: Upload files directly to S3
   const uploadedUrls = [];
-  const uploadPromises = [];
+  for (let i = 0; i < files.length; i++) {
+    const file = files[i];
+    const presignedUrl = presignedResponse.urls[i];
 
-  console.log(`Starting upload of ${files.length} files...`);
+    if (progressCallback) {
+      progressCallback(`Uploading ${file.name}...`);
+    }
 
-  for (const file of files) {
-    const uploadPromise = (async () => {
-      try {
-        console.log(`Getting presigned URL for ${file.name}...`);
-
-        // Get presigned URL - use correct field names
-        const presignedResponse = await api('/rent/presign-upload', {
-          method: 'POST',
-          body: JSON.stringify({
-            filename: file.name,
-            contentType: file.type
-          })
-        });
-
-        console.log(`Got presigned URL for ${file.name}, uploading to S3...`);
-
-        // Upload to S3 using presigned URL
-        const uploadResponse = await fetch(presignedResponse.uploadUrl, {
-          method: 'PUT',
-          body: file,
-          headers: {
-            'Content-Type': file.type
-          }
-        });
-
-        if (!uploadResponse.ok) {
-          throw new Error(`S3 upload failed: ${uploadResponse.status} ${uploadResponse.statusText}`);
-        }
-
-        console.log(`Successfully uploaded ${file.name} to S3`);
-        return presignedResponse.fileUrl;
-
-      } catch (error) {
-        console.error(`File upload failed for ${file.name}:`, error);
-        throw new Error(`Failed to upload ${file.name}: ${error.message}`);
+    const uploadResponse = await fetch(presignedUrl, {
+      method: 'PUT',
+      body: file,
+      headers: {
+        'Content-Type': file.type
       }
-    })();
+    });
 
-    uploadPromises.push(uploadPromise);
+    if (!uploadResponse.ok) {
+      throw new Error(`S3 upload failed for ${file.name}: ${uploadResponse.status} ${uploadResponse.statusText}`);
+    }
+
+    uploadedUrls.push(presignedUrl.split('?')[0]); // Remove query params to get the final URL
   }
 
-  try {
-    // Wait for all uploads to complete
-    const results = await Promise.all(uploadPromises);
-    console.log('All files uploaded successfully:', results);
-    return results;
-  } catch (error) {
-    console.error('One or more file uploads failed:', error);
-    throw error;
-  }
+  return uploadedUrls;
 }
 
 // ---- Form submit ----
@@ -216,16 +264,28 @@ if (formEl) {
     if (!auth || isExpired(auth)) { return login(); }
 
     try {
-      // Show loading state
       const submitBtn = formEl.querySelector('button[type="submit"]');
       const originalText = submitBtn.textContent;
-      submitBtn.textContent = 'Uploading images...';
-      submitBtn.disabled = true;
 
       // Get form data
       const formData = new FormData(formEl);
-      const imageFiles = formData.getAll('images');
+      const imageFiles = formData.getAll('images').filter(f => f.size > 0);
       const videoFile = formData.get('video');
+
+      // Step 1: User selects files - validate immediately
+      const imageValidation = validateImageFiles(imageFiles);
+      if (!imageValidation.valid) {
+        alert("Image validation errors:\n" + imageValidation.errors.join("\n"));
+        return;
+      }
+
+      if (videoFile && videoFile.size > 0) {
+        const videoValidation = validateVideoFile(videoFile);
+        if (!videoValidation.valid) {
+          alert("Video validation error: " + videoValidation.error);
+          return;
+        }
+      }
 
       // Collect all files to upload
       const allFiles = [...imageFiles];
@@ -233,14 +293,29 @@ if (formEl) {
         allFiles.push(videoFile);
       }
 
-      // Upload all files first
-      const fileUrls = await uploadFilesToS3(allFiles);
+      if (allFiles.length === 0) {
+        alert("Please select at least one image or video file.");
+        return;
+      }
+
+      // Disable button and show progress
+      submitBtn.disabled = true;
+
+      // Step 2 & 3: Request pre-signed URLs and upload files
+      const progressCallback = (message) => {
+        submitBtn.textContent = message;
+      };
+
+      progressCallback('Requesting upload URLs...');
+      const fileUrls = await uploadFilesToS3(allFiles, progressCallback);
 
       // Separate image and video URLs
       const imageUrls = imageFiles.length > 0 ? fileUrls.slice(0, imageFiles.length) : [];
       const videoUrl = videoFile && videoFile.size > 0 ? fileUrls[fileUrls.length - 1] : null;
 
-      // Prepare JSON payload
+      // Step 4: Create listing
+      progressCallback('Creating listing...');
+
       const listingData = {
         title: formData.get('title'),
         size: formData.get('size'),
@@ -249,11 +324,18 @@ if (formEl) {
         description: formData.get('description'),
         specs: formData.get('specs'),
         images: imageUrls,
-        dailyRate: parseFloat(formData.get('dailyRate')) || 0,
-        availabilityFrom: formData.get('availabilityFrom')
+        video: videoUrl,
+        price: parseFloat(formData.get('price')) || 0,
+        pricePeriod: formData.get('pricePeriod'),
+        deposit: parseFloat(formData.get('deposit')) || 0,
+        minRentalDuration: parseInt(formData.get('minRentalDuration')) || 1,
+        availableFrom: formData.get('availableFrom'),
+        deliveryAvailable: formData.has('deliveryAvailable'),
+        rentalTerms: formData.get('rentalTerms'),
+        status: 'active',
+        currency: 'USD'
       };
 
-      // Submit JSON payload
       const result = await authFetch(CONFIG.API_BASE + "/rent/listings", {
         method: 'POST',
         headers: {
@@ -262,7 +344,8 @@ if (formEl) {
         body: JSON.stringify(listingData)
       });
 
-      alert("Listing created successfully!");
+      // Success
+      alert("Listing submitted successfully. It will be live once approved.");
       formEl.reset();
 
     } catch (err) {
@@ -445,9 +528,14 @@ async function showDetails(id) {
     <p><b>Size:</b> ${item.size}</p>
     <p><b>Condition:</b> ${item.condition}</p>
     <p><b>Location:</b> ${item.location}</p>
-    <p><b>Daily Rate:</b> $${item.dailyRate} ${item.currency}</p>
+    <p><b>Price:</b> $${item.price}/${item.pricePeriod} ${item.currency}</p>
+    <p><b>Deposit:</b> $${item.deposit}</p>
+    <p><b>Min Rental Duration:</b> ${item.minRentalDuration} days</p>
     <p><b>Available From:</b> ${item.availableFrom}</p>
+    <p><b>Delivery:</b> ${item.deliveryAvailable ? 'Yes' : 'No'}</p>
+    <p><b>Status:</b> ${item.status}</p>
     <p><b>Description:</b> ${item.description}</p>
+    ${item.rentalTerms ? `<p><b>Rental Terms:</b> ${item.rentalTerms}</p>` : ''}
 
     <h3>Images</h3>
     <div style="display:flex;flex-wrap:wrap">${images}</div>
@@ -474,24 +562,240 @@ async function showBooking(id) {
     <span class="close" onclick="bookingModal.style.display='none'">&times;</span>
     <h2>Book ${item.title}</h2>
 
-    <label>Days</label>
-    <input id="days" type="number" min="1" value="1">
-    <p id="total">$${item.dailyRate}</p>
+    <label>Duration (${item.pricePeriod}s)</label>
+    <input id="duration" type="number" min="${item.minRentalDuration || 1}" value="${item.minRentalDuration || 1}">
+    <p id="total">$${item.price * (item.minRentalDuration || 1)}</p>
 
-    <button onclick="confirmBooking('${id}', ${item.dailyRate})">Confirm</button>
+    <button onclick="confirmBooking('${id}', ${item.price})">Confirm</button>
   </div>`;
 
   modal.style.display = "block";
 
-  document.getElementById("days").oninput = e => {
-    document.getElementById("total").textContent =
-      "$" + item.dailyRate * e.target.value;
+  document.getElementById("duration").oninput = e => {
+    const duration = parseInt(e.target.value) || 1;
+    const periods = item.pricePeriod === 'day' ? duration : item.pricePeriod === 'week' ? Math.ceil(duration / 7) : Math.ceil(duration / 30);
+    document.getElementById("total").textContent = "$" + (item.price * periods);
   };
 }
 
-function confirmBooking(id, rate) {
-  alert("Booking confirmed for " + id);
+function confirmBooking(id, price) {
+  const duration = parseInt(document.getElementById("duration").value) || 1;
+  alert(`Booking confirmed for ${id} - Duration: ${duration} periods, Total: $${price * duration}`);
   bookingModal.style.display = "none";
+}
+
+/* ---------------- BULK LISTING ---------------- */
+
+let currentBatchId = null;
+
+async function handleBulkSubmit() {
+  const auth = getAuth();
+  if (!auth || isExpired(auth)) {
+    alert("Please login first");
+    return;
+  }
+
+  const excelFile = document.getElementById("bulkExcelFile").files[0];
+  if (!excelFile) {
+    alert("Please select an Excel file");
+    return;
+  }
+
+  // Validate Excel file
+  const validation = validateFile(excelFile, ['xlsx', 'xls']);
+  if (!validation.valid) {
+    alert(validation.error);
+    return;
+  }
+
+  try {
+    // Show loading
+    const submitBtn = document.getElementById("submitBulkBtn");
+    submitBtn.textContent = "Processing...";
+    submitBtn.disabled = true;
+
+    // Create bulk listing entry
+    const bulkData = {
+      type: "bulk",
+      status: "processing"
+    };
+
+    const result = await api('/rent/bulk-listings', {
+      method: 'POST',
+      body: JSON.stringify(bulkData)
+    });
+
+    currentBatchId = result.batchId;
+
+    // Update UI
+    showBulkStatus("Excel uploaded successfully", "Your bulk listing is being processed. You will be notified once media upload is ready.");
+    submitBtn.style.display = "none";
+
+    // Show upload media button after delay (simulate processing)
+    setTimeout(() => {
+      document.getElementById("uploadBulkMediaBtn").style.display = "block";
+      showBulkStatus("Ready for Media Upload", "Please upload images and videos for your bulk listings.");
+    }, 3000);
+
+  } catch (error) {
+    console.error("Bulk listing error:", error);
+    alert("Error creating bulk listing: " + error.message);
+  } finally {
+    const submitBtn = document.getElementById("submitBulkBtn");
+    submitBtn.disabled = false;
+  }
+}
+
+async function handleBulkMediaUpload() {
+  const auth = getAuth();
+  if (!auth || isExpired(auth)) {
+    alert("Please login first");
+    return;
+  }
+
+  if (!currentBatchId) {
+    alert("No batch ID found. Please restart the bulk listing process.");
+    return;
+  }
+
+  // Create file input for bulk media
+  const mediaInput = document.createElement("input");
+  mediaInput.type = "file";
+  mediaInput.multiple = true;
+  mediaInput.accept = "image/*,video/*";
+
+  mediaInput.onchange = async (e) => {
+    const files = Array.from(e.target.files);
+    if (files.length === 0) return;
+
+    try {
+      // Show loading
+      const uploadBtn = document.getElementById("uploadBulkMediaBtn");
+      uploadBtn.textContent = "Uploading...";
+      uploadBtn.disabled = true;
+
+      // Validate files
+      const imageFiles = files.filter(f => f.type.startsWith('image/'));
+      const videoFiles = files.filter(f => f.type.startsWith('video/'));
+
+      const imageValidation = validateImageFiles(imageFiles);
+      if (!imageValidation.valid) {
+        alert("Image validation errors:\n" + imageValidation.errors.join("\n"));
+        return;
+      }
+
+      // Validate videos (allow multiple)
+      for (const video of videoFiles) {
+        const validation = validateVideoFile(video);
+        if (!validation.valid) {
+          alert(`Video validation error: ${validation.error}`);
+          return;
+        }
+      }
+
+      // Upload all files to bulk path
+      const allFiles = [...imageFiles, ...videoFiles];
+      const fileUrls = await uploadBulkFilesToS3(allFiles, currentBatchId);
+
+      // Separate URLs
+      const imageUrls = imageFiles.length > 0 ? fileUrls.slice(0, imageFiles.length) : [];
+      const videoUrls = videoFiles.length > 0 ? fileUrls.slice(imageFiles.length) : [];
+
+      // Update bulk listing with media URLs
+      await api(`/rent/bulk-listings/${currentBatchId}`, {
+        method: 'PUT',
+        body: JSON.stringify({
+          images: imageUrls,
+          videos: videoUrls,
+          status: "pending_approval"
+        })
+      });
+
+      showBulkStatus("Bulk listing pending approval", "Your bulk listing has been submitted and is pending approval. You will be notified once it's reviewed.");
+      uploadBtn.style.display = "none";
+
+    } catch (error) {
+      console.error("Bulk media upload error:", error);
+      alert("Error uploading media: " + error.message);
+    } finally {
+      const uploadBtn = document.getElementById("uploadBulkMediaBtn");
+      uploadBtn.disabled = false;
+      uploadBtn.textContent = "Upload Media Files";
+    }
+  };
+
+  mediaInput.click();
+}
+
+async function uploadBulkFilesToS3(files, batchId) {
+  if (!files || files.length === 0) return [];
+
+  const uploadedUrls = [];
+  const uploadPromises = [];
+
+  console.log(`Starting bulk upload of ${files.length} files for batch ${batchId}...`);
+
+  for (const file of files) {
+    const uploadPromise = (async () => {
+      try {
+        console.log(`Getting presigned URL for bulk file ${file.name}...`);
+
+        // Get presigned URL for bulk upload
+        const presignedResponse = await api('/rent/presign-upload', {
+          method: 'POST',
+          body: JSON.stringify({
+            filename: file.name,
+            contentType: file.type,
+            path: `rent/B-${batchId}/${file.type.startsWith('image/') ? 'images' : 'videos'}`
+          })
+        });
+
+        console.log(`Got presigned URL for ${file.name}, uploading to S3...`);
+
+        // Upload to S3 using presigned URL
+        const uploadResponse = await fetch(presignedResponse.uploadUrl, {
+          method: 'PUT',
+          body: file,
+          headers: {
+            'Content-Type': file.type
+          }
+        });
+
+        if (!uploadResponse.ok) {
+          throw new Error(`S3 upload failed: ${uploadResponse.status} ${uploadResponse.statusText}`);
+        }
+
+        console.log(`Successfully uploaded ${file.name} to bulk S3`);
+        return presignedResponse.fileUrl;
+
+      } catch (error) {
+        console.error(`Bulk file upload failed for ${file.name}:`, error);
+        throw new Error(`Failed to upload ${file.name}: ${error.message}`);
+      }
+    })();
+
+    uploadPromises.push(uploadPromise);
+  }
+
+  try {
+    // Wait for all uploads to complete
+    const results = await Promise.all(uploadPromises);
+    console.log('All bulk files uploaded successfully:', results);
+    return results;
+  } catch (error) {
+    console.error('One or more bulk file uploads failed:', error);
+    throw error;
+  }
+}
+
+function showBulkStatus(title, message) {
+  const statusDiv = document.getElementById("bulkStatus");
+  const titleEl = document.getElementById("bulkStatusTitle");
+  const messageEl = document.getElementById("bulkStatusMessage");
+
+  titleEl.textContent = title;
+  messageEl.textContent = message;
+  statusDiv.style.display = "block";
 }
 
 /* ---------------- INIT ---------------- */
@@ -525,6 +829,16 @@ function toggleDescription(link) {
 // ---- Wire up ----
 if (loginBtn)  loginBtn.addEventListener("click", login);
 if (logoutBtn) logoutBtn.addEventListener("click", logout);
+
+// Initialize UI toggles
+toggleListingMode();
+
+// Bulk listing event listeners
+const submitBulkBtn = document.getElementById("submitBulkBtn");
+const uploadBulkMediaBtn = document.getElementById("uploadBulkMediaBtn");
+
+if (submitBulkBtn) submitBulkBtn.addEventListener("click", handleBulkSubmit);
+if (uploadBulkMediaBtn) uploadBulkMediaBtn.addEventListener("click", handleBulkMediaUpload);
 
 // On load: capture tokens (if redirected back) and refresh UI
 parseHashForTokens();
