@@ -4,8 +4,15 @@ import uuid
 import time
 import boto3
 
+# AWS clients
 dynamodb = boto3.resource("dynamodb")
-table = dynamodb.Table(os.environ["BOOKINGS_TABLE"])
+sns = boto3.client("sns")
+
+# Environment variables (MUST be set in SAM)
+TABLE_NAME = os.environ["BOOKINGS_TABLE"]
+TOPIC_ARN = os.environ["NOTIFY_TOPIC_ARN"]
+
+table = dynamodb.Table(TABLE_NAME)
 
 ALLOWED_ORIGIN = "https://containersclub.com"
 
@@ -31,7 +38,10 @@ def handler(event, context):
 
     try:
         if not event.get("body"):
-            return response(400, {"success": False, "message": "Missing request body"})
+            return response(400, {
+                "success": False,
+                "message": "Missing request body"
+            })
 
         data = json.loads(event["body"])
 
@@ -88,7 +98,30 @@ def handler(event, context):
             "created_at": now
         }
 
+        # ---- Save booking ----
         table.put_item(Item=item)
+
+        # ---- Notify via SNS (Admin + Customer info) ----
+        sns.publish(
+            TopicArn=TOPIC_ARN,
+            Subject="New RENT Booking | ContainersClub",
+            Message=f"""
+NEW RENT BOOKING RECEIVED
+
+Booking ID: {booking_id}
+Name: {data.get('name')}
+Email: {data.get('email')}
+Phone: {data.get('phone')}
+From: {from_date}
+To: {to_date}
+Location: {data.get('location')}
+Amount: {data.get('total')}
+
+Customer Confirmation:
+Thank you for booking with ContainersClub.
+Our representative will contact you shortly.
+"""
+        )
 
         return response(200, {
             "success": True,
