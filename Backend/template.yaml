@@ -1010,7 +1010,7 @@ Resources:
         ApiEvent:
           Type: Api
           Properties:
-            Path: /sell/presign
+            Path: /sell/presign-upload
             Method: POST
             RestApiId: !Ref SellApi
 
