@@ -21,47 +21,14 @@ Resources:
   # APIs (kept separate for now)
   ################################
 
-  ApiGatewayCloudWatchRole:
-    Type: AWS::IAM::Role
-    Properties:
-      RoleName: !Sub "${AWS::StackName}-ApiGatewayCWRole"
-      AssumeRolePolicyDocument:
-        Version: "2012-10-17"
-        Statement:
-          - Effect: Allow
-            Principal:
-              Service:
-                - apigateway.amazonaws.com
-            Action: sts:AssumeRole
-      ManagedPolicyArns:
-        - arn:aws:iam::aws:policy/service-role/AmazonAPIGatewayPushToCloudWatchLogs
-
-  ApiGatewayLogGroup:
-    Type: AWS::Logs::LogGroup
-    Properties:
-      LogGroupName: !Sub "/aws/apigateway/${AWS::StackName}-prod"
-      RetentionInDays: 14
-
-  ApiGatewayAccount:
-    Type: AWS::ApiGateway::Account
-    DependsOn: ApiGatewayCloudWatchRole
-    Properties:
-      CloudWatchRoleArn: !GetAtt ApiGatewayCloudWatchRole.Arn
   Api:
     Type: AWS::Serverless::Api
-    DependsOn: ApiGatewayAccount
     Properties:
       StageName: prod
       Cors:
         AllowMethods: "'GET,POST,OPTIONS'"
         AllowHeaders: "'*'"
         AllowOrigin: "'*'"
-      MethodSettings:
-        - ResourcePath: "/*"
-          HttpMethod: "*"
-          LoggingLevel: INFO
-          DataTraceEnabled: true
-          MetricsEnabled: true
 
   HttpApi:
     Type: AWS::Serverless::HttpApi
@@ -73,7 +40,6 @@ Resources:
 
   RentApi:
     Type: AWS::Serverless::Api
-    DependsOn: ApiGatewayAccount
     Properties:
       Name: !Sub "${AWS::StackName}-RentApi"
       StageName: prod
@@ -81,17 +47,9 @@ Resources:
         AllowMethods: "'GET,POST,OPTIONS'"
         AllowHeaders: "'*'"
         AllowOrigin: "'*'"
-      MethodSettings:
-        - ResourcePath: "/*"
-          HttpMethod: "*"
-          LoggingLevel: INFO
-          DataTraceEnabled: true
-          MetricsEnabled: true
-
 
   SellApi:
     Type: AWS::Serverless::Api
-    DependsOn: ApiGatewayAccount
     Properties:
       Name: !Sub "${AWS::StackName}-SellApi"
       StageName: prod
@@ -99,13 +57,6 @@ Resources:
         AllowMethods: "'GET,POST,OPTIONS'"
         AllowHeaders: "'*'"
         AllowOrigin: "'*'"
-      MethodSettings:
-        - ResourcePath: "/*"
-          HttpMethod: "*"
-          LoggingLevel: INFO
-          DataTraceEnabled: true
-          MetricsEnabled: true
-
 
   #################################
   # DynamoDB Tables
