@@ -292,6 +292,9 @@ Resources:
         - AttributeName: listingId
           KeyType: HASH
       TableName: !Sub "${AWS::StackName}-RentListings"
+      StreamSpecification:
+        StreamEnabled: true
+        StreamViewType: NEW_IMAGE
 
   SellListingsTable:
     Type: AWS::DynamoDB::Table
@@ -340,6 +343,14 @@ Resources:
       TopicArn: !Ref BookingNotificationsTopic
       Protocol: email
       Endpoint: sachinkapoor2025@gmail.com
+
+  # LLM API Key Secret
+  LLMSecret:
+    Type: AWS::SecretsManager::Secret
+    Properties:
+      Name: !Sub "${AWS::StackName}-llm-key"
+      Description: "OpenAI API key for LLM content verification"
+      SecretString: !Sub '{"openai_api_key":""}'  # Will be updated by GitHub Actions
 
   #################################
   # S3 Buckets
@@ -912,6 +923,12 @@ Resources:
             Path: /rent/listings
             Method: GET
             RestApiId: !Ref RentApi
+        MyListingsEvent:
+          Type: Api
+          Properties:
+            Path: /rent/my-listings
+            Method: GET
+            RestApiId: !Ref RentApi
 
   CreateListingFunction:
     Type: AWS::Serverless::Function
@@ -920,18 +937,54 @@ Resources:
       Handler: app.handler
       Runtime: python3.12
       Policies:
-        - DynamoDBWritePolicy:
+        - DynamoDBCrudPolicy:
             TableName: !Ref RentListingsTable
       Environment:
         Variables:
           TABLE_NAME: !Ref RentListingsTable
       Events:
-        ApiEvent:
+        ApiCreateEvent:
           Type: Api
           Properties:
             RestApiId: !Ref RentApi
             Path: /rent/listings
             Method: POST
+        ApiUpdateEvent:
+          Type: Api
+          Properties:
+            RestApiId: !Ref RentApi
+            Path: /rent/listings/{listingId}
+            Method: PUT
+
+  RentListingVerifyFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: lambda/rent_listing_verify/
+      Handler: app.handler
+      Runtime: python3.12
+      Timeout: 120
+      MemorySize: 1024
+      Policies:
+        - DynamoDBCrudPolicy:
+            TableName: !Ref RentListingsTable
+        - S3ReadPolicy:
+            BucketName: !Ref RentMediaBucket
+        - Statement:
+            - Effect: Allow
+              Action:
+                - secretsmanager:GetSecretValue
+              Resource: !Ref LLMSecret
+      Environment:
+        Variables:
+          TABLE_NAME: !Ref RentListingsTable
+          LLM_SECRET_NAME: !Ref LLMSecret
+      Events:
+        DynamoDBStreamEvent:
+          Type: DynamoDB
+          Properties:
+            Stream: !GetAtt RentListingsTable.StreamArn
+            StartingPosition: LATEST
+            BatchSize: 1
 
   PresignUploadFunction:
     Type: AWS::Serverless::Function

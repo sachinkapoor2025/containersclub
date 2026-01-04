@@ -74,6 +74,29 @@ def handler(event, context):
     print(f"{now_ts()} 🚀 Handler start. RequestId={getattr(context, 'aws_request_id', 'N/A')}")
     print(f"{now_ts()} 📥 Event: {json.dumps(event) if isinstance(event, dict) else str(event)}")
 
+    # Check if this is my-listings endpoint
+    path = event.get("path", "")
+    is_my_listings = "/my-listings" in path
+
+    # Get owner ID from JWT for my-listings
+    owner_id = None
+    if is_my_listings:
+        auth_header = event.get("headers", {}).get("Authorization") or event.get("headers", {}).get("authorization")
+        if auth_header and auth_header.startswith("Bearer "):
+            try:
+                token = auth_header.split(" ")[1]
+                import jwt
+                decoded = jwt.decode(token, options={"verify_signature": False})
+                owner_id = decoded.get("sub") or decoded.get("username")
+                print(f"{now_ts()} 👤 My listings request for owner: {owner_id}")
+            except Exception as e:
+                print(f"{now_ts()} ❌ Failed to decode JWT for my-listings: {e}")
+                return {
+                    "statusCode": 401,
+                    "headers": {"Content-Type": "application/json", "Access-Control-Allow-Origin": "*"},
+                    "body": json.dumps({"error": "Invalid authentication"})
+                }
+
     # parse query params defensively
     try:
         params = event.get("queryStringParameters") or {}
@@ -87,7 +110,7 @@ def handler(event, context):
     condition = params.get("condition") or ""
     location = params.get("location") or ""
 
-    print(f"{now_ts()} 🔎 Filters parsed -> q='{q}', size='{size}', condition='{condition}', location='{location}'")
+    print(f"{now_ts()} 🔎 Filters parsed -> q='{q}', size='{size}', condition='{condition}', location='{location}', is_my_listings={is_my_listings}")
 
     # fetch items
     try:
@@ -114,6 +137,17 @@ def handler(event, context):
             except Exception:
                 return ""
         ok = True
+
+        # For public listings, only show active status
+        if not is_my_listings:
+            if it.get("status") != "active":
+                return False
+
+        # For my-listings, filter by owner
+        if is_my_listings and owner_id:
+            if it.get("ownerId") != owner_id:
+                return False
+
         if q:
             ok = q in g("title") or q in g("description") or q in g("specs") or q in g("location")
         if size and ok:

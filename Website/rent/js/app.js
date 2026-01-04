@@ -73,15 +73,23 @@ function toggleListingMode() {
   const modeRadios = document.querySelectorAll('input[name="listingMode"]');
   const normalForm = document.getElementById("listingForm");
   const bulkSection = document.getElementById("bulkListingSection");
+  const myListingsSection = document.getElementById("myListingsSection");
 
   modeRadios.forEach(radio => {
-    radio.addEventListener('change', (e) => {
+    radio.addEventListener('change', async (e) => {
       if (e.target.value === 'normal') {
         normalForm.style.display = 'block';
         bulkSection.style.display = 'none';
-      } else {
+        myListingsSection.style.display = 'none';
+      } else if (e.target.value === 'bulk') {
         normalForm.style.display = 'none';
         bulkSection.style.display = 'block';
+        myListingsSection.style.display = 'none';
+      } else if (e.target.value === 'my-listings') {
+        normalForm.style.display = 'none';
+        bulkSection.style.display = 'none';
+        myListingsSection.style.display = 'block';
+        await loadMyListings();
       }
     });
   });
@@ -332,7 +340,7 @@ if (formEl) {
         availableFrom: formData.get('availableFrom'),
         deliveryAvailable: formData.has('deliveryAvailable'),
         rentalTerms: formData.get('rentalTerms'),
-        status: 'active',
+        status: 'llm_review',
         currency: 'USD'
       };
 
@@ -796,6 +804,306 @@ function showBulkStatus(title, message) {
   titleEl.textContent = title;
   messageEl.textContent = message;
   statusDiv.style.display = "block";
+}
+
+/* ---------------- MY LISTINGS ---------------- */
+
+async function loadMyListings() {
+  const auth = getAuth();
+  if (!auth || isExpired(auth)) {
+    alert("Please login first to view your listings");
+    return;
+  }
+
+  try {
+    const data = await api('/rent/my-listings');
+    renderMyListings(data.items);
+  } catch (error) {
+    console.error("Error loading my listings:", error);
+    alert("Error loading your listings: " + error.message);
+  }
+}
+
+function renderMyListings(listings) {
+  const grid = document.getElementById("myListingsGrid");
+  const noListingsMsg = document.getElementById("noListingsMessage");
+
+  if (!grid) return;
+
+  if (!listings || listings.length === 0) {
+    grid.innerHTML = "";
+    noListingsMsg.style.display = "block";
+    return;
+  }
+
+  noListingsMsg.style.display = "none";
+  grid.innerHTML = listings.map(myListingCardHtml).join("");
+}
+
+function myListingCardHtml(it) {
+  const statusColor = it.status === 'active' ? '#10b981' : it.status === 'llm_review' ? '#f59e0b' : '#ef4444';
+  const statusText = it.status === 'llm_review' ? 'Under Review' : it.status === 'active' ? 'Active' : 'Pending';
+
+  const images = it.images && it.images.length > 0 ? it.images : ["/rent/media/placeholder.jpg"];
+  const imgHtml = images.map((img, idx) => `<img src="${img}" style="width:200px;height:150px;object-fit:cover;border-radius:8px;display:${idx === 0 ? 'block' : 'none'};">`).join('');
+
+  return `
+  <article class="card" style="margin-bottom:20px;">
+    <div style="display:flex;gap:15px;align-items:flex-start;">
+      <div class="img-container" style="flex-shrink:0;">
+        ${imgHtml}
+      </div>
+
+      <div style="flex:1;">
+        <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:10px;">
+          <h3 style="margin:0;">${it.title}</h3>
+          <span style="background:${statusColor};color:white;padding:4px 8px;border-radius:4px;font-size:12px;font-weight:bold;">
+            ${statusText}
+          </span>
+        </div>
+
+        <p style="margin:5px 0;"><strong>ID:</strong> ${it.listingId}</p>
+        <p style="margin:5px 0;"><strong>Location:</strong> ${it.location}</p>
+        <p style="margin:5px 0;"><strong>Price:</strong> $${it.price}/${it.pricePeriod} | <strong>Deposit:</strong> $${it.deposit}</p>
+        <p style="margin:5px 0;"><strong>Size:</strong> ${it.size} | <strong>Condition:</strong> ${it.condition}</p>
+        <p style="margin:5px 0;"><strong>Created:</strong> ${it.createdAt ? new Date(it.createdAt).toLocaleDateString() : 'N/A'}</p>
+      </div>
+
+      <div style="display:flex;flex-direction:column;gap:10px;">
+        <button onclick="viewMyListingImages('${it.listingId}')" style="padding:8px 16px;font-size:14px;">Images (${it.images?.length || 0})</button>
+        <button onclick="viewMyListingVideo('${it.listingId}')" style="padding:8px 16px;font-size:14px;">Video</button>
+        <button onclick="updateMyListing('${it.listingId}')" style="padding:8px 16px;font-size:14px;background:#0ea5e9;color:white;border:1px solid #0ea5e9;">Update</button>
+      </div>
+    </div>
+  </article>`;
+}
+
+async function viewMyListingImages(listingId) {
+  const item = await getListingById(listingId);
+
+  let modal = document.getElementById("imagesModal");
+  if (!modal) {
+    modal = document.createElement("div");
+    modal.id = "imagesModal";
+    modal.className = "modal";
+    document.body.appendChild(modal);
+  }
+
+  const images = item.images?.map(img =>
+    `<img src="${img}" style="width:100%;max-width:500px;margin:10px 0;border-radius:8px;">`
+  ).join("") || "<p>No images available</p>";
+
+  modal.innerHTML = `
+  <div class="modal-content" style="max-width:600px;">
+    <span class="close" onclick="imagesModal.style.display='none'">&times;</span>
+    <h2>Listing Images</h2>
+    <div style="text-align:center;">
+      ${images}
+    </div>
+  </div>`;
+
+  modal.style.display = "block";
+}
+
+async function viewMyListingVideo(listingId) {
+  const item = await getListingById(listingId);
+
+  let modal = document.getElementById("myVideoModal");
+  if (!modal) {
+    modal = document.createElement("div");
+    modal.id = "myVideoModal";
+    modal.className = "modal";
+    document.body.appendChild(modal);
+  }
+
+  const video = item.video ?
+    `<video controls style="width:100%;max-width:600px;">
+      <source src="${item.video}" type="video/mp4">
+      Your browser does not support the video tag.
+    </video>` :
+    "<p>No video available</p>";
+
+  modal.innerHTML = `
+  <div class="modal-content" style="max-width:700px;">
+    <span class="close" onclick="myVideoModal.style.display='none'; const vid = document.querySelector('#myVideoModal video'); if(vid) vid.pause();">&times;</span>
+    <h2>Listing Video</h2>
+    <div style="text-align:center;">
+      ${video}
+    </div>
+  </div>`;
+
+  modal.style.display = "block";
+}
+
+async function updateMyListing(listingId) {
+  const item = await getListingById(listingId);
+
+  let modal = document.getElementById("updateModal");
+  if (!modal) {
+    modal = document.createElement("div");
+    modal.id = "updateModal";
+    modal.className = "modal";
+    modal.innerHTML = `
+      <div class="modal-content" style="max-width:800px;max-height:80vh;overflow-y:auto;">
+        <span class="close" onclick="updateModal.style.display='none'">&times;</span>
+        <h2>Update Listing</h2>
+        <form id="updateForm">
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:15px;margin-bottom:20px;">
+            <div>
+              <label>Title</label>
+              <input name="title" required>
+            </div>
+            <div>
+              <label>Size</label>
+              <select name="size" required>
+                <option value="">Size</option>
+                <option>20ft</option>
+                <option>40ft</option>
+                <option>45ft</option>
+              </select>
+            </div>
+          </div>
+
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:15px;margin-bottom:20px;">
+            <div>
+              <label>Condition</label>
+              <select name="condition" required>
+                <option value="">Condition</option>
+                <option>New</option>
+                <option>Used (Cargo Worthy)</option>
+                <option>Wind & Watertight</option>
+                <option>As-Is</option>
+              </select>
+            </div>
+            <div>
+              <label>Location</label>
+              <input name="location" required>
+            </div>
+          </div>
+
+          <div style="margin-bottom:20px;">
+            <label>Description</label>
+            <textarea name="description" rows="3" required></textarea>
+          </div>
+
+          <div style="margin-bottom:20px;">
+            <label>Specifications</label>
+            <input name="specs">
+          </div>
+
+          <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:15px;margin-bottom:20px;">
+            <div>
+              <label>Price</label>
+              <input name="price" type="number" min="0" step="0.01" required>
+            </div>
+            <div>
+              <label>Period</label>
+              <select name="pricePeriod" required>
+                <option value="">Period</option>
+                <option>day</option>
+                <option>week</option>
+                <option>month</option>
+              </select>
+            </div>
+            <div>
+              <label>Deposit</label>
+              <input name="deposit" type="number" min="0" step="0.01">
+            </div>
+          </div>
+
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:15px;margin-bottom:20px;">
+            <div>
+              <label>Min Rental Duration (days)</label>
+              <input name="minRentalDuration" type="number" min="1">
+            </div>
+            <div>
+              <label>Available From</label>
+              <input name="availableFrom" type="date">
+            </div>
+          </div>
+
+          <div style="margin-bottom:20px;">
+            <label style="display:flex; align-items:center; gap:8px;">
+              <input name="deliveryAvailable" type="checkbox">
+              <span>Delivery available</span>
+            </label>
+          </div>
+
+          <div style="margin-bottom:20px;">
+            <label>Rental Terms</label>
+            <textarea name="rentalTerms" rows="2"></textarea>
+          </div>
+
+          <button type="submit" style="padding:12px 24px;font-size:16px;">Update Listing</button>
+        </form>
+      </div>
+    `;
+    document.body.appendChild(modal);
+
+    // Add form submit handler
+    const updateForm = modal.querySelector('#updateForm');
+    updateForm.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      await submitUpdate(listingId);
+    });
+  }
+
+  // Populate form with current data
+  const form = modal.querySelector('#updateForm');
+  form.querySelector('[name="title"]').value = item.title || '';
+  form.querySelector('[name="size"]').value = item.size || '';
+  form.querySelector('[name="condition"]').value = item.condition || '';
+  form.querySelector('[name="location"]').value = item.location || '';
+  form.querySelector('[name="description"]').value = item.description || '';
+  form.querySelector('[name="specs"]').value = item.specs || '';
+  form.querySelector('[name="price"]').value = item.price || '';
+  form.querySelector('[name="pricePeriod"]').value = item.pricePeriod || '';
+  form.querySelector('[name="deposit"]').value = item.deposit || '';
+  form.querySelector('[name="minRentalDuration"]').value = item.minRentalDuration || '';
+  form.querySelector('[name="availableFrom"]').value = item.availableFrom || '';
+  form.querySelector('[name="deliveryAvailable"]').checked = item.deliveryAvailable || false;
+  form.querySelector('[name="rentalTerms"]').value = item.rentalTerms || '';
+
+  modal.style.display = "block";
+}
+
+async function submitUpdate(listingId) {
+  try {
+    const form = document.querySelector('#updateForm');
+    const formData = new FormData(form);
+
+    const updateData = {
+      title: formData.get('title'),
+      size: formData.get('size'),
+      condition: formData.get('condition'),
+      location: formData.get('location'),
+      description: formData.get('description'),
+      specs: formData.get('specs'),
+      price: parseFloat(formData.get('price')) || 0,
+      pricePeriod: formData.get('pricePeriod'),
+      deposit: parseFloat(formData.get('deposit')) || 0,
+      minRentalDuration: parseInt(formData.get('minRentalDuration')) || 1,
+      availableFrom: formData.get('availableFrom'),
+      deliveryAvailable: formData.has('deliveryAvailable'),
+      rentalTerms: formData.get('rentalTerms')
+    };
+
+    const result = await authFetch(CONFIG.API_BASE + `/rent/listings/${listingId}`, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(updateData)
+    });
+
+    alert("Listing updated successfully!");
+    document.getElementById("updateModal").style.display = "none";
+    await loadMyListings(); // Refresh the list
+
+  } catch (error) {
+    console.error("Error updating listing:", error);
+    alert("Error updating listing: " + error.message);
+  }
 }
 
 /* ---------------- INIT ---------------- */

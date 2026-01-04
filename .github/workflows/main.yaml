@@ -26,6 +26,27 @@ jobs:
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: ${{ secrets.AWS_REGION }}
 
+      # Store LLM API Key in AWS Secrets Manager
+      - name: Store LLM API Key in Secrets Manager
+        run: |
+          SECRET_NAME="containers-club-dev-llm-key"
+          LLM_KEY="${{ secrets.LLM_KEY }}"
+
+          if [ -n "$LLM_KEY" ]; then
+            echo "Storing LLM API key in AWS Secrets Manager..."
+            aws secretsmanager put-secret-value \
+              --secret-id "$SECRET_NAME" \
+              --secret-string "{\"openai_api_key\":\"$LLM_KEY\"}" \
+              --no-cli-pager || \
+            aws secretsmanager create-secret \
+              --name "$SECRET_NAME" \
+              --secret-string "{\"openai_api_key\":\"$LLM_KEY\"}" \
+              --no-cli-pager
+            echo "LLM API key stored successfully"
+          else
+            echo "LLM_KEY not found in GitHub secrets, skipping..."
+          fi
+
       - name: SAM Validate
         working-directory: Backend
         run: sam validate

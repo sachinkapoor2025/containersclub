@@ -92,6 +92,10 @@
           <input type="radio" name="listingMode" value="bulk">
           <span>Bulk Listing (Multiple)</span>
         </label>
+        <label style="display:flex; align-items:center; gap:8px;">
+          <input type="radio" name="listingMode" value="my-listings">
+          <span>My Listings</span>
+        </label>
       </div>
     </div>
   </section>
@@ -183,6 +187,18 @@
       <h3 id="bulkStatusTitle">Processing...</h3>
       <p id="bulkStatusMessage">Your bulk listing is being processed. You will be notified once media upload is ready.</p>
       <button id="uploadBulkMediaBtn" style="display:none; margin-top:10px;" class="primary">Upload Media Files</button>
+    </div>
+  </div>
+
+  <!-- My Listings Section (hidden by default) -->
+  <div id="myListingsSection" class="card" style="display:none;">
+    <h2>My Listings</h2>
+    <div id="myListingsGrid" style="display:grid; gap:20px;">
+      <!-- Listings will be populated here -->
+    </div>
+    <div id="noListingsMessage" style="text-align:center; padding:40px; color:#666; display:none;">
+      <p>You haven't created any listings yet.</p>
+      <p>Switch to "Normal Listing" to create your first listing.</p>
     </div>
   </div>
 
