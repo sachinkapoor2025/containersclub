@@ -1,7 +1,7 @@
 version = 0.1
 
 [dev.deploy.parameters]
-stack_name = "containers-club-dev"
+stack_name = "containers-club"
 resolve_s3 = true
 s3_prefix = "containersclub"
 confirm_changeset = false
