@@ -51,7 +51,7 @@ jobs:
         working-directory: Backend
         run: sam validate
       # ----------------------------
-      # Backend: SAM Build
+      # Backend: SAM Build 
       # ----------------------------
       - name: SAM Build
         working-directory: Backend
