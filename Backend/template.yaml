@@ -523,7 +523,6 @@ Resources:
         Origins:
           - Id: S3Origin
             DomainName: !GetAtt WebBucket.RegionalDomainName
-            S3OriginConfig: {}
             OriginAccessControlId: !GetAtt SiteOAC.Id
 
           - Id: HttpApiOrigin
