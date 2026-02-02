@@ -37,9 +37,6 @@ jobs:
         run: |
           sam build
 
-      # ----------------------------
-      # Backend: SAM Deploy (uses samconfig.toml)
-      # ----------------------------
       - name: SAM Deploy (dev)
         working-directory: Backend
         run: |

@@ -2,188 +2,163 @@
 <html lang="en">
 <head>
   <meta charset="utf-8"/>
-  <meta name="viewport" content="width=device-width, initial-scale=1"/>
-
-  <title>Buy & Sell Shipping Containers | Containers Club</title>
-  <meta name="description" content="Browse used shipping containers for sale. Filter by size, condition, location, specs and media."/>
-  <link rel="canonical" href="https://containersclub.com/sell/"/>
-  <meta name="robots" content="index, follow"/>
-
-  <!-- Global stylesheet -->
+  <meta content="width=device-width,initial-scale=1" name="viewport"/>
+  <title>Containers Club | Buy, Sell & Rent Shipping Containers in the USA</title>
+  <link rel="icon" href="/images/cc_logo.png"/>
+  <meta name="description" content="Containers Club is a trusted USA marketplace to buy, sell, and rent shipping containers with USA delivery, verified suppliers, and flexible options."/>
   <link rel="stylesheet" href="/styles.css"/>
-
-  <style>
-    /* Replace bullet points with container logo */
-    .muted li {
-      list-style: none;
-      position: relative;
-      padding-left: 30px;
-    }
-    .muted li:before {
-      content: "";
-      position: absolute;
-      left: 0;
-      top: 2px;
-      width: 20px;
-      height: 20px;
-      background-image: url('/images/logo.png');
-      background-size: contain;
-      background-repeat: no-repeat;
-    }
-  </style>
-
-  <!-- Global config -->
-  <script src="/config.js"></script>
-
-  <!-- SELL auth (MUST load before app.js) -->
-  <script src="./js/auth.js"></script>
+  <!-- <script src="/config.js"></script> -->
 
   <!-- Injects GA + header/footer partials -->
   <script src="/partials/include.js" defer></script>
-
-  <!-- App script -->
-  <script defer src="./js/app.js"></script>
 </head>
-
 <body>
 
-<!-- Shared header -->
+<!-- Shared header (injected) -->
 <div data-include="/partials/header.html" id="site-header"></div>
 
 <main class="container">
-
-  <!-- HERO -->
-  <section class="card hero">
+  <section class="hero">
     <div>
-      <div id="welcomeMessage" style="display:none; margin-bottom:15px; padding:10px; background:#e8f4f8; border-radius:8px; text-align:center;"></div>
-      <h1>Containers for Sale</h1>
-
-      <ul class="muted" style="margin-top:10px; line-height:1.55;">
-        <li>Browse new, used, and refurbished shipping containers from verified sellers.</li>
-        <li>Compare prices, photos, and condition grades before purchasing.</li>
-        <li>Filter by size, location, and specifications to find the right container.</li>
-        <li>Schedule fast, reliable delivery anywhere in the USA.</li>
-        <li>List your own containers for sale and reach active nationwide buyers.</li>
-      </ul>
-
-      <!-- SELL CTA -->
-      <p>
-        <a id="sellCta" class="primary" href="./new.html">
-          Sell your container
-        </a>
-      </p>
+      <h1>Buy, Sell & Rent Shipping Containers USA</h1>
+      <p>Containers Club connects terminals, depots, transporters, CHAs and shippers on a single platform. Plan slots, digitise gate moves, track equipment, and cut dwell &amp; turn-around times.</p>
+      <div style="display:flex;gap:12px">
+        <a class="primary" href="contact.html">Get a live demo →</a>
+        <a class="secondary" href="a-pages/platform.html">Explore platform</a>
+      </div>
+      <div class="badges">
+        <span class="badge">Slot booking</span>
+        <span class="badge">Gate automation (ANPR/RFID)</span>
+        <span class="badge">Depot &amp; yard ops</span>
+        <span class="badge">EIR &amp; damage</span>
+        <span class="badge">Rail/ICD workflows</span>
+        <span class="badge">GST e-invoicing</span>
+        <span class="badge">APIs &amp; EDI</span>
+      </div>
+      <div class="grid-3">
+        <div class="card"><h3>35%</h3><div class="sub">Faster truck turn-around</div></div>
+        <div class="card"><h3>↓22%</h3><div class="sub">Lower yard dwell</div></div>
+        <div class="card"><h3>99.95%</h3><div class="sub">Platform uptime</div></div>
+      </div>
     </div>
-
     <div class="hero-ill">
-      <img src="/images/sell-hero.png" alt="Container sales illustration"/>
+      <img alt="Platform illustration" src="/images/hero.png" />
     </div>
   </section>
 
-  <!-- FILTERS -->
-  <section class="card">
-    <div class="grid" style="grid-template-columns: repeat(auto-fit, minmax(220px,1fr)); gap:16px;">
-      <input type="search" id="q" placeholder="Search by title/spec/location"/>
-      <select id="size">
-        <option value="">Any size</option>
-        <option>20ft</option>
-        <option>40ft</option>
-        <option>45ft</option>
-      </select>
-      <select id="condition">
-        <option value="">Any condition</option>
-        <option>New</option>
-        <option>Used (Cargo Worthy)</option>
-        <option>Wind & Watertight</option>
-        <option>As-Is</option>
-      </select>
-      <select id="location">
-        <option value="">Any location</option>
-      </select>
-      <button id="searchBtn">Search</button>
+  <section class="section">
+    <h2 class="h">Why Containers Club</h2>
+    <p class="sub">Purpose-built for US’s container logistics — regulatory compliance, multilingual apps, and integrations with ports, terminals, depots, railways and customs systems.</p>
+    <div class="grid-3">
+      <div class="card feature">
+        <div class="feature-icon">📦</div>
+        <div>
+          <h3>Yard &amp; depot control</h3>
+          <div class="sub">Inbound/outbound, EIR, repair codes, holds, stacks, reefer monitoring.</div>
+        </div>
+      </div>
+      <div class="card feature">
+        <div class="feature-icon">🚚</div>
+        <div>
+          <h3>Transporter performance</h3>
+          <div class="sub">Slotting, dispatch planning, trip-level KPIs, e-POD, demurrage alerts.</div>
+        </div>
+      </div>
+      <div class="card feature">
+        <div class="feature-icon">🔌</div>
+        <div>
+          <h3>APIs &amp; EDI</h3>
+          <div class="sub">Connect TOS, ERP, WMS, rail systems. REST/GraphQL, ANSI X12, EDIFACT.</div>
+        </div>
+      </div>
     </div>
   </section>
 
-  <!-- LISTINGS -->
-  <section class="card">
-    <div
-      id="listingGrid"
-      aria-live="polite"
-      style="display:flex;flex-direction:column;gap:20px;">
+  <section class="section">
+    <div class="grid-2">
+      <div class="card">
+        <h3>Security &amp; compliance</h3>
+        <div class="sub">Role-based access, audit trails, SSO (SAML/OIDC), ISO 27001 controls, data residency in US.</div>
+      </div>
+      <div class="card">
+        <h3>Go-live in weeks</h3>
+        <div class="sub">Templates for ports, CFS, ICDs, depots; migration accelerators and sandbox APIs.</div>
+      </div>
     </div>
   </section>
 
-  <!-- SEO CONTENT -->
-  <section class="content-panel content-intro">
-    <h1>Buy & Sell Shipping Containers in the USA — Secure Container Sales & Delivery</h1>
+  <!-- Top content from provided document -->
+  <section class="content-intro" style="margin-bottom:28px;">
+    <h1>Containers Club – USA's Leading Shipping Container Marketplace for Buy, Sell & Rent</h1>
     <p>
-      Buying and selling shipping containers in the USA has never been easier. Our platform connects buyers and sellers nationwide,
-      offering high-quality new, used, and customized containers with fast, secure delivery options.
+      ContainersClub is a trusted marketplace in the United States to buy, sell, and rent shipping
+      containers across major ports, logistics hubs, and industrial zones nationwide. With verified
+      suppliers, competitive pricing, and coast-to-coast delivery, we make container procurement
+      simple, transparent, and reliable. Whether your requirement is for export, storage,
+      construction, retail, or industrial usage, ContainersClub ensures high-quality containers
+      backed by responsive customer support and professional logistics coordination. Our
+      platform connects businesses, logistics providers, and container owners, offering a unified
+      solution for all container-related needs across the USA.
     </p>
 
-    <h2>Sell Used & New Shipping Containers — 20ft, 40ft, High Cube & Custom Units</h2>
+    <h2>Buy & Sell Shipping Containers Across the USA — New, Used & High Cube Options</h2>
     <p>
-      We specialize in helping customers sell both used and new shipping containers, offering multiple sizes including 20ft, 40ft,
-      and 40ft High Cube options.
+      ContainersClub offers a wide inventory of new, used, High Cube, refurbished, and cargo-
+      worthy shipping containers available for immediate purchase. Buyers can explore 20ft, 40ft,
+      and custom-sized units with detailed specifications, condition reports, and transparent
+      pricing. Sellers gain nationwide exposure through a trusted platform that connects them
+      with qualified buyers across the United States.
     </p>
 
-    <h2>Nationwide Container Sales & Delivery Across Major U.S. Cities & Ports</h2>
+    <h2>Rent Shipping Containers in the USA — Flexible Short-Term & Long-Term Plans</h2>
+
     <p>
-      We provide seamless container sales and delivery services across major U.S. cities including Los Angeles, Houston, Miami,
-      New York, Seattle, Chicago, Dallas, Atlanta, and more.
+      Renting containers is an ideal solution for businesses requiring temporary storage or
+      project-based infrastructure. ContainersClub provides flexible short-term and long-term
+      rental options for dry containers, High Cube units, refrigerated containers, and custom
+      storage solutions. Each unit is inspected before dispatch to ensure safety and usability.
     </p>
 
-    <h2>Why Choose Us for Container Sales, Quality Assurance & Fast Delivery</h2>
+    <h2>Nationwide Delivery & Logistics Support — Fast Container Transport to Ports & Job Sites</h2>
+
     <p>
-      We are committed to providing a trusted buying and selling experience backed by quality assurance,
-      transparent communication, and reliable customer service.
+      ContainersClub coordinates nationwide container delivery through a robust logistics
+      network covering major U.S. ports, rail terminals, metro areas, and remote job sites. Our
+      transport partners ensure safe and timely movement using flatbeds, trailers, and crane-
+      equipped vehicles. Optimized route planning helps reduce downtime and maintain efficient
+      operations.
     </p>
 
-    <h3>Add-Ons: Container Customization, Modifications & Upgrades Available</h3>
+    <h3>20ft, 40ft, Reefer & Customized Container Solutions for Every Industry</h3>
+
     <p>
-      Buyers looking for additional functionality can take advantage of our customization and modification services.
+      We provide industry-specific container solutions including standard 20ft and 40ft dry
+      containers, High Cube containers for oversized cargo, and refrigerated containers for
+      temperature-controlled shipments. ContainersClub also delivers customized containers
+      such as portable offices, retail units, cold storage, industrial workshops, and modular spaces
+      with insulation, HVAC systems, electrical wiring, and reinforced flooring.
     </p>
 
-    <h3>Fast Shipping to U.S. Ports, Warehouses & Job Sites</h3>
-    <p>
-      Fast, dependable delivery is one of our core strengths.
-    </p>
+    <h3>On-Hire / Off-Hire Services & Easy Online Booking</h3>
 
-    <h3>Customer Support & After-Sale Services for Container Buyers & Sellers</h3>
     <p>
-      We stand behind every transaction with dedicated customer support and after-sale assistance.
+      Our streamlined booking system allows customers to check availability, compare pricing,
+      and schedule delivery efficiently. On-hire inspections document container condition at
+      dispatch, while off-hire inspections confirm condition upon return. This transparent
+      workflow minimizes disputes and supports smooth rental cycles across the USA.
+    </p>
+    <h3>Delivery to Major U.S. Ports — Los Angeles, Long Beach, Houston & New York</h3>
+    <p>
+      ContainersClub ensures fast and reliable container delivery to major U.S. ports including
+      Los Angeles, Long Beach, Houston, New York/New Jersey, Savannah, and Oakland.
+      Exporters and importers rely on our services for timely depot transfers, stuffing operations,
+      and warehouse placement, helping maintain strong supply-chain efficiency nationwide.
     </p>
   </section>
-
 </main>
 
-<!-- Shared footer -->
+<!-- Shared footer (injected) -->
 <div data-include="/partials/footer.html" id="site-footer"></div>
-
-<!-- CTA AUTH LOGIC -->
-<script>
-document.addEventListener("click", (e) => {
-  const btn = e.target.closest("#sellCta");
-  if (!btn) return;
-
-  const auth = JSON.parse(localStorage.getItem("cb_auth") || "null");
-  if (!auth || Date.now() > auth.exp) {
-    e.preventDefault();
-
-    if (typeof loginSell === "function") {
-      loginSell();        // Cognito Hosted UI
-    } else {
-      // fallback (should never happen, but safe)
-      window.location.href = "/sell/new.html";
-    }
-  }
-});
-</script>
-
-<!-- Dynamic year -->
-<script>
-  const y = document.getElementById("year");
-  if (y) y.textContent = new Date().getFullYear();
-</script>
 
 </body>
 </html>

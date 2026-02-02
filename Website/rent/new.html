@@ -79,11 +79,26 @@
       <button id="loginBtn" type="button">Login</button>
       <button id="logoutBtn" type="button" style="display:none">Logout</button>
     </div>
+
+    <!-- Listing Mode Toggle -->
+    <div style="margin-top:20px; padding:15px; background:#f8fafc; border-radius:8px; border:1px solid #e2e8f0;">
+      <h3 style="margin:0 0 10px 0;">Listing Mode</h3>
+      <div style="display:flex; gap:15px;">
+        <label style="display:flex; align-items:center; gap:8px;">
+          <input type="radio" name="listingMode" value="normal" checked>
+          <span>Normal Listing (Single)</span>
+        </label>
+        <label style="display:flex; align-items:center; gap:8px;">
+          <input type="radio" name="listingMode" value="bulk">
+          <span>Bulk Listing (Multiple)</span>
+        </label>
+      </div>
+    </div>
   </section>
 
   <form id="listingForm" class="card" aria-label="Create rental listing">
     <div class="grid">
-      <input name="title" placeholder="Title (e.g., 40ft High-Cube, Delhi)" required/>
+      <input name="title" placeholder="Title (e.g., 40ft High-Cube)" required/>
       <select name="size" required>
         <option value="">Size</option>
         <option>20ft</option>
@@ -107,20 +122,69 @@
     <input name="specs" placeholder="Specifications (e.g., steel grade, tare, max payload)"/>
 
     <label>Images (up to 10)
-      <input type="file" name="images" accept="image/*" multiple>
+      <input type="file" name="images" accept=".jpg,.jpeg,.png,.webp" multiple>
     </label>
 
     <label>Video (MP4/HLS recommended)
-      <input type="file" name="video" accept="video/*">
+      <input type="file" name="video" accept=".mp4">
     </label>
 
     <div class="grid">
-      <input name="dailyRate" placeholder="Daily rate (USD)" type="number" min="0" step="0.01"/>
-      <input name="availabilityFrom" placeholder="Available from (YYYY-MM-DD)" type="date"/>
+      <input name="price" placeholder="Price (USD)" type="number" min="0" step="0.01" required/>
+      <select name="pricePeriod" required>
+        <option value="">Period</option>
+        <option>day</option>
+        <option>week</option>
+        <option>month</option>
+      </select>
     </div>
+
+    <div class="grid">
+      <input name="deposit" placeholder="Deposit (USD)" type="number" min="0" step="0.01"/>
+      <input name="minRentalDuration" placeholder="Min rental duration (days)" type="number" min="1"/>
+    </div>
+
+    <div class="grid">
+      <input name="availableFrom" placeholder="Available from (YYYY-MM-DD)" type="date"/>
+      <label style="display:flex; align-items:center; gap:8px;">
+        <input name="deliveryAvailable" type="checkbox" checked>
+        <span>Delivery available</span>
+      </label>
+    </div>
+
+    <textarea name="rentalTerms" placeholder="Rental terms and conditions" rows="3"></textarea>
 
     <button type="submit">Publish Listing</button>
   </form>
+
+  <!-- Bulk Listing Section (hidden by default) -->
+  <div id="bulkListingSection" class="card" style="display:none;">
+    <h2>Bulk Listing Upload</h2>
+
+    <div style="margin-bottom:20px;">
+      <p><strong>Step 1:</strong> Download the sample Excel template to format your bulk listings correctly.</p>
+      <a href="/downloads/rent-bulk-template.xlsx" class="secondary" download>Download Sample Excel Template</a>
+    </div>
+
+    <div style="margin-bottom:20px;">
+      <p><strong>Step 2:</strong> Upload your completed Excel file with multiple container listings.</p>
+      <label>Excel File (.xlsx)
+        <input type="file" id="bulkExcelFile" accept=".xlsx,.xls" required>
+      </label>
+    </div>
+
+    <div style="margin-bottom:20px;">
+      <p><strong>Step 3:</strong> Submit your bulk listing for processing.</p>
+      <button id="submitBulkBtn" class="primary">Submit Bulk Listing</button>
+    </div>
+
+    <!-- Bulk Upload Status -->
+    <div id="bulkStatus" style="display:none; margin-top:20px; padding:15px; background:#fef3c7; border:1px solid #f59e0b; border-radius:8px;">
+      <h3 id="bulkStatusTitle">Processing...</h3>
+      <p id="bulkStatusMessage">Your bulk listing is being processed. You will be notified once media upload is ready.</p>
+      <button id="uploadBulkMediaBtn" style="display:none; margin-top:10px;" class="primary">Upload Media Files</button>
+    </div>
+  </div>
 
   <p class="muted">Tip: Upload HLS or MP4 ~3–6 Mbps to avoid buffering.</p>
 </main>
