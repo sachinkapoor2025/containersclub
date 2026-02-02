@@ -1,233 +1,191 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="utf-8"/>
-  <meta content="width=device-width,initial-scale=1" name="viewport"/>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Containers Club | Port Information</title>
-  <link rel="icon" href="/images/cc_logo.png"/>
-  <meta name="description" content="Find detailed information about ports and harbors. Search by location, facilities, and services."/>
-  <link rel="stylesheet" href="/styles.css"/>
+  <link rel="icon" href="/images/cc_logo.png" />
+
+  <meta name="description" content="Browse and explore port information across the US — view facilities, location details, and logistics operations data." />
+  <link rel="stylesheet" href="/styles.css" />
+  <script src="/config.js?v=20251026" defer></script>
 
   <style>
-    /* Replace bullet points with container logo */
-    .ports-hero-points li {
-      list-style: none;
-      position: relative;
-      padding-left: 30px;
+    .port-card {
+      border: 1px solid #ddd;
+      border-radius: 8px;
+      padding: 12px;
+      margin: 12px 0;
+      background: #fff;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+      cursor: pointer;
+      transition: box-shadow .15s ease;
     }
-    .ports-hero-points li:before {
-      content: "";
-      position: absolute;
-      left: 0;
-      top: 2px;
-      width: 20px;
-      height: 20px;
-      background-image: url('/images/logo.png');
-      background-size: contain;
-      background-repeat: no-repeat;
+    .port-card:hover { box-shadow: 0 4px 10px rgba(0,0,0,0.08); }
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 16px;
     }
+    .port-img {
+      width: 100%;
+      height: 160px;
+      object-fit: cover;
+      border-radius: 6px;
+      margin-bottom: 8px;
+      background: #f3f3f3;
+    }
+    .muted { color: #666; font-size: .9rem; }
+    .form-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr 1fr 1fr auto;
+      gap: 8px;
+      margin: 16px 0 12px;
+    }
+    .form-row {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 8px;
+      margin: 0 0 24px;
+      max-width: 560px;
+    }
+    select, input, button {
+      height: 40px;
+      padding: 0 10px;
+      border-radius: 8px;
+      border: 1px solid #ddd;
+      background: #fff;
+      font-size: 14px;
+    }
+    button { cursor: pointer; }
+    button.secondary { background: #f6f6f6; }
+
+    /* Drawer */
+    .drawer {
+      position: fixed;
+      top: 0; right: 0; bottom: 0;
+      width: min(560px, 90vw);
+      background: #fff;
+      box-shadow: -6px 0 20px rgba(0,0,0,.15);
+      transform: translateX(100%);
+      transition: transform .2s ease;
+      z-index: 50;
+      display: flex;
+      flex-direction: column;
+    }
+    .drawer.open { transform: translateX(0); }
+    .drawer-header {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 12px 16px; border-bottom: 1px solid #eee;
+    }
+    .drawer-body { padding: 16px; overflow-y: auto; }
+
+    .backdrop {
+      position: fixed; inset: 0;
+      background: rgba(0,0,0,.35);
+      opacity: 0; pointer-events: none;
+      transition: opacity .2s ease;
+      z-index: 40;
+    }
+    .backdrop.show { opacity: 1; pointer-events: auto; }
   </style>
 
-  <!-- Injects GA + shared header/footer (footer still used) -->
   <script src="/partials/include.js" defer></script>
 </head>
 <body>
 
-<!-- NOTE: Removed the injected site header per request -->
+<!-- Shared header -->
 <div data-include="/partials/header.html" id="site-header"></div>
 
 <main class="container">
+
   
-  <!-- Hero/intro (kept minimal since main content above) -->
-  <section class="hero" style="align-items:flex-start; margin-bottom:18px;">
+  <!-- ================== END SEO CONTENT PANEL ================== -->
+
+  <section class="hero" style="align-items:flex-start;">
     <div>
-      <h2 class="visually-hidden">Port Information</h2>
-<ul class="ports-hero-points">
-  <li>Search and explore detailed information about ports and harbors worldwide.</li>
-  <li>Find port codes, locations, facilities, and available services.</li>
-  <li>Check port operating hours, contact information, and terminal details.</li>
-  <li>View port maps, berthing information, and cargo handling capabilities.</li>
-  <li>Access real-time port status, congestion levels, and weather conditions.</li>
-  <li>Compare multiple ports to optimize routing and logistics planning.</li>
-  <li>Get updates on port regulations, fees, and documentation requirements.</li>
-</ul>
-    </div>
-     <!-- NEW IMAGE SLOT ADDED -->
-  <div class="hero-ill">
-    <img src="/images/port-information-hero.png" alt="Port information illustration"/>
-  </div>
-  </section>
+      <h1>Port Information</h1>
+      <p class="sub">Browse ports by state, city, type, and pincode.</p>
 
-  <!-- Form card -->
-  <section class="section">
-    <div class="card">
-      <form id="portsForm">
-        <div class="grid-2">
-          <div class="field">
-            <label for="portName">Port Name</label>
-            <input id="portName" placeholder="Search by port name" />
-          </div>
+      <div class="form-grid">
+        <select id="stateSel"><option value="">State</option></select>
+        <select id="citySel" disabled><option value="">City</option></select>
+        <select id="portSel" disabled><option value="">Port</option></select>
 
-          <div class="field">
-            <label for="portCode">Port Code (UN/LOCODE)</label>
-            <input id="portCode" placeholder="e.g., USNYC, INBOM" />
-          </div>
-        </div>
+        <select id="typeSel" disabled>
+          <option value="">Port type</option>
+        </select>
 
-        <div class="grid-2">
-          <div class="field">
-            <label for="country">Country</label>
-            <select id="country">
-              <option value="">— Select country —</option>
-              <option>United States</option>
-              <option>India</option>
-              <option>China</option>
-              <option>Singapore</option>
-              <option>Netherlands</option>
-              <option>Germany</option>
-              <option>United Kingdom</option>
-              <option>Japan</option>
-              <option>South Korea</option>
-              <option>Australia</option>
-              <!-- Add more countries as needed -->
-            </select>
-          </div>
-
-          <div class="field">
-            <label for="region">Region/State</label>
-            <input id="region" placeholder="State or region" />
-          </div>
-        </div>
-
-        <h3 style="margin-top:14px">Your details</h3>
-        <div class="grid-2">
-          <div class="field">
-            <label for="userName">Name <span class="req">*</span></label>
-            <input id="userName" placeholder="Your name" />
-          </div>
-
-          <div class="field">
-            <label for="userCompany">Company <span class="req">*</span></label>
-            <input id="userCompany" placeholder="Your company" />
-          </div>
-
-          <div class="field">
-            <label for="userEmail">Email (optional)</label>
-            <input id="userEmail" placeholder="you@example.com" />
-          </div>
-
-          <div class="field">
-            <label for="userRole">Role (optional)</label>
-            <select id="userRole">
-              <option value="">— Select —</option>
-              <option>Shipping Line</option>
-              <option>Freight Forwarder</option>
-              <option>Logistics Manager</option>
-              <option>Import/Export Manager</option>
-              <option>Other</option>
-            </select>
-          </div>
-
-          <!-- Phone row -->
-          <div class="field" style="grid-column:1/-1">
-            <label>Phone <span class="req">*</span></label>
-            <div style="display:flex; gap:8px">
-              <select id="phoneCountry" aria-label="Country code">
-                <option value="+91" >India (+91)</option>
-                <option value="+971">United Arab Emirates (+971)</option>
-                <option value="+1" selected>United States (+1)</option>
-                <option value="+44">United Kingdom (+44)</option>
-                <option value="+61">Australia (+61)</option>
-                <option value="+65">Singapore (+65)</option>
-                <option value="+81">Japan (+81)</option>
-                <option value="+86">China (+86)</option>
-                <option value="+49">Germany (+49)</option>
-                <option value="+33">France (+33)</option>
-              </select>
-              <input id="phoneLocal" inputmode="numeric" placeholder="9876543210" aria-label="Phone without country code" />
-            </div>
-            <small class="muted">Digits only — we’ll send +E.164 to the API.</small>
-          </div>
-        </div>
-
-        <label class="consent" style="display:flex; gap:8px; align-items:flex-start; margin-top:10px;">
-          <input type="checkbox" id="consent" />
-          <span>I agree this website will fetch port information and store my inputs for future use.</span>
-        </label>
-
-        <div id="error" class="error"></div>
-
-        <button type="submit" class="primary" style="margin-top:12px">Search ports</button>
-      </form>
-    </div>
-  </section>
-
-  <!-- Result card -->
-  <section id="result" class="section hidden">
-    <div class="card">
-      <div class="result-header" style="display:flex; justify-content:space-between; align-items:flex-end; gap:12px; flex-wrap:wrap;">
-        <div>
-          <h2 id="r-title" style="margin:0">Port Information</h2>
-          <div id="r-meta" class="muted"></div>
-        </div>
-        <div id="r-eta" class="muted"></div>
+        <select id="pinSel" disabled><option value="">Pincode</option></select>
+        <button id="searchBtn">Search</button>
       </div>
 
-      <div id="r-status" style="margin:12px 0"></div>
-
-      <h3>Port Details</h3>
-      <table id="r-table" class="table">
-        <thead>
-          <tr><th>Information</th><th>Details</th></tr>
-        </thead>
-        <tbody></tbody>
-      </table>
+      <div class="form-row">
+        <input id="nameQ" placeholder="Optional: exact port name" />
+        <button id="resetBtn" class="secondary">Reset</button>
+      </div>
     </div>
+
+      <div class="hero-ill">
+    <img src="/images/port-information-hero.png" alt="Container news illustration"/>
+  </div>
+
   </section>
-  <!-- Top content from provided document -->
-  <section class="content-intro" style="margin-bottom:28px;">
-    <h1>Port & Harbor Information for Shipping in the USA</h1>
+
+  <section class="section">
+    <div id="portsContainer" class="grid"></div>
+    <div id="portsPagination" style="margin-top:16px;"></div>
+  </section>
+  <!-- ================== SEO CONTENT PANEL (INSERTED) ================== -->
+  <section class="content-panel content-intro section" style="margin-bottom:24px;">
+    <h1>US Port Information Guide – Container Terminals, Facilities & Transport Access</h1>
     <p>
-      Comprehensive port and harbor information is essential for efficient shipping operations across the United States. Our detailed port directory provides up-to-date information about major U.S. ports, including facility specifications, terminal capabilities, cargo handling equipment, and service offerings. Whether you're planning container shipments, bulk cargo operations, or specialized freight movements, our platform offers the critical data needed for optimal route planning and port selection. We cover all major coastal ports, inland waterway terminals, and intermodal facilities, ensuring you have access to complete information for successful logistics operations.
+      The United States operates one of the world’s most extensive port networks, supporting global trade, 
+      containerized cargo movement, and domestic logistics. Whether you are a shipper, transporter, depot operator, 
+      or business owner, understanding port infrastructure and capabilities helps optimize routing decisions, reduce 
+      delays, and improve supply-chain planning. This guide provides details about port categories, operations, 
+      cargo-handling facilities, and how various terminals function across the US.
     </p>
 
-    <h2>Search Port Codes, Locations, Facilities & Available Services</h2>
+    <h2>Types of Ports in the US – Cargo, Container Terminals, Inland Ports & ICDs</h2>
     <p>
-      Our port search functionality allows you to quickly find and compare ports using various criteria including UN/LOCODE identifiers, geographic locations, and service capabilities. Each port profile includes detailed information about terminal operators, berth specifications, draft limitations, and available cargo handling equipment. You can also access information about port services such as customs clearance, warehousing, transportation connections, and value-added logistics services. This comprehensive data helps shipping companies, freight forwarders, and logistics providers make informed decisions about port selection and operational planning.
+      US ports vary widely in scale and specialization. Major deep-water ports handle container ships and 
+      international cargo, while inland ports and intermodal terminals support rail-based container movement. 
+      Some ports specialize in bulk cargo, Ro-Ro operations, or mixed-cargo handling. Each port’s infrastructure, 
+      storage yards, equipment availability, throughput, and connectivity determine its role in the logistics ecosystem.
     </p>
 
-    <h2>Check Port Operating Hours, Contact Information & Terminal Details</h2>
+    <h2>How to Use Port Information for Logistics & Container Planning</h2>
     <p>
-      Accurate port operating information is crucial for coordinating vessel arrivals, cargo handling, and transportation connections. Our platform provides current operating hours for each terminal, contact information for port authorities and terminal operators, and detailed terminal specifications. This includes information about gate hours, documentation requirements, security procedures, and communication protocols. Having access to reliable contact information ensures smooth coordination between all parties involved in port operations, reducing delays and improving overall efficiency.
+      Businesses rely on accurate port data to plan container pickup, offloading, trans-shipment, and intermodal routing. 
+      Key considerations include port congestion levels, operating hours, equipment availability, yard capacity, 
+      customs procedures, and proximity to industrial clusters. Understanding these factors helps reduce operational 
+      delays and ensures smoother container handling.
     </p>
 
-    <h2>View Port Maps, Berthing Information & Cargo Handling Capabilities</h2>
+    <h3>Frequently Asked Questions — Port Access, Handling Charges & Operational Timings</h3>
     <p>
-      Detailed port maps and berthing information are essential for vessel navigation, cargo planning, and operational coordination. Our platform provides comprehensive port layouts showing berth locations, terminal boundaries, storage areas, and access routes. Berthing information includes water depth, berth length, and equipment availability for different types of vessels. Cargo handling capabilities are detailed for each terminal, including crane specifications, storage capacity, and specialized equipment for different cargo types. This information helps shipping lines optimize vessel loading plans and terminal operators prepare for efficient cargo operations.
-    </p>
-
-    <h3>Access Real-Time Port Status, Congestion Levels & Weather Conditions</h3>
-    <p>
-      Real-time port status information is critical for dynamic shipping operations and supply chain management. Our platform provides live updates on port congestion levels, vessel waiting times, and operational delays. Weather condition monitoring helps shippers and carriers anticipate potential disruptions and plan accordingly. We also offer predictive analytics for port congestion based on historical patterns and current vessel schedules. This real-time visibility enables better decision-making, improved scheduling accuracy, and enhanced customer service through proactive communication about potential delays.
-    </p>
-
-    <h3>Compare Multiple Ports to Optimize Routing & Logistics Planning</h3>
-    <p>
-      Our port comparison tools allow logistics managers to evaluate multiple port options based on various criteria including costs, transit times, service quality, and infrastructure capabilities. Side-by-side comparisons help identify the most efficient and cost-effective routing options for different cargo types and destinations. We provide analysis of port performance metrics, service reliability, and infrastructure investment trends to support strategic decision-making. This comprehensive comparison capability enables companies to optimize their logistics networks and improve overall supply chain efficiency.
-    </p>
-
-    <h3>Get Updates on Port Regulations, Fees & Documentation Requirements</h3>
-    <p>
-      Staying current with port regulations, fee structures, and documentation requirements is essential for smooth cargo operations. Our platform provides regular updates on regulatory changes, fee adjustments, and documentation requirements for all major U.S. ports. This includes information about customs procedures, security requirements, environmental regulations, and port-specific operational guidelines. We also offer guidance on required documentation for different cargo types and trade routes. Having access to current regulatory information helps prevent delays, avoid penalties, and ensure compliance with all applicable requirements.
+      Common questions involve port fees, container examination processes, appointment systems, restrictions based on 
+      cargo type, and required documentation. Each port may follow unique procedures, making it important to review 
+      verified, up-to-date information before scheduling container movements.
     </p>
   </section>
 
 </main>
 
-<!-- Shared footer (injected) -->
+<!-- Drawer -->
+<div class="backdrop" id="backdrop"></div>
+<aside class="drawer" id="drawer">
+  <div class="drawer-header">
+    <strong id="drawerTitle">Port details</strong>
+    <button id="drawerClose" class="secondary">Close</button>
+  </div>
+  <div class="drawer-body" id="drawerBody"></div>
+</aside>
+
+<!-- Shared footer -->
 <div data-include="/partials/footer.html" id="site-footer"></div>
 
-<!-- Page logic -->
-<script src="./ports/ports.js?v=20251026"></script>
+<script src="./ports.js?v=20251026" defer></script>
 </body>
 </html>

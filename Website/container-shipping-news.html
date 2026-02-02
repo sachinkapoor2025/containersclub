@@ -2,220 +2,98 @@
 <html lang="en">
 <head>
   <meta charset="utf-8"/>
-  <meta content="width=device-width,initial-scale=1" name="viewport"/>
-  <title>Containers Club | Shipping News</title>
+  <meta name="viewport" content="width=device-width,initial-scale=1"/>
+  <title>Containers Club | Container Market News</title>
+
   <link rel="icon" href="/images/cc_logo.png"/>
-  <meta name="description" content="Stay updated with the latest shipping industry news, market trends, and container logistics updates."/>
+  <meta name="description" content="Daily updates on container logistics, ports, depots, freight rates, policies and market moves across the US."/>
   <link rel="stylesheet" href="/styles.css"/>
 
-  <style>
-    /* Replace bullet points with container logo */
-    .news-hero-points li {
-      list-style: none;
-      position: relative;
-      padding-left: 30px;
-    }
-    .news-hero-points li:before {
-      content: "";
-      position: absolute;
-      left: 0;
-      top: 2px;
-      width: 20px;
-      height: 20px;
-      background-image: url('/images/logo.png');
-      background-size: contain;
-      background-repeat: no-repeat;
-    }
-  </style>
+  <!-- Global config for API base URL etc. -->
+  <script src="/config.js"></script>
 
-  <!-- Injects GA + shared header/footer (footer still used) -->
+  <!-- Injects GA + shared header/footer -->
   <script src="/partials/include.js" defer></script>
 </head>
 <body>
 
-<!-- NOTE: Removed the injected site header per request -->
-<div data-include="/partials/header.html" id="site-header"></div>
+<!-- Shared header (injected) -->
+<div id="site-header" data-include="/partials/header.html"></div>
 
 <main class="container">
+
   
-  <!-- Hero/intro (kept minimal since main content above) -->
-  <section class="hero" style="align-items:flex-start; margin-bottom:18px;">
+
+  <section class="hero" style="align-items:flex-start">
     <div>
-      <h2 class="visually-hidden">Shipping News</h2>
-<ul class="news-hero-points">
-  <li>Get the latest updates on container shipping industry news and market developments.</li>
-  <li>Stay informed about freight rates, capacity changes, and market trends.</li>
-  <li>Read analysis of global trade patterns and supply chain disruptions.</li>
-  <li>Follow regulatory changes, environmental policies, and industry standards.</li>
-  <li>Track major shipping company announcements and fleet developments.</li>
-  <li>Monitor port operations, congestion updates, and infrastructure projects.</li>
-  <li>Access expert insights and market forecasts for strategic planning.</li>
-</ul>
+      <h1>Container Market News</h1>
+      <p class="sub">Updated daily via our automated feed. Tap a headline to read the source.</p>
+      <div class="grid-3" style="margin-top:18px">
+        <div class="card">
+          <h3 id="metricStories">—</h3>
+          <div class="sub">Stories today</div>
+        </div>
+        <div class="card">
+          <h3 id="metricSources">—</h3>
+          <div class="sub">Sources tracked</div>
+        </div>
+        <div class="card">
+          <h3 id="metricUpdated">—</h3>
+          <div class="sub">Last updated</div>
+        </div>
+      </div>
     </div>
-     <!-- NEW IMAGE SLOT ADDED -->
+      <!-- NEW IMAGE SLOT ADDED -->
   <div class="hero-ill">
     <img src="/images/news-hero.png" alt="Container news illustration"/>
   </div>
   </section>
 
-  <!-- Form card -->
   <section class="section">
-    <div class="card">
-      <form id="newsForm">
-        <div class="grid-2">
-          <div class="field">
-            <label for="newsCategory">News Category</label>
-            <select id="newsCategory">
-              <option value="">— Select category —</option>
-              <option>Market Trends</option>
-              <option>Freight Rates</option>
-              <option>Industry News</option>
-              <option>Regulatory Updates</option>
-              <option>Company News</option>
-              <option>Port Updates</option>
-            </select>
-          </div>
-
-          <div class="field">
-            <label for="dateRange">Date Range</label>
-            <select id="dateRange">
-              <option value="week">Last Week</option>
-              <option value="month" selected>Last Month</option>
-              <option value="quarter">Last Quarter</option>
-              <option value="year">Last Year</option>
-            </select>
-          </div>
-        </div>
-
-        <h3 style="margin-top:14px">Your details</h3>
-        <div class="grid-2">
-          <div class="field">
-            <label for="userName">Name <span class="req">*</span></label>
-            <input id="userName" placeholder="Your name" />
-          </div>
-
-          <div class="field">
-            <label for="userCompany">Company <span class="req">*</span></label>
-            <input id="userCompany" placeholder="Your company" />
-          </div>
-
-          <div class="field">
-            <label for="userEmail">Email (optional)</label>
-            <input id="userEmail" placeholder="you@example.com" />
-          </div>
-
-          <div class="field">
-            <label for="userRole">Role (optional)</label>
-            <select id="userRole">
-              <option value="">— Select —</option>
-              <option>Shipping Professional</option>
-              <option>Logistics Manager</option>
-              <option>Trade Analyst</option>
-              <option>Business Owner</option>
-              <option>Other</option>
-            </select>
-          </div>
-
-          <!-- Phone row -->
-          <div class="field" style="grid-column:1/-1">
-            <label>Phone <span class="req">*</span></label>
-            <div style="display:flex; gap:8px">
-              <select id="phoneCountry" aria-label="Country code">
-                <option value="+91" >India (+91)</option>
-                <option value="+971">United Arab Emirates (+971)</option>
-                <option value="+1" selected>United States (+1)</option>
-                <option value="+44">United Kingdom (+44)</option>
-                <option value="+61">Australia (+61)</option>
-                <option value="+65">Singapore (+65)</option>
-                <option value="+81">Japan (+81)</option>
-                <option value="+86">China (+86)</option>
-                <option value="+49">Germany (+49)</option>
-                <option value="+33">France (+33)</option>
-              </select>
-              <input id="phoneLocal" inputmode="numeric" placeholder="9876543210" aria-label="Phone without country code" />
-            </div>
-            <small class="muted">Digits only — we’ll send +E.164 to the API.</small>
-          </div>
-        </div>
-
-        <label class="consent" style="display:flex; gap:8px; align-items:flex-start; margin-top:10px;">
-          <input type="checkbox" id="consent" />
-          <span>I agree this website will fetch shipping news and store my inputs for future use.</span>
-        </label>
-
-        <div id="error" class="error"></div>
-
-        <button type="submit" class="primary" style="margin-top:12px">Get latest news</button>
-      </form>
-    </div>
+    <div id="news-list" class="card-list"></div>
   </section>
-
-  <!-- Result card -->
-  <section id="result" class="section hidden">
-    <div class="card">
-      <div class="result-header" style="display:flex; justify-content:space-between; align-items:flex-end; gap:12px; flex-wrap:wrap;">
-        <div>
-          <h2 id="r-title" style="margin:0">Shipping News</h2>
-          <div id="r-meta" class="muted"></div>
-        </div>
-        <div id="r-eta" class="muted"></div>
-      </div>
-
-      <div id="r-status" style="margin:12px 0"></div>
-
-      <h3>Latest Updates</h3>
-      <table id="r-table" class="table">
-        <thead>
-          <tr><th>News</th><th>Date</th></tr>
-        </thead>
-        <tbody></tbody>
-      </table>
-    </div>
-  </section>
-  <!-- Top content from provided document -->
-  <section class="content-intro" style="margin-bottom:28px;">
-    <h1>Container Shipping News & Industry Updates in the USA</h1>
+  <!-- ================== SEO CONTENT PANEL (INSERTED) ================== -->
+  <section class="content-panel content-intro section" style="margin-bottom:24px;">
+    <h1>Container Market News & Logistics Updates – US Ports, Freight Rates & Industry Trends</h1>
     <p>
-      Stay informed with the latest container shipping news and industry developments affecting U.S. logistics operations. Our comprehensive news platform delivers real-time updates on freight rates, capacity changes, market trends, and regulatory developments that impact container shipping across American ports and transportation networks. Whether you're a shipping professional, logistics manager, or business owner involved in international trade, our curated news feed provides the insights you need to make informed decisions and stay ahead of market fluctuations.
+      Stay updated with the latest container market movements across the United States. From port congestion and 
+      depot updates to changes in freight rates, equipment availability, and government trade policies, our daily 
+      feed provides logistics professionals, shippers, NVOCCs, transporters, and container owners with timely and 
+      actionable updates. Containers Club aggregates reliable sources to help you monitor the industry and make 
+      informed operational decisions.
     </p>
 
-    <h2>Latest Updates on Freight Rates, Capacity Changes & Market Trends</h2>
+    <h2>Daily Container Logistics Insights Across US Ports & Depots</h2>
     <p>
-      Our freight rate monitoring system tracks current market conditions, capacity availability, and pricing trends across major U.S. trade lanes. We provide analysis of supply and demand dynamics, carrier capacity adjustments, and seasonal fluctuations that affect shipping costs. This information helps businesses plan their logistics budgets, negotiate better contracts with carriers, and optimize their shipping schedules. We also cover emerging trends such as digital freight platforms, sustainability initiatives, and technological advancements reshaping the container shipping industry.
+      Container operations across major US ports—including Los Angeles, Long Beach, New York/New Jersey, Savannah, 
+      Houston, and more—are influenced by seasonal demand, international trade flows, policy changes, and vessel 
+      schedules. Our curated reports highlight key developments such as berth delays, yard utilization, chassis 
+      availability, inland congestion, and container repositioning trends. Whether you manage a fleet or ship goods 
+      regularly, these insights help optimize planning.
     </p>
 
-    <h2>Analysis of Global Trade Patterns & Supply Chain Disruptions</h2>
+    <h2>Shipping Trends, Equipment Shortages & Market Forecasts</h2>
     <p>
-      Understanding global trade patterns is essential for effective supply chain management in today's interconnected economy. Our analysis covers trade flow changes, geopolitical developments, and economic indicators that influence container shipping volumes and routes. We provide insights into supply chain disruptions caused by natural disasters, labor strikes, port congestion, and other factors that can impact delivery timelines. This comprehensive analysis helps businesses anticipate potential challenges and develop contingency plans to maintain supply chain resilience.
+      Frequent fluctuations in freight rates, container shortages, repositioning imbalances, and global supply-chain 
+      trends directly affect US logistics operations. Containers Club monitors these shifts and summarizes their 
+      impact on shippers, importers, exporters, and container owners. From carrier policy updates to inland network 
+      performance, our goal is to keep the community informed with relevant and easy-to-consume updates.
     </p>
 
-    <h2>Regulatory Changes, Environmental Policies & Industry Standards</h2>
+    <h3>Frequently Asked Questions — Container Market, Freight Rates & Industry Updates</h3>
     <p>
-      The container shipping industry is subject to evolving regulations and environmental standards that affect operations and costs. Our regulatory updates cover changes in customs procedures, security requirements, emissions standards, and trade policies that impact U.S. shipping operations. We also track international agreements and environmental initiatives such as IMO 2020 sulfur cap regulations, carbon pricing mechanisms, and sustainability requirements. Staying informed about these developments helps businesses ensure compliance and adapt to changing regulatory landscapes.
-    </p>
-
-    <h3>Major Shipping Company Announcements & Fleet Developments</h3>
-    <p>
-      Keep track of strategic moves by major shipping lines, including new service launches, alliance changes, vessel deployments, and capacity expansions. Our coverage includes mergers and acquisitions, newbuild orders, and fleet modernization programs that affect service reliability and market competition. We also monitor technological innovations such as digital platforms, automation, and blockchain applications in container shipping. These developments can create new opportunities and challenges for shippers and logistics providers.
-    </p>
-
-    <h3>Port Operations, Congestion Updates & Infrastructure Projects</h3>
-    <p>
-      Port performance and infrastructure developments significantly impact container shipping efficiency. Our port updates cover operational changes, capacity expansions, equipment upgrades, and infrastructure investments at major U.S. ports. We provide real-time information about port congestion, berth availability, and terminal performance that affects vessel schedules and cargo handling. This information helps shippers plan their logistics operations and minimize delays caused by port-related bottlenecks.
-    </p>
-
-    <h3>Expert Insights & Market Forecasts for Strategic Planning</h3>
-    <p>
-      Our platform features expert analysis and market forecasts from industry professionals to support strategic decision-making. We provide forward-looking insights into market trends, capacity planning, and investment opportunities in the container shipping sector. These expert perspectives help businesses develop long-term strategies, identify emerging opportunities, and navigate market uncertainties. Whether you're planning expansion, optimizing routes, or evaluating new markets, our market intelligence supports informed business decisions.
+      Users often ask how market rates are determined, why equipment shortages occur, how port congestion impacts 
+      lead times, and what signals to watch when forecasting logistics costs. Our FAQ-driven content helps both new 
+      and experienced logistics professionals understand broader market behavior and make strategic decisions.
     </p>
   </section>
-
+  <!-- ================== END SEO CONTENT PANEL ================== -->
 </main>
 
 <!-- Shared footer (injected) -->
-<div data-include="/partials/footer.html" id="site-footer"></div>
+<div id="site-footer" data-include="/partials/footer.html"></div>
 
 <!-- Page logic -->
-<script src="./news/news.js?v=20251026"></script>
+<script src="news.js"></script>
 </body>
 </html>

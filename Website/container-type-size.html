@@ -1,225 +1,307 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="utf-8"/>
-  <meta content="width=device-width,initial-scale=1" name="viewport"/>
-  <title>Containers Club | Container Types & Sizes</title>
-  <link rel="icon" href="/images/cc_logo.png"/>
-  <meta name="description" content="Explore container types, sizes, and specifications. Find the right container for your needs."/>
-  <link rel="stylesheet" href="/styles.css"/>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1" name="viewport"/>
+<title>Containers Club | Info</title>
+<style>
+    :root { --c1:#0f172a; --c2:#2563eb; --c3:#f1f5f9; --bd:#e5e7eb; }
+    body { margin:0; font-family:ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, Cantarell, Noto Sans, sans-serif; background:#f8fafc; color:#0f172a;}
+    .wrap { max-width:1200px; margin:0 auto; padding:20px;}
+    .card { background:#fff; border:1px solid var(--bd); border-radius:14px; box-shadow:0 1px 2px rgba(0,0,0,.04); }
+    .pad { padding:16px;}
+    .row { display:grid; gap:16px; grid-template-columns: 1fr; }
+    @media (min-width: 900px){ .row{ grid-template-columns: 300px 1fr; } }
+    .search { display:flex; gap:8px; align-items:center; border:1px solid var(--bd); border-radius:12px; padding:8px 12px;}
+    .search input{ border:0; outline:0; width:100%; }
+    .facet { border:1px solid var(--bd); border-radius:12px; padding:8px; }
+    .facet h4{ margin:0 0 6px 0; font-size:12px; text-transform:uppercase; letter-spacing:.04em; color:#334155;}
+    .chip { border:1px solid var(--bd); padding:4px 8px; border-radius:999px; font-size:12px; background:#fff; cursor:pointer;}
+    .chip.active { background:var(--c2); color:#fff; border-color:var(--c2); }
+    table{ width:100%; border-collapse:collapse; font-size:14px;}
+    th, td{ padding:10px; text-align:left; border-top:1px solid var(--bd); vertical-align:top;}
+    th{ background:#f8fafc; position:sticky; top:0;}
+    .btn { background:var(--c2); color:#fff; border:0; border-radius:10px; padding:8px 12px; cursor:pointer;}
+    .muted { color:#475569; font-size:12px;}
+    .drawer { position:fixed; inset:0; background:rgba(0,0,0,.4); display:none; }
+    .drawer.open{ display:block; }
+    .panel { position:absolute; right:0; top:0; height:100%;  background:#fff; box-shadow:-8px 0 24px rgba(0,0,0,.15); overflow:auto; }
+    .panel .head{ display:flex; align-items:center; justify-content:space-between; padding:12px 16px; border-bottom:1px solid var(--bd);}
+    .grid { display:grid; gap:12px; grid-template-columns: 1fr; }
+    @media (min-width: 900px){ .grid{ grid-template-columns: 1fr 1fr; } }
+    .kv { border:1px solid var(--bd); border-radius:12px; padding:10px;}
+    .kv .k { font-size:11px; color:#64748b; text-transform:uppercase; letter-spacing:.04em; }
+    .kv .v { margin-top:4px; white-space:pre-wrap; }
+    .thumbs { display:grid; gap:8px; grid-template-columns: repeat(3, 1fr); }
+    img.thumb{ width:100%; height:95px; object-fit:cover; border-radius:8px; border:1px solid var(--bd); }
+    video{ width:100%; border-radius:8px; border:1px solid var(--bd); }
+    a.inline { color:var(--c2); text-decoration:none; }
+    a.inline:hover{ text-decoration:underline; }
+    .alert { margin:10px 0; padding:10px 12px; border:1px solid #fecaca; background:#fee2e2; color:#7f1d1d; border-radius:10px; display:none; }
+    .alert.show { display:block; }
 
-  <style>
-    /* Replace bullet points with container logo */
-    .info-hero-points li {
-      list-style: none;
-      position: relative;
-      padding-left: 30px;
+    /* layout for top panel: left content + right image */
+    .top-panel {
+      display: grid;
+      grid-template-columns: 1fr 420px;
+      gap: 18px;
+      align-items: start;
     }
-    .info-hero-points li:before {
-      content: "";
-      position: absolute;
-      left: 0;
-      top: 2px;
-      width: 20px;
-      height: 20px;
-      background-image: url('/images/logo.png');
-      background-size: contain;
-      background-repeat: no-repeat;
+    @media (max-width: 980px) {
+      .top-panel { grid-template-columns: 1fr; }
     }
-  </style>
 
-  <!-- Injects GA + shared header/footer (footer still used) -->
-  <script src="/partials/include.js" defer></script>
+    .icon-list { margin:0; padding:0; list-style:none; display:block; }
+    .icon-list li { display:flex; gap:10px; align-items:flex-start; margin:10px 0; }
+    .icon-list img { width:18px; height:18px; flex:0 0 18px; margin-top:4px; }
+    .icon-list .text { color:var(--c1); line-height:1.35; }
+
+    .top-hero { width:100%; display:flex; align-items:center; justify-content:center; }
+    .top-hero img { max-width: 100%; height: auto; border-radius:8px; display:block; }
+
+    /* small visual tweak for heading inside panel */
+    .card .panel-heading { display:flex; justify-content:space-between; align-items:center; gap:12px; margin-bottom:8px; }
+</style>
+
+<link href="/styles.css" rel="stylesheet"/>
+<style>
+/* ===== Overrides (2025-10-21): visibility & drawer behavior ===== */
+.search input { color:#0f172a; }
+.search input::placeholder { color:#64748b; }
+.chip { color:#0f172a; background:#fff; }
+.chip.active { color:#fff; background:#2563eb; }
+.facet h4, .facet, .kv .k, .kv .v, table, th, td { color:#0f172a; }
+
+/* Drawer should always be above everything and full-screen */
+.drawer { position: fixed; inset: 0; background: rgba(0,0,0,.45); display: none; z-index: 10000; }
+.drawer.open { display:block; }
+.panel { position: fixed; left:0; top:0; width:100vw; height:100vh; background:#fff; overflow:auto; z-index:10001; box-shadow:none; }
+
+/* When drawer is open, avoid page behind from scrolling */
+body.drawer-open { overflow:hidden; }
+</style>
+
+<!-- Injects GA + header/footer partials -->
+<script src="/partials/include.js" defer></script>
 </head>
-<body>
 
-<!-- NOTE: Removed the injected site header per request -->
+<body>
+<!-- Shared header (injected) -->
 <div data-include="/partials/header.html" id="site-header"></div>
 
-<main class="container">
-  
-  <!-- Hero/intro (kept minimal since main content above) -->
-  <section class="hero" style="align-items:flex-start; margin-bottom:18px;">
-    <div>
-      <h2 class="visually-hidden">Container Types & Sizes</h2>
-<ul class="info-hero-points">
-  <li>Explore a comprehensive catalog of container types and sizes to find the perfect match for your cargo.</li>
-  <li>View detailed specifications including dimensions, weight limits, and capacity for each container type.</li>
-  <li>Compare standard dry containers, high-cube units, refrigerated containers, and specialized options.</li>
-  <li>Get insights into container features like ventilation, insulation, and security options.</li>
-  <li>Download container specifications and capacity charts for planning and logistics.</li>
-  <li>Learn about container codes, markings, and compliance standards for international shipping.</li>
-  <li>Find container availability and pricing for your specific route and requirements.</li>
-</ul>
+
+
+<!-- Page content -->
+<div class="wrap container section">
+  <div class="card pad" style="margin-bottom:16px;">
+    <div class="panel-heading">
+      <h1 style="margin:0;">Container Library</h1>
+      <div class="muted" id="count" aria-live="polite" style="margin-left:12px;"></div>
     </div>
-     <!-- NEW IMAGE SLOT ADDED -->
-  <div class="hero-ill">
-    <img src="/images/Container-type-hero.png" alt="Container types illustration"/>
-  </div>
-  </section>
 
-  <!-- Form card -->
-  <section class="section">
-    <div class="card">
-      <form id="infoForm">
-        <div class="grid-2">
-          <div class="field">
-            <label for="containerType">Container Type</label>
-            <select id="containerType">
-              <option value="">— Select type —</option>
-              <option>Dry Container</option>
-              <option>High Cube Container</option>
-              <option>Refrigerated Container</option>
-              <option>Open Top Container</option>
-              <option>Flat Rack Container</option>
-              <option>Garment Container</option>
-              <option>Insulated Container</option>
-              <option>Special Purpose Container</option>
-            </select>
-          </div>
+    <!-- NEW: top panel with content (left) and image (right) -->
+    <div class="top-panel" role="region" aria-label="Container library intro">
+      <!-- LEFT: icon bullet content -->
+      <div>
+        <ul class="icon-list" aria-hidden="false">
+          <li>
+            <img src="/images/logo.png" alt="" />
+            <div class="text"><strong>Browse complete technical details for all ISO-standard containers</strong><br/><span class="muted">Reference dimensions, volumes, and construction specs.</span></div>
+          </li>
 
-          <div class="field">
-            <label for="containerSize">Container Size</label>
-            <select id="containerSize">
-              <option value="">— Select size —</option>
-              <option>10ft</option>
-              <option>20ft</option>
-              <option>40ft</option>
-              <option>45ft</option>
-              <option>53ft</option>
-            </select>
-          </div>
-        </div>
+          <li>
+            <img src="/images/logo.png" alt="" />
+            <div class="text"><strong>Quickly filter containers by size, capacity, family, and purpose</strong><br/><span class="muted">Includes Dry Van, High Cube, Open-Top, Flat-Rack, Reefer, Tank, and more.</span></div>
+          </li>
 
-        <h3 style="margin-top:14px">Your details</h3>
-        <div class="grid-2">
-          <div class="field">
-            <label for="userName">Name <span class="req">*</span></label>
-            <input id="userName" placeholder="Your name" />
-          </div>
+          <li>
+            <img src="/images/logo.png" alt="" />
+            <div class="text"><strong>Compare internal/external dimensions, payload, tare weight, and volume</strong><br/><span class="muted">Over 100+ common container variants available for comparison.</span></div>
+          </li>
 
-          <div class="field">
-            <label for="userCompany">Company <span class="req">*</span></label>
-            <input id="userCompany" placeholder="Your company" />
-          </div>
+          <li>
+            <img src="/images/logo.png" alt="" />
+            <div class="text"><strong>Find the right container for your cargo</strong><br/><span class="muted">Recommendations by cargo type: general goods, oversize, refrigerated, hazardous, and project cargo.</span></div>
+          </li>
 
-          <div class="field">
-            <label for="userEmail">Email (optional)</label>
-            <input id="userEmail" placeholder="you@example.com" />
-          </div>
+          <li>
+            <img src="/images/logo.png" alt="" />
+            <div class="text"><strong>View purpose-based recommendations & diagrams</strong><br/><span class="muted">Storage, shipping, conversion, and on-site usage guidance at a glance.</span></div>
+          </li>
 
-          <div class="field">
-            <label for="userRole">Role (optional)</label>
-            <select id="userRole">
-              <option value="">— Select —</option>
-              <option>Owner/Shipper</option>
-              <option>Consignee</option>
-              <option>Freight forwarder</option>
-              <option>CHA/Customs Broker</option>
-              <option>Other</option>
-            </select>
-          </div>
-
-          <!-- Phone row -->
-          <div class="field" style="grid-column:1/-1">
-            <label>Phone <span class="req">*</span></label>
-            <div style="display:flex; gap:8px">
-              <select id="phoneCountry" aria-label="Country code">
-                <option value="+91" >India (+91)</option>
-                <option value="+971">United Arab Emirates (+971)</option>
-                <option value="+1" selected>United States (+1)</option>
-                <option value="+44">United Kingdom (+44)</option>
-                <option value="+61">Australia (+61)</option>
-                <option value="+65">Singapore (+65)</option>
-                <option value="+81">Japan (+81)</option>
-                <option value="+86">China (+86)</option>
-                <option value="+49">Germany (+49)</option>
-                <option value="+33">France (+33)</option>
-              </select>
-              <input id="phoneLocal" inputmode="numeric" placeholder="9876543210" aria-label="Phone without country code" />
-            </div>
-            <small class="muted">Digits only — we’ll send +E.164 to the API.</small>
-          </div>
-        </div>
-
-        <label class="consent" style="display:flex; gap:8px; align-items:flex-start; margin-top:10px;">
-          <input type="checkbox" id="consent" />
-          <span>I agree this website will fetch container specifications and store my inputs for future use.</span>
-        </label>
-
-        <div id="error" class="error"></div>
-
-        <button type="submit" class="primary" style="margin-top:12px">Get container info</button>
-      </form>
-    </div>
-  </section>
-
-  <!-- Result card -->
-  <section id="result" class="section hidden">
-    <div class="card">
-      <div class="result-header" style="display:flex; justify-content:space-between; align-items:flex-end; gap:12px; flex-wrap:wrap;">
-        <div>
-          <h2 id="r-title" style="margin:0">Container Specifications</h2>
-          <div id="r-meta" class="muted"></div>
-        </div>
-        <div id="r-eta" class="muted"></div>
+          <li>
+            <img src="/images/logo.png" alt="" />
+            <div class="text"><strong>Access images, diagrams and quick reference cards</strong><br/><span class="muted">Fast-loading visual cards make comparison and selection simple.</span></div>
+          </li>
+        </ul>
       </div>
 
-      <div id="r-status" style="margin:12px 0"></div>
-
-      <h3>Specifications</h3>
-      <table id="r-table" class="table">
-        <thead>
-          <tr><th>Specification</th><th>Value</th></tr>
-        </thead>
-        <tbody></tbody>
-      </table>
+      <!-- RIGHT: illustrative image -->
+      <div class="top-hero" aria-hidden="true">
+        <img src="/images/Container-type-hero.png" alt="Container types illustration" />
+      </div>
     </div>
+
+    <div class="alert" id="err">Failed to load Excel. Please refresh after a minute or check file paths in /info/.</div>
+  </div>
+
+  <!-- Filters + Table row (unchanged) -->
+  <div class="row" style="margin-top:14px;">
+    <!-- Left: Filters -->
+    <div class="card pad">
+      <div class="search">
+        <span>🔎</span>
+        <input id="q" placeholder="Search by any field…" />
+      </div>
+      <div id="facets" style="margin-top:10px; max-height:60vh; overflow:auto;"></div>
+    </div>
+
+    <!-- Right: Table -->
+    <div class="card pad">
+      <div class="muted" id="count-2"></div>
+      <div style="overflow:auto; max-height:70vh;">
+        <table id="tbl">
+          <thead>
+            <tr>
+              <th>Container Name</th>
+              <th>Type</th>
+              <th>Container Family</th>
+              <th>Dimension</th>
+              <th>Capacity (m³)</th>
+              <th>Max Gross (kg)</th>
+              <th>Purpose/Use</th>
+            </tr>
+          </thead>
+          <tbody></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Detail Drawer -->
+<div class="drawer" id="drawer">
+  <div class="panel">
+    <!-- Inject the same site header inside the drawer -->
+    <div data-include="/partials/header.html" id="drawer-header"></div>
+
+    <div class="head">
+      <div id="drawer-title" style="font-weight:600"></div>
+      <button class="btn" onclick="window.closeDrawer()" style="background:#e2e8f0;color:#0f172a">Close</button>
+    </div>
+    <div class="pad" id="drawer-body"></div>
+  </div>
+</div>
+
+<!-- Hidden React mount point -->
+<div id="root" style="display:none"></div>
+
+<!-- Excel load error handling -->
+<script type="module">
+  const errDiv = document.getElementById('err');
+  const observer = new MutationObserver(() => {
+    if (window.__EXCEL_ERROR__) {
+      errDiv.textContent = window.__EXCEL_ERROR__;
+      errDiv.classList.add('show');
+    }
+  });
+  observer.observe(document.documentElement, { attributes: true });
+
+  // update two count fields if your script sets counts elsewhere
+  function setCounts(n) {
+    const c = document.getElementById('count');
+    const c2 = document.getElementById('count-2');
+    if (c) c.textContent = `Showing ${n} containers`;
+    if (c2) c2.textContent = `Showing ${n} containers`;
+  }
+  // If your info/app.js sets a global count, call setCounts when available
+  window.setContainerCount = setCounts;
+</script>
+
+<!-- Make the injected header inside the drawer use a unique nav id -->
+<script>
+  (function () {
+    const dh = document.getElementById('drawer-header');
+    if (!dh) return;
+    const obs = new MutationObserver(() => {
+      const nav = dh.querySelector('#primary-nav');
+      const btn = dh.querySelector('.menu-btn');
+      if (nav && btn) {
+        nav.id = 'drawer-nav';
+        btn.setAttribute('aria-controls', 'drawer-nav');
+        obs.disconnect();
+      }
+    });
+    obs.observe(dh, { childList: true, subtree: true });
+  })();
+</script>
+<!-- ===== SEO intro content panel (added per SEO doc) ===== -->
+<div class="wrap container section" style="margin-bottom:18px;">
+  <section class="content-panel content-intro">
+    <h1>Shipping Container Info & Resources – USA Container Guide & FAQs</h1>
+    <p>
+      Shipping containers play a major role in transportation, storage, construction, and portable workspace solutions across the United States.
+      Whether you are a business owner, contractor, homeowner, or logistics professional, understanding container types, features, safety standards,
+      and usage guidelines is essential. This comprehensive guide provides detailed information on how containers are used, how to choose the right one,
+      and what to expect when buying, selling, or renting in the U.S. market. With accurate insights and practical tips, you can make confident
+      container-related decisions while ensuring compliance, safety, and long-term durability.
+    </p>
+
+    <h2>Container Types, Sizes & Uses — 20ft, 40ft, High Cube, Refrigerated, & More</h2>
+    <p>
+      Shipping containers come in various sizes and configurations designed for different applications. The most common units include 20ft and 40ft
+      standard containers, suitable for general storage and transportation. High Cube containers offer extra height, making them ideal for oversized
+      cargo and conversion projects. Refrigerated containers, also known as reefers, provide temperature-controlled storage for goods like food,
+      pharmaceuticals, and sensitive materials. Specialty containers such as open-top, flat-rack, double-door, and tunnel containers support industrial
+      and construction use cases. Selecting the right container depends on your storage needs, climate conditions, mobility requirements, and intended modifications.
+    </p>
+
+    <h2>Buying, Selling & Renting Containers in the USA — What You Should Know</h2>
+    <p>
+      The U.S. container market provides various options for purchasing, selling, or renting units. Buyers can choose from new, used, cargo-worthy, or one-trip
+      containers depending on budget and quality preferences. Sellers can list their containers online through industry platforms, making it easy to reach buyers nationwide.
+      Renting containers is often the most cost-efficient option for temporary storage, seasonal operations, or project-based needs. Understanding pricing factors such as
+      condition, age, availability, delivery distance, and customization requirements helps ensure fair and competitive transactions. Working with reputable suppliers
+      guarantees transparency, proper documentation, and safe delivery.
+    </p>
+
+    <h2>Container Maintenance, Safety & Best Practices for U.S. Use</h2>
+    <p>
+      Shipping containers are built to withstand harsh environments, but proper maintenance ensures long-lasting performance. Routine inspection is essential to identify rust,
+      dents, door alignment issues, and structural damage. Keeping doors lubricated, sealing leaks, and applying rust-resistant coatings help preserve container quality.
+      For businesses, following OSHA safety guidelines ensures compliance when containers are used on construction sites or as portable workspaces. Improper stacking, poor ventilation,
+      and overloading can lead to accidents or product damage. Regular upkeep extends the container's lifespan and ensures reliable use for storage, transport, or office conversions.
+    </p>
+
+    <h3>Essential Safety & Maintenance Guidelines for Containers in the USA</h3>
+    <p>
+      Safety should always be a priority when operating or modifying shipping containers. Before use, check the container’s CSC plate, structural condition, and locking mechanisms.
+      Ensure the container is placed on a level foundation to avoid instability. When converting containers into offices or workshops, proper electrical installation, insulation,
+      ventilation, and emergency exits are mandatory. Avoid exceeding the container's load capacity, especially when stacking multiple units. Regular inspections help prevent corrosion,
+      water intrusion, and hazardous structural issues. Following these guidelines promotes safer handling and prolongs the container’s functional lifespan.
+    </p>
+
+    <h3>Frequently Asked Questions (FAQ) — Shipping Container Rules, Regulations & Use Cases</h3>
+    <p>
+      Many U.S. customers often ask about container zoning laws, transportation rules, and modification regulations. Local building codes may require permits for using containers as offices,
+      homes, or permanent structures. Transportation regulations vary by state, especially regarding oversize loads and highway restrictions. Common use cases include storage, retail pop-ups,
+      construction offices, emergency shelters, portable workshops, and modular housing. Understanding local regulations, proper documentation, and industry standards ensures legal and safe use of shipping containers across the country.
+    </p>
+
+    <h3>Container Customization Options — Insulation, Ventilation, Shelving, Office Conversion</h3>
+    <p>
+      Container customization allows businesses and individuals to adapt units for specialized applications. Insulation improves climate control for office or workshop conversions.
+      Ventilation upgrades reduce moisture buildup, protecting stored goods from damage. Shelving and internal storage systems enhance organization for warehouses and job sites. Advanced
+      modifications such as electrical wiring, plumbing, windows, doors, HVAC, and full office conversion transform standard containers into functional workspaces or modular buildings.
+      These upgrades increase usability, comfort, and operational efficiency while preserving container durability.
+    </p>
   </section>
-  <!-- Top content from provided document -->
-  <section class="content-intro" style="margin-bottom:28px;">
-    <h1>Container Types & Sizes Guide for Shipping in the USA</h1>
-    <p>
-      Understanding container types and sizes is essential for efficient shipping and logistics operations across the United States. Our comprehensive guide provides detailed information about standard dry containers, high-cube units, refrigerated containers, open-top containers, flat-rack containers, and specialized options. Whether you're shipping general cargo, temperature-sensitive goods, oversized equipment, or hazardous materials, selecting the right container type and size ensures safe transport and optimal space utilization. This guide helps businesses, freight forwarders, and logistics professionals make informed decisions when planning domestic and international shipments.
-    </p>
+</div>
 
-    <h2>Explore Standard & Specialized Container Types for Every Cargo Need</h2>
-    <p>
-      We offer a wide range of container types designed to accommodate various cargo requirements. Standard dry containers are ideal for general cargo, while high-cube containers provide additional vertical space for lightweight, bulky items. Refrigerated containers maintain precise temperature control for perishable goods, pharmaceuticals, and temperature-sensitive products. Open-top containers allow easy loading of tall or heavy machinery, and flat-rack containers are perfect for oversized cargo that cannot fit through standard container doors. Specialized containers include insulated units, tank containers for liquids, and hazardous material containers with enhanced safety features.
-    </p>
-
-    <h2>Find the Right Container Size — 20ft, 40ft, High Cube & More</h2>
-    <p>
-      Choosing the correct container size is crucial for maximizing cargo capacity and minimizing shipping costs. Our standard offerings include 20ft and 40ft containers, with high-cube variants providing extra height for increased volume. For specialized needs, we also provide 10ft, 45ft, and 53ft containers. Each size comes with specific internal dimensions, door openings, and weight limits that affect loading efficiency and cargo security. Understanding these specifications helps shippers optimize space utilization, reduce freight charges, and ensure compliance with transportation regulations across U.S. highways, rail networks, and ports.
-    </p>
-
-    <h2>Compare Container Specifications, Dimensions & Capacity Charts</h2>
-    <p>
-      Our detailed container specifications include internal and external dimensions, door measurements, tare weight, maximum payload, and cubic capacity. These specifications are essential for proper cargo planning, load distribution, and compliance with weight restrictions. We provide comprehensive capacity charts that show how different cargo types and packaging configurations affect container utilization. This information helps logistics managers calculate optimal loading patterns, prevent overloading, and ensure cargo stability during transit. Accurate specifications also facilitate smooth customs clearance and port handling operations.
-    </p>
-
-    <h3>Learn About Container Features — Ventilation, Insulation & Security</h3>
-    <p>
-      Modern shipping containers come equipped with various features designed to protect cargo and enhance security. Ventilation systems in dry containers prevent moisture buildup and maintain air circulation for sensitive goods. Insulated containers provide thermal protection for temperature-sensitive products without active refrigeration. Security features include tamper-proof locks, seal systems, and tracking devices to prevent theft and ensure cargo integrity. Understanding these features helps shippers select containers that provide the appropriate level of protection for their specific cargo requirements while maintaining compliance with international shipping standards.
-    </p>
-
-    <h3>Download Container Codes, Markings & Compliance Standards</h3>
-    <p>
-      Container identification codes, markings, and compliance standards are essential for international shipping operations. Each container has a unique identification number, size code, and type code that facilitate tracking and handling. Standard markings include maximum gross weight, tare weight, and cubic capacity information. Compliance with ISO standards, CSC (Container Safety Convention) plates, and customs regulations ensures containers meet international safety and security requirements. We provide downloadable resources containing container codes, marking specifications, and compliance guidelines to help shippers maintain regulatory compliance and operational efficiency.
-    </p>
-
-    <h3>Get Container Availability & Pricing for Your Route & Requirements</h3>
-    <p>
-      Container availability and pricing vary based on route, season, cargo type, and market conditions. Our platform provides real-time information on container availability at major U.S. ports and inland terminals. Pricing structures include spot rates, contract rates, and long-term leasing options, each with different terms and conditions. Understanding market trends, seasonal fluctuations, and route-specific factors helps shippers negotiate better rates and secure container space when needed. We also offer guidance on container selection based on cargo characteristics, transit time requirements, and budget considerations to optimize shipping operations.
-    </p>
-  </section>
-
-</main>
+<script src="/info/app.js" type="module"></script>
 
 <!-- Shared footer (injected) -->
 <div data-include="/partials/footer.html" id="site-footer"></div>
 
-<!-- Page logic -->
-<script src="./info/app.js?v=20251026"></script>
 </body>
 </html>
