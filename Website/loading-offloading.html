@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"/>
+  <meta content="width=device-width,initial-scale=1" name="viewport"/>
+  <title>Containers Club | Loading & Offloading</title>
+  <link rel="icon" href="/images/cc_logo.png"/>
+  <meta name="description" content="Manage container loading and offloading operations. Track schedules, equipment, and personnel."/>
+  <link rel="stylesheet" href="/styles.css"/>
+
+  <style>
+    /* Replace bullet points with container logo */
+    .onoff-hero-points li {
+      list-style: none;
+      position: relative;
+      padding-left: 30px;
+    }
+    .onoff-hero-points li:before {
+      content: "";
+      position: absolute;
+      left: 0;
+      top: 2px;
+      width: 20px;
+      height: 20px;
+      background-image: url('/images/logo.png');
+      background-size: contain;
+      background-repeat: no-repeat;
+    }
+  </style>
+
+  <!-- Injects GA + shared header/footer (footer still used) -->
+  <script src="/partials/include.js" defer></script>
+</head>
+<body>
+
+<!-- NOTE: Removed the injected site header per request -->
+<div data-include="/partials/header.html" id="site-header"></div>
+
+<main class="container">
+  
+  <!-- Hero/intro (kept minimal since main content above) -->
+  <section class="hero" style="align-items:flex-start; margin-bottom:18px;">
+    <div>
+      <h2 class="visually-hidden">Loading & Offloading</h2>
+<ul class="onoff-hero-points">
+  <li>Plan and manage container loading and offloading operations efficiently.</li>
+  <li>Track equipment availability, personnel schedules, and operational timelines.</li>
+  <li>Monitor loading/unloading progress in real-time with status updates.</li>
+  <li>Coordinate with terminal operators, stevedores, and logistics partners.</li>
+  <li>Ensure compliance with safety protocols and operational standards.</li>
+  <li>Optimize cargo handling to minimize turnaround times and costs.</li>
+  <li>Generate reports and analytics for performance monitoring and improvement.</li>
+</ul>
+    </div>
+     <!-- NEW IMAGE SLOT ADDED -->
+  <div class="hero-ill">
+    <img src="/images/onboarding-hero.png" alt="Loading and offloading illustration"/>
+  </div>
+  </section>
+
+  <!-- Form card -->
+  <section class="section">
+    <div class="card">
+      <form id="onoffForm">
+        <div class="grid-2">
+          <div class="field">
+            <label for="operationType">Operation Type</label>
+            <select id="operationType">
+              <option value="">— Select type —</option>
+              <option>Loading</option>
+              <option>Offloading</option>
+              <option>Both</option>
+            </select>
+          </div>
+
+          <div class="field">
+            <label for="containerNumber">Container Number</label>
+            <input id="containerNumber" placeholder="e.g., MSCU1234567" autocomplete="off" />
+            <small class="muted">Format: 4 letters + 7 digits (ISO 6346)</small>
+          </div>
+        </div>
+
+        <h3 style="margin-top:14px">Operation Details</h3>
+        <div class="grid-2">
+          <div class="field">
+            <label for="vesselName">Vessel Name</label>
+            <input id="vesselName" placeholder="Vessel name" />
+          </div>
+
+          <div class="field">
+            <label for="terminal">Terminal/Port</label>
+            <input id="terminal" placeholder="Terminal name" />
+          </div>
+
+          <div class="field">
+            <label for="scheduleDate">Scheduled Date</label>
+            <input id="scheduleDate" type="date" />
+          </div>
+
+          <div class="field">
+            <label for="estimatedTime">Estimated Time</label>
+            <input id="estimatedTime" type="time" />
+          </div>
+
+          <div class="field">
+            <label for="equipmentType">Equipment Type</label>
+            <select id="equipmentType">
+              <option value="">— Select equipment —</option>
+              <option>Forklift</option>
+              <option>Crane</option>
+              <option>Reach Stacker</option>
+              <option>Empty Handler</option>
+              <option>Other</option>
+            </select>
+          </div>
+
+          <div class="field">
+            <label for="crewSize">Crew Size</label>
+            <input id="crewSize" type="number" min="1" placeholder="Number of personnel" />
+          </div>
+        </div>
+
+        <h3 style="margin-top:14px">Your details</h3>
+        <div class="grid-2">
+          <div class="field">
+            <label for="userName">Name <span class="req">*</span></label>
+            <input id="userName" placeholder="Your name" />
+          </div>
+
+          <div class="field">
+            <label for="userCompany">Company <span class="req">*</span></label>
+            <input id="userCompany" placeholder="Your company" />
+          </div>
+
+          <div class="field">
+            <label for="userEmail">Email (optional)</label>
+            <input id="userEmail" placeholder="you@example.com" />
+          </div>
+
+          <div class="field">
+            <label for="userRole">Role (optional)</label>
+            <select id="userRole">
+              <option value="">— Select —</option>
+              <option>Terminal Operator</option>
+              <option>Stevedore</option>
+              <option>Logistics Coordinator</option>
+              <option>Shipping Agent</option>
+              <option>Other</option>
+            </select>
+          </div>
+
+          <!-- Phone row -->
+          <div class="field" style="grid-column:1/-1">
+            <label>Phone <span class="req">*</span></label>
+            <div style="display:flex; gap:8px">
+              <select id="phoneCountry" aria-label="Country code">
+                <option value="+91" >India (+91)</option>
+                <option value="+971">United Arab Emirates (+971)</option>
+                <option value="+1" selected>United States (+1)</option>
+                <option value="+44">United Kingdom (+44)</option>
+                <option value="+61">Australia (+61)</option>
+                <option value="+65">Singapore (+65)</option>
+                <option value="+81">Japan (+81)</option>
+                <option value="+86">China (+86)</option>
+                <option value="+49">Germany (+49)</option>
+                <option value="+33">France (+33)</option>
+              </select>
+              <input id="phoneLocal" inputmode="numeric" placeholder="9876543210" aria-label="Phone without country code" />
+            </div>
+            <small class="muted">Digits only — we’ll send +E.164 to the API.</small>
+          </div>
+        </div>
+
+        <label class="consent" style="display:flex; gap:8px; align-items:flex-start; margin-top:10px;">
+          <input type="checkbox" id="consent" />
+          <span>I agree this website will manage my loading/offloading operations and store my inputs for future use.</span>
+        </label>
+
+        <div id="error" class="error"></div>
+
+        <button type="submit" class="primary" style="margin-top:12px">Schedule operation</button>
+      </form>
+    </div>
+  </section>
+
+  <!-- Result card -->
+  <section id="result" class="section hidden">
+    <div class="card">
+      <div class="result-header" style="display:flex; justify-content:space-between; align-items:flex-end; gap:12px; flex-wrap:wrap;">
+        <div>
+          <h2 id="r-title" style="margin:0">Operation Status</h2>
+          <div id="r-meta" class="muted"></div>
+        </div>
+        <div id="r-eta" class="muted"></div>
+      </div>
+
+      <div id="r-status" style="margin:12px 0"></div>
+
+      <h3>Operation Details</h3>
+      <table id="r-table" class="table">
+        <thead>
+          <tr><th>Item</th><th>Details</th></tr>
+        </thead>
+        <tbody></tbody>
+      </table>
+    </div>
+  </section>
+  <!-- Top content from provided document -->
+  <section class="content-intro" style="margin-bottom:28px;">
+    <h1>Loading & Offloading Container Services in the USA</h1>
+    <p>
+      Efficient loading and offloading of shipping containers is critical for maintaining smooth logistics operations across the United States. Our comprehensive container handling services ensure safe, timely, and cost-effective cargo movement at major U.S. ports, terminals, and distribution centers. Whether you need container loading at origin ports, offloading at destination facilities, or coordinated multi-modal transfers, our experienced team provides professional handling with advanced equipment and strict safety protocols. We serve businesses of all sizes, from small importers to large logistics companies, offering flexible scheduling and real-time tracking to optimize your supply chain operations.
+    </p>
+
+    <h2>Professional Container Loading Services — Equipment, Personnel & Safety Protocols</h2>
+    <p>
+      Our container loading services utilize state-of-the-art equipment including forklifts, cranes, reach stackers, and specialized cargo handling machinery operated by certified professionals. We follow strict safety protocols and industry best practices to ensure cargo integrity and worker safety during loading operations. Our team is trained in proper cargo securing techniques, weight distribution principles, and hazardous material handling procedures. We provide comprehensive insurance coverage and maintain compliance with OSHA regulations and port authority requirements. Whether loading general cargo, heavy machinery, or temperature-sensitive goods, we ensure efficient and secure container packing.
+    </p>
+
+    <h2>Efficient Container Offloading Operations — Unloading, Inspection & Documentation</h2>
+    <p>
+      Container offloading operations require precision, coordination, and attention to detail to ensure smooth cargo transfer from vessel to storage or onward transportation. Our offloading services include careful unloading, cargo inspection, damage assessment, and proper documentation handling. We coordinate with terminal operators, customs brokers, and transportation providers to minimize dwell times and expedite cargo release. Our team follows systematic procedures for cargo verification, seal inspection, and condition reporting to maintain cargo security and compliance with import regulations. We also provide temporary storage solutions and immediate transfer options based on your operational requirements.
+    </p>
+
+    <h2>Streamline Cargo Handling — Minimize Turnaround Times & Reduce Costs</h2>
+    <p>
+      Optimizing container loading and offloading operations is essential for reducing vessel turnaround times, minimizing port fees, and improving overall supply chain efficiency. Our streamlined processes include advanced scheduling systems, real-time communication with all stakeholders, and efficient resource allocation. We analyze cargo characteristics, vessel schedules, and terminal capacity to create optimized loading/unloading plans. Our goal is to minimize equipment idle time, reduce labor costs, and prevent bottlenecks that can delay cargo movement. By implementing lean logistics principles and continuous improvement methodologies, we help our clients achieve faster cargo cycles and improved operational performance.
+    </p>
+
+    <h3>Coordinate with Terminal Operators, Stevedores & Logistics Partners</h3>
+    <p>
+      Successful container loading and offloading operations require seamless coordination between multiple stakeholders including terminal operators, stevedoring companies, freight forwarders, and transportation providers. Our experienced coordinators serve as the central point of contact, ensuring clear communication and synchronized activities throughout the operation. We maintain strong relationships with major U.S. ports and terminal operators, enabling us to secure optimal berthing slots and equipment availability. Our coordination services include berth planning, equipment scheduling, labor management, and real-time status updates to keep all parties informed and aligned.
+    </p>
+
+    <h3>Track Loading/Unloading Progress in Real-Time with Status Updates</h3>
+    <p>
+      Our advanced tracking systems provide real-time visibility into container loading and offloading operations, allowing you to monitor progress and respond quickly to any issues. We utilize GPS-enabled equipment, RFID tracking, and digital documentation systems to capture and transmit operational data. Clients receive regular status updates via our online portal, mobile app, or direct communication channels. This real-time information enables better planning, faster decision-making, and improved customer service. We also provide detailed reports and analytics to help you identify trends, optimize processes, and improve operational efficiency over time.
+    </p>
+
+    <h3>Generate Reports & Analytics for Performance Monitoring & Improvement</h3>
+    <p>
+      Our comprehensive reporting and analytics services help you track key performance indicators, identify bottlenecks, and implement continuous improvements in your container handling operations. We provide detailed reports on equipment utilization, labor productivity, turnaround times, and cost analysis. Our analytics tools identify patterns and trends that can inform strategic decisions about resource allocation, process optimization, and capacity planning. By leveraging data-driven insights, you can enhance operational efficiency, reduce costs, and improve service quality. We also offer benchmarking services to compare your performance against industry standards and best practices.
+    </p>
+  </section>
+
+</main>
+
+<!-- Shared footer (injected) -->
+<div data-include="/partials/footer.html" id="site-footer"></div>
+
+<!-- Page logic -->
+<script src="./onoff/onoff.js?v=20251026"></script>
+</body>
+</html>

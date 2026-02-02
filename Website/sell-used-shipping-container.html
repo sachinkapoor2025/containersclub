@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <title>Sell Containers | Containers Club</title>
+  <meta name="description" content="Browse shipping containers available for sale. Filter by size, condition, location, and more."/>
+  <link rel="canonical" href="https://containersclub.com/sell-used-shipping-container.html"/>
+  <meta name="robots" content="index, follow"/>
+
+  <!-- Global stylesheet -->
+  <link rel="stylesheet" href="/styles.css"/>
+
+  <style>
+    /* Replace bullet points with container logo */
+    .muted li {
+      list-style: none;
+      position: relative;
+      padding-left: 30px;
+    }
+    .muted li:before {
+      content: "";
+      position: absolute;
+      left: 0;
+      top: 2px;
+      width: 20px;
+      height: 20px;
+      background-image: url('/images/logo.png');
+      background-size: contain;
+      background-repeat: no-repeat;
+    }
+  </style>
+
+  <!-- Global config (centralized) -->
+  <script src="/config.js"></script>
+  <script>
+    // Point generic var to sell-specific redirect (if present)
+    if (window.COGNITO_REDIRECT_URI_SELL) {
+      window.COGNITO_REDIRECT_URI = window.COGNITO_REDIRECT_URI_SELL;
+    }
+  </script>
+
+  <!-- Injects GA + header/footer partials -->
+  <script src="/partials/include.js" defer></script>
+
+  <!-- App script (load AFTER config) -->
+  <script defer src="./sell/js/app.js"></script>
+</head>
+<body>
+
+<!-- Shared header (injected) -->
+<div data-include="/partials/header.html" id="site-header"></div>
+
+<main class="container">
+
+  
+
+  <!-- Original page components (unchanged) -->
+  <section class="card hero">
+    <div>
+      <div id="welcomeMessage" style="display:none; margin-bottom:15px; padding:10px; background:#e8f4f8; border-radius:8px; text-align:center;"></div>
+      <h1>Container Sales</h1>
+
+      <ul class="muted" style="margin-top:10px; line-height:1.55;">
+        <li>Browse a wide range of shipping containers available for sale across multiple locations.</li>
+        <li>Filter by size, condition, and location to find the perfect container for your needs.</li>
+        <li>View detailed specifications, photos, and pricing before making a decision.</li>
+        <li>Contact owners directly and schedule fast, reliable delivery anywhere in the USA.</li>
+        <li>List your own containers for sale and reach thousands of active buyers.</li>
+      </ul>
+
+      <p style="margin-top:18px;"><a class="primary" href="./sell/new.html">List your container</a></p>
+    </div>
+
+    <!-- image on the right (will size per .hero-ill img rules in styles.css) -->
+    <div class="hero-ill">
+      <img src="/images/sell-hero.png" alt="Container sales illustration"/>
+    </div>
+  </section>
+
+
+  <section class="card">
+    <div class="grid" style="grid-template-columns: repeat(auto-fit, minmax(220px,1fr)); gap:16px;">
+      <input type="search" id="q" placeholder="Search by title/spec/location"/>
+      <select id="size">
+        <option value="">Any size</option>
+        <option>20ft</option>
+        <option>40ft</option>
+        <option>45ft</option>
+      </select>
+      <select id="condition">
+        <option value="">Any condition</option>
+        <option>New</option>
+        <option>Used (Cargo Worthy)</option>
+        <option>Wind & Watertight</option>
+        <option>As-Is</option>
+      </select>
+      <select id="location">
+        <option value="">Any location</option>
+      </select>
+      <button id="searchBtn">Search</button>
+    </div>
+  </section>
+
+  <section class="card">
+    <div
+      id="listingGrid"
+      aria-live="polite"
+      style="display:flex;flex-direction:column;gap:20px;">
+    </div>
+  </section>
+  <!-- ============================
+       NEW SEO CONTENT PANEL
+       ============================ -->
+  <section class="content-panel content-intro">
+    <h1>Buy & Sell Shipping Containers in the USA — New, Used & High Cube Options</h1>
+    <p>
+      ContainersClub is a trusted marketplace in the United States to buy, sell, and rent shipping
+      containers across major ports, logistics hubs, and industrial zones nationwide. With verified
+      suppliers, competitive pricing, and coast-to-coast delivery, we make container procurement
+      simple, transparent, and reliable. Whether your requirement is for export, storage,
+      construction, retail, or industrial usage, ContainersClub ensures high-quality containers
+      backed by responsive customer support and professional logistics coordination. Our
+      platform connects businesses, logistics providers, and container owners, offering a unified
+      solution for all container-related needs across the USA.
+    </p>
+
+    <h2>Buy & Sell Shipping Containers Across the USA — New, Used & High Cube Options</h2>
+    <p>
+      ContainersClub offers a wide inventory of new, used, High Cube, refurbished, and cargo-
+      worthy shipping containers available for immediate purchase. Buyers can explore 20ft, 40ft,
+      and custom-sized units with detailed specifications, condition reports, and transparent
+      pricing. Sellers gain nationwide exposure through a trusted platform that connects them
+      with qualified buyers across the United States.
+    </p>
+
+    <h2>Rent Shipping Containers in the USA — Flexible Short-Term & Long-Term Plans</h2>
+    <p>
+      Renting containers is an ideal solution for businesses requiring temporary storage or
+      project-based infrastructure. ContainersClub provides flexible short-term and long-term
+      rental options for dry containers, High Cube units, refrigerated containers, and custom
+      storage solutions. Each unit is inspected before dispatch to ensure safety and usability.
+    </p>
+
+    <h2>Nationwide Delivery & Logistics Support — Fast Container Transport to Ports & Job Sites</h2>
+    <p>
+      ContainersClub coordinates nationwide container delivery through a robust logistics
+      network covering major U.S. ports, rail terminals, metro areas, and remote job sites. Our
+      transport partners ensure safe and timely movement using flatbeds, trailers, and crane-
+      equipped vehicles. Optimized route planning helps reduce downtime and maintain efficient
+      operations.
+    </p>
+
+    <h3>20ft, 40ft, Reefer & Customized Container Solutions for Every Industry</h3>
+    <p>
+      We provide industry-specific container solutions including standard 20ft and 40ft dry
+      containers, High Cube containers for oversized cargo, and refrigerated containers for
+      temperature-controlled shipments. ContainersClub also delivers customized containers
+      such as portable offices, retail units, cold storage, industrial workshops, and modular spaces
+      with insulation, HVAC systems, electrical wiring, and reinforced flooring.
+    </p>
+
+    <h3>On-Hire / Off-Hire Services & Easy Online Booking</h3>
+    <p>
+      Our streamlined booking system allows customers to check availability, compare pricing,
+      and schedule delivery efficiently. On-hire inspections document container condition at
+      dispatch, while off-hire inspections confirm condition upon return. This transparent
+      workflow minimizes disputes and supports smooth rental cycles across the USA.
+    </p>
+    <h3>Delivery to Major U.S. Ports — Los Angeles, Long Beach, Houston & New York</h3>
+    <p>
+      ContainersClub ensures fast and reliable container delivery to major U.S. ports including
+      Los Angeles, Long Beach, Houston, New York/New Jersey, Savannah, and Oakland.
+      Exporters and importers rely on our services for timely depot transfers, stuffing operations,
+      and warehouse placement, helping maintain strong supply-chain efficiency nationwide.
+    </p>
+  </section>
+</main>
+
+<!-- Shared footer (injected) -->
+<div data-include="/partials/footer.html" id="site-footer"></div>
+
+</body>
+</html>

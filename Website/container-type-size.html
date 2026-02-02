@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"/>
+  <meta content="width=device-width,initial-scale=1" name="viewport"/>
+  <title>Containers Club | Container Types & Sizes</title>
+  <link rel="icon" href="/images/cc_logo.png"/>
+  <meta name="description" content="Explore container types, sizes, and specifications. Find the right container for your needs."/>
+  <link rel="stylesheet" href="/styles.css"/>
+
+  <style>
+    /* Replace bullet points with container logo */
+    .info-hero-points li {
+      list-style: none;
+      position: relative;
+      padding-left: 30px;
+    }
+    .info-hero-points li:before {
+      content: "";
+      position: absolute;
+      left: 0;
+      top: 2px;
+      width: 20px;
+      height: 20px;
+      background-image: url('/images/logo.png');
+      background-size: contain;
+      background-repeat: no-repeat;
+    }
+  </style>
+
+  <!-- Injects GA + shared header/footer (footer still used) -->
+  <script src="/partials/include.js" defer></script>
+</head>
+<body>
+
+<!-- NOTE: Removed the injected site header per request -->
+<div data-include="/partials/header.html" id="site-header"></div>
+
+<main class="container">
+  
+  <!-- Hero/intro (kept minimal since main content above) -->
+  <section class="hero" style="align-items:flex-start; margin-bottom:18px;">
+    <div>
+      <h2 class="visually-hidden">Container Types & Sizes</h2>
+<ul class="info-hero-points">
+  <li>Explore a comprehensive catalog of container types and sizes to find the perfect match for your cargo.</li>
+  <li>View detailed specifications including dimensions, weight limits, and capacity for each container type.</li>
+  <li>Compare standard dry containers, high-cube units, refrigerated containers, and specialized options.</li>
+  <li>Get insights into container features like ventilation, insulation, and security options.</li>
+  <li>Download container specifications and capacity charts for planning and logistics.</li>
+  <li>Learn about container codes, markings, and compliance standards for international shipping.</li>
+  <li>Find container availability and pricing for your specific route and requirements.</li>
+</ul>
+    </div>
+     <!-- NEW IMAGE SLOT ADDED -->
+  <div class="hero-ill">
+    <img src="/images/Container-type-hero.png" alt="Container types illustration"/>
+  </div>
+  </section>
+
+  <!-- Form card -->
+  <section class="section">
+    <div class="card">
+      <form id="infoForm">
+        <div class="grid-2">
+          <div class="field">
+            <label for="containerType">Container Type</label>
+            <select id="containerType">
+              <option value="">— Select type —</option>
+              <option>Dry Container</option>
+              <option>High Cube Container</option>
+              <option>Refrigerated Container</option>
+              <option>Open Top Container</option>
+              <option>Flat Rack Container</option>
+              <option>Garment Container</option>
+              <option>Insulated Container</option>
+              <option>Special Purpose Container</option>
+            </select>
+          </div>
+
+          <div class="field">
+            <label for="containerSize">Container Size</label>
+            <select id="containerSize">
+              <option value="">— Select size —</option>
+              <option>10ft</option>
+              <option>20ft</option>
+              <option>40ft</option>
+              <option>45ft</option>
+              <option>53ft</option>
+            </select>
+          </div>
+        </div>
+
+        <h3 style="margin-top:14px">Your details</h3>
+        <div class="grid-2">
+          <div class="field">
+            <label for="userName">Name <span class="req">*</span></label>
+            <input id="userName" placeholder="Your name" />
+          </div>
+
+          <div class="field">
+            <label for="userCompany">Company <span class="req">*</span></label>
+            <input id="userCompany" placeholder="Your company" />
+          </div>
+
+          <div class="field">
+            <label for="userEmail">Email (optional)</label>
+            <input id="userEmail" placeholder="you@example.com" />
+          </div>
+
+          <div class="field">
+            <label for="userRole">Role (optional)</label>
+            <select id="userRole">
+              <option value="">— Select —</option>
+              <option>Owner/Shipper</option>
+              <option>Consignee</option>
+              <option>Freight forwarder</option>
+              <option>CHA/Customs Broker</option>
+              <option>Other</option>
+            </select>
+          </div>
+
+          <!-- Phone row -->
+          <div class="field" style="grid-column:1/-1">
+            <label>Phone <span class="req">*</span></label>
+            <div style="display:flex; gap:8px">
+              <select id="phoneCountry" aria-label="Country code">
+                <option value="+91" >India (+91)</option>
+                <option value="+971">United Arab Emirates (+971)</option>
+                <option value="+1" selected>United States (+1)</option>
+                <option value="+44">United Kingdom (+44)</option>
+                <option value="+61">Australia (+61)</option>
+                <option value="+65">Singapore (+65)</option>
+                <option value="+81">Japan (+81)</option>
+                <option value="+86">China (+86)</option>
+                <option value="+49">Germany (+49)</option>
+                <option value="+33">France (+33)</option>
+              </select>
+              <input id="phoneLocal" inputmode="numeric" placeholder="9876543210" aria-label="Phone without country code" />
+            </div>
+            <small class="muted">Digits only — we’ll send +E.164 to the API.</small>
+          </div>
+        </div>
+
+        <label class="consent" style="display:flex; gap:8px; align-items:flex-start; margin-top:10px;">
+          <input type="checkbox" id="consent" />
+          <span>I agree this website will fetch container specifications and store my inputs for future use.</span>
+        </label>
+
+        <div id="error" class="error"></div>
+
+        <button type="submit" class="primary" style="margin-top:12px">Get container info</button>
+      </form>
+    </div>
+  </section>
+
+  <!-- Result card -->
+  <section id="result" class="section hidden">
+    <div class="card">
+      <div class="result-header" style="display:flex; justify-content:space-between; align-items:flex-end; gap:12px; flex-wrap:wrap;">
+        <div>
+          <h2 id="r-title" style="margin:0">Container Specifications</h2>
+          <div id="r-meta" class="muted"></div>
+        </div>
+        <div id="r-eta" class="muted"></div>
+      </div>
+
+      <div id="r-status" style="margin:12px 0"></div>
+
+      <h3>Specifications</h3>
+      <table id="r-table" class="table">
+        <thead>
+          <tr><th>Specification</th><th>Value</th></tr>
+        </thead>
+        <tbody></tbody>
+      </table>
+    </div>
+  </section>
+  <!-- Top content from provided document -->
+  <section class="content-intro" style="margin-bottom:28px;">
+    <h1>Container Types & Sizes Guide for Shipping in the USA</h1>
+    <p>
+      Understanding container types and sizes is essential for efficient shipping and logistics operations across the United States. Our comprehensive guide provides detailed information about standard dry containers, high-cube units, refrigerated containers, open-top containers, flat-rack containers, and specialized options. Whether you're shipping general cargo, temperature-sensitive goods, oversized equipment, or hazardous materials, selecting the right container type and size ensures safe transport and optimal space utilization. This guide helps businesses, freight forwarders, and logistics professionals make informed decisions when planning domestic and international shipments.
+    </p>
+
+    <h2>Explore Standard & Specialized Container Types for Every Cargo Need</h2>
+    <p>
+      We offer a wide range of container types designed to accommodate various cargo requirements. Standard dry containers are ideal for general cargo, while high-cube containers provide additional vertical space for lightweight, bulky items. Refrigerated containers maintain precise temperature control for perishable goods, pharmaceuticals, and temperature-sensitive products. Open-top containers allow easy loading of tall or heavy machinery, and flat-rack containers are perfect for oversized cargo that cannot fit through standard container doors. Specialized containers include insulated units, tank containers for liquids, and hazardous material containers with enhanced safety features.
+    </p>
+
+    <h2>Find the Right Container Size — 20ft, 40ft, High Cube & More</h2>
+    <p>
+      Choosing the correct container size is crucial for maximizing cargo capacity and minimizing shipping costs. Our standard offerings include 20ft and 40ft containers, with high-cube variants providing extra height for increased volume. For specialized needs, we also provide 10ft, 45ft, and 53ft containers. Each size comes with specific internal dimensions, door openings, and weight limits that affect loading efficiency and cargo security. Understanding these specifications helps shippers optimize space utilization, reduce freight charges, and ensure compliance with transportation regulations across U.S. highways, rail networks, and ports.
+    </p>
+
+    <h2>Compare Container Specifications, Dimensions & Capacity Charts</h2>
+    <p>
+      Our detailed container specifications include internal and external dimensions, door measurements, tare weight, maximum payload, and cubic capacity. These specifications are essential for proper cargo planning, load distribution, and compliance with weight restrictions. We provide comprehensive capacity charts that show how different cargo types and packaging configurations affect container utilization. This information helps logistics managers calculate optimal loading patterns, prevent overloading, and ensure cargo stability during transit. Accurate specifications also facilitate smooth customs clearance and port handling operations.
+    </p>
+
+    <h3>Learn About Container Features — Ventilation, Insulation & Security</h3>
+    <p>
+      Modern shipping containers come equipped with various features designed to protect cargo and enhance security. Ventilation systems in dry containers prevent moisture buildup and maintain air circulation for sensitive goods. Insulated containers provide thermal protection for temperature-sensitive products without active refrigeration. Security features include tamper-proof locks, seal systems, and tracking devices to prevent theft and ensure cargo integrity. Understanding these features helps shippers select containers that provide the appropriate level of protection for their specific cargo requirements while maintaining compliance with international shipping standards.
+    </p>
+
+    <h3>Download Container Codes, Markings & Compliance Standards</h3>
+    <p>
+      Container identification codes, markings, and compliance standards are essential for international shipping operations. Each container has a unique identification number, size code, and type code that facilitate tracking and handling. Standard markings include maximum gross weight, tare weight, and cubic capacity information. Compliance with ISO standards, CSC (Container Safety Convention) plates, and customs regulations ensures containers meet international safety and security requirements. We provide downloadable resources containing container codes, marking specifications, and compliance guidelines to help shippers maintain regulatory compliance and operational efficiency.
+    </p>
+
+    <h3>Get Container Availability & Pricing for Your Route & Requirements</h3>
+    <p>
+      Container availability and pricing vary based on route, season, cargo type, and market conditions. Our platform provides real-time information on container availability at major U.S. ports and inland terminals. Pricing structures include spot rates, contract rates, and long-term leasing options, each with different terms and conditions. Understanding market trends, seasonal fluctuations, and route-specific factors helps shippers negotiate better rates and secure container space when needed. We also offer guidance on container selection based on cargo characteristics, transit time requirements, and budget considerations to optimize shipping operations.
+    </p>
+  </section>
+
+</main>
+
+<!-- Shared footer (injected) -->
+<div data-include="/partials/footer.html" id="site-footer"></div>
+
+<!-- Page logic -->
+<script src="./info/app.js?v=20251026"></script>
+</body>
+</html>
