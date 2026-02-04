@@ -20,13 +20,13 @@ window.AWS_REGION = "us-east-1";
 // - REST (prod)   → https://o7e18622e2.execute-api.us-east-1.amazonaws.com/prod
 
 // TRACK uses HttpApi (/api/*)
-window.TRACK_API_BASE = "https://4rejtp274h.execute-api.us-east-1.amazonaws.com/api";
+window.TRACK_API_BASE = "https://qjf9zc6veg.execute-api.ap-south-1.amazonaws.com/api";
 
 // RENT API (REST API stage)
-window.RENT_API_BASE  = "https://e3qah7gaug.execute-api.us-east-1.amazonaws.com/prod";
+window.RENT_API_BASE  = "https://5f1mru0imd.execute-api.ap-south-1.amazonaws.com/prod";
 
 // SELL API (REST API stage)
-window.SELL_API_BASE  = "https://lzk030msf7.execute-api.us-east-1.amazonaws.com/prod";
+window.SELL_API_BASE  = "https://3wvorg6j05.execute-api.ap-south-1.amazonaws.com/prod";
 
 // // Cognito Hosted UI (KEEP ap-south-1 unless you move user pools)
 // window.COGNITO_DOMAIN    = "https://sell.auth.us-east-1.amazoncognito.com";
