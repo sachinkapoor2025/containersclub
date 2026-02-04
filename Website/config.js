@@ -20,13 +20,13 @@ window.AWS_REGION = "us-east-1";
 // - REST (prod)   → https://o7e18622e2.execute-api.us-east-1.amazonaws.com/prod
 
 // TRACK uses HttpApi (/api/*)
-window.TRACK_API_BASE = "https://qjf9zc6veg.execute-api.ap-south-1.amazonaws.com/api";
+window.TRACK_API_BASE = "https://4rejtp274h.execute-api.us-east-1.amazonaws.com/api";
 
 // RENT API (REST API stage)
-window.RENT_API_BASE  = "https://5f1mru0imd.execute-api.ap-south-1.amazonaws.com/prod";
+window.RENT_API_BASE  = "https://e3qah7gaug.execute-api.us-east-1.amazonaws.com/prod";
 
 // SELL API (REST API stage)
-window.SELL_API_BASE  = "https://3wvorg6j05.execute-api.ap-south-1.amazonaws.com/prod";
+window.SELL_API_BASE  = "https://lzk030msf7.execute-api.us-east-1.amazonaws.com/prod";
 
 // // Cognito Hosted UI (KEEP ap-south-1 unless you move user pools)
 // window.COGNITO_DOMAIN    = "https://sell.auth.us-east-1.amazoncognito.com";
@@ -36,7 +36,7 @@ window.SELL_API_BASE  = "https://3wvorg6j05.execute-api.ap-south-1.amazonaws.com
 window.COGNITO_DOMAIN    = "https://us-east-1a8xx2cueb.auth.us-east-1.amazoncognito.com";
 window.COGNITO_CLIENT_ID = "28i9pasdun194hbov13vkd4o6n";
 
- // CloudFront redirect URLs (update to new CF)
+// CloudFront redirect URLs (update to new CF)
 // window.COGNITO_REDIRECT_URI_RENT = "https://d361mbydx9z7jq.cloudfront.net/rent/new.html";
 // window.COGNITO_REDIRECT_URI_SELL = "https://d361mbydx9z7jq.cloudfront.net/sell/new.html";
 
