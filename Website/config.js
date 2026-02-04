@@ -36,7 +36,7 @@ window.SELL_API_BASE  = "https://lzk030msf7.execute-api.us-east-1.amazonaws.com/
 window.COGNITO_DOMAIN    = "https://us-east-1a8xx2cueb.auth.us-east-1.amazoncognito.com";
 window.COGNITO_CLIENT_ID = "28i9pasdun194hbov13vkd4o6n";
 
-// CloudFront redirect URLs (update to new CF)
+ // CloudFront redirect URLs (update to new CF)
 // window.COGNITO_REDIRECT_URI_RENT = "https://d361mbydx9z7jq.cloudfront.net/rent/new.html";
 // window.COGNITO_REDIRECT_URI_SELL = "https://d361mbydx9z7jq.cloudfront.net/sell/new.html";
 
