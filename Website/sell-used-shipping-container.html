@@ -57,6 +57,17 @@
 
   <!-- Injects GA + header/footer partials -->
   <script src="/partials/include.js" defer></script>
+
+  <!-- Injects head partial (for JSON-LD structured data) -->
+  <script>
+    // Load head partial content
+    fetch('/partials/head.html')
+      .then(response => response.text())
+      .then(html => {
+        document.head.insertAdjacentHTML('beforeend', html);
+      })
+      .catch(err => console.error('Failed to load head partial:', err));
+  </script>
 </head>
 
 <body>
