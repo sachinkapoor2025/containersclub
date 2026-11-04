@@ -19,6 +19,39 @@ function isExpired(auth) {
   return Date.now() >= auth.exp - 5000;
 }
 
+function getUserEmail(auth) {
+  if (!auth || !auth.id_token) return null;
+  try {
+    const payload = JSON.parse(atob(auth.id_token.split('.')[1]));
+    return payload.email;
+  } catch {
+    return null;
+  }
+}
+
+function guessNameFromEmail(email) {
+  if (!email) return null;
+
+  // Extract part before @ and clean it up
+  const username = email.split('@')[0];
+
+  // Replace dots, underscores, hyphens with spaces
+  let name = username.replace(/[._-]/g, ' ');
+
+  // Capitalize each word
+  name = name.split(' ')
+    .map(word => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase())
+    .join(' ');
+
+  // Remove common email prefixes/suffixes
+  name = name.replace(/\b(seo|admin|user|test|mail|email|contact|info|support|sales|marketing)\b/gi, '').trim();
+
+  // If name is too short or empty, return null
+  if (name.length < 2) return null;
+
+  return name;
+}
+
 // ---- DOM ----
 const loginBtn  = document.getElementById("loginBtn");
 const logoutBtn = document.getElementById("logoutBtn");
@@ -51,27 +84,45 @@ function refreshUI() {
 
   if (loginBtn)  loginBtn.style.display  = loggedIn ? "none" : "inline-block";
   if (logoutBtn) logoutBtn.style.display = loggedIn ? "inline-block" : "none";
+
+  // Update welcome message
+  const welcomeEl = document.getElementById("welcomeMessage");
+  if (welcomeEl) {
+    if (loggedIn) {
+      const email = getUserEmail(auth);
+      const guessedName = guessNameFromEmail(email);
+      if (guessedName) {
+        welcomeEl.textContent = `Welcome ${guessedName}! Logged in as: ${email}`;
+      } else {
+        welcomeEl.textContent = `Welcome! Logged in as: ${email}`;
+      }
+      welcomeEl.style.display = "block";
+    } else {
+      welcomeEl.style.display = "none";
+    }
+  }
 }
 
 // ---- Auth actions ----
 function login() {
-  const domain   = window.SELL_COGNITO_DOMAIN;
-  const clientId = window.SELL_COGNITO_CLIENT_ID;
-  const redirect = window.COGNITO_REDIRECT_URI_SELL || location.href;
+  const containerId = new URLSearchParams(window.location.search).get("id");
 
-  if (!domain || !clientId) {
-    alert("Login not configured.");
-    return;
-  }
+  const redirectState = encodeURIComponent(
+    JSON.stringify({
+      returnTo: "/sell/book.html",
+      id: containerId
+    })
+  );
 
-  const url = `${domain}/oauth2/authorize` +
-    `?response_type=token` +
-    `&client_id=${encodeURIComponent(clientId)}` +
-    `&redirect_uri=${encodeURIComponent(redirect)}` +
-    `&scope=${encodeURIComponent("openid profile email")}` +
-    `&state=${encodeURIComponent(location.pathname + location.search)}`;
+  const cognitoLoginUrl =
+    "https://sell-club-auth.auth.us-east-1.amazoncognito.com/oauth2/authorize" +
+    "?client_id=3264ar1beegeb84aodivq3poeh" +
+    "&response_type=token" +
+    "&scope=openid+email+profile" +
+    "&redirect_uri=https://containersclub.com/sell/new.html" +
+    "&state=" + redirectState;
 
-  location.assign(url);
+  window.location.href = cognitoLoginUrl;
 }
 
 function logout() {
@@ -157,6 +208,19 @@ function showError(message) {
 function setupForm() {
   if (!formEl) return;
 
+  // Show deal terms when Lock the Deal button is clicked
+  const lockBtn = formEl.querySelector('button[value="lock"]');
+  if (lockBtn) {
+    lockBtn.addEventListener('click', (e) => {
+      const dealTerms = document.getElementById('dealTerms');
+      if (dealTerms) {
+        dealTerms.style.display = 'block';
+        // Scroll to terms
+        dealTerms.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+      }
+    });
+  }
+
   formEl.addEventListener("submit", async (e) => {
     e.preventDefault();
 
@@ -168,37 +232,76 @@ function setupForm() {
 
     // Collect form data
     const formData = new FormData(formEl);
-    const purchaseData = {
-      listingId: window.currentItem.listingId,
-      name: formData.get('name'),
-      email: formData.get('email'),
-      phone: formData.get('phone'),
-      company: formData.get('company'),
-      deliveryMethod: formData.get('deliveryMethod'),
-      addressLine1: formData.get('addressLine1'),
-      addressLine2: formData.get('addressLine2'),
-      city: formData.get('city'),
-      state: formData.get('state'),
-      zipCode: formData.get('zipCode'),
-      specialRequests: formData.get('specialRequests'),
-      purchase: true,
-      totalCost: window.currentItem.price
-    };
+    const action = formData.get('action');
+
+    let purchaseData;
+
+    if (action === 'lock') {
+      // Deal locking with 10% deposit
+      const containerPrice = window.currentItem.price;
+      const depositAmount = Math.round(containerPrice * 0.1); // 10% of price
+
+      purchaseData = {
+        listingId: window.currentItem.listingId,
+        name: formData.get('name'),
+        email: formData.get('email'),
+        phone: formData.get('phone'),
+        company: formData.get('company'),
+        deliveryMethod: formData.get('deliveryMethod'),
+        addressLine1: formData.get('addressLine1'),
+        addressLine2: formData.get('addressLine2'),
+        city: formData.get('city'),
+        state: formData.get('state'),
+        zipCode: formData.get('zipCode'),
+        specialRequests: formData.get('specialRequests'),
+        lockDeal: true,
+        depositAmount: depositAmount,
+        totalCost: depositAmount
+      };
+    } else {
+      // Full purchase
+      purchaseData = {
+        listingId: window.currentItem.listingId,
+        name: formData.get('name'),
+        email: formData.get('email'),
+        phone: formData.get('phone'),
+        company: formData.get('company'),
+        deliveryMethod: formData.get('deliveryMethod'),
+        addressLine1: formData.get('addressLine1'),
+        addressLine2: formData.get('addressLine2'),
+        city: formData.get('city'),
+        state: formData.get('state'),
+        zipCode: formData.get('zipCode'),
+        specialRequests: formData.get('specialRequests'),
+        purchase: true,
+        totalCost: window.currentItem.price
+      };
+    }
 
     try {
-      // Submit purchase
-      const result = await api('/sell/purchase', {
+      let endpoint, successMessage;
+
+      if (action === 'lock') {
+        endpoint = '/sell/lock-deal';
+        successMessage = `Deal locked successfully! You have 3 days to complete the remaining payment of $${Math.round(window.currentItem.price * 0.9)}.`;
+      } else {
+        endpoint = '/sell/purchase';
+        successMessage = "Purchase completed successfully!";
+      }
+
+      // Submit request
+      const result = await api(endpoint, {
         method: 'POST',
         body: JSON.stringify(purchaseData)
       });
 
-      alert("Purchase submitted successfully!");
+      alert(successMessage);
       // Redirect or show confirmation
       window.location.href = "/";
 
     } catch (error) {
-      console.error("Purchase error:", error);
-      alert("Purchase failed: " + error.message);
+      console.error("Request error:", error);
+      alert(`${action === 'lock' ? 'Deal locking' : 'Purchase'} failed: ${error.message}`);
     }
   });
 }

@@ -24,6 +24,45 @@
   <!-- Injects GA + header/footer partials -->
   <script src="/partials/include.js" defer></script>
 
+  <!-- Handle login redirect with state -->
+  <script>
+    // Check for tokens in URL hash (from Cognito redirect)
+    const hashParams = new URLSearchParams(window.location.hash.substring(1));
+    const accessToken = hashParams.get("access_token");
+    const state = hashParams.get("state");
+
+    // Store tokens if available
+    if (accessToken) {
+      const idToken = hashParams.get("id_token");
+      const tokenType = hashParams.get("token_type") || "Bearer";
+      const expiresIn = parseInt(hashParams.get("expires_in") || "3600");
+
+      const authData = {
+        access_token: accessToken,
+        id_token: idToken,
+        token_type: tokenType,
+        exp: Date.now() + (expiresIn * 1000)
+      };
+      localStorage.setItem("cb_auth", JSON.stringify(authData));
+
+      // Clean the hash from URL
+      history.replaceState(null, "", window.location.pathname + window.location.search);
+    }
+
+    // Handle state-based redirect
+    if (state) {
+      try {
+        const decoded = JSON.parse(decodeURIComponent(state));
+        if (decoded.returnTo && decoded.id) {
+          // Redirect to the booking page with container ID
+          window.location.replace(`${decoded.returnTo}?id=${decoded.id}`);
+        }
+      } catch (e) {
+        console.error("Error parsing state:", e);
+      }
+    }
+  </script>
+
   <!-- App script (load AFTER config) -->
   <script defer src="./js/app.js"></script>
 </head>

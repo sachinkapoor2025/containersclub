@@ -11,6 +11,17 @@
 
   <!-- Injects shared header/footer -->
   <script src="/partials/include.js" defer></script>
+
+  <!-- Injects head partial (for JSON-LD structured data) -->
+  <script>
+    // Load head partial content
+    fetch('/partials/head.html')
+      .then(response => response.text())
+      .then(html => {
+        document.head.insertAdjacentHTML('beforeend', html);
+      })
+      .catch(err => console.error('Failed to load head partial:', err));
+  </script>
 </head>
 
 <body>
@@ -44,7 +55,7 @@
       </div>
     </div>
     <div class="hero-ill">
-      <img src="/images/manage-container-hero.png" alt="Container management"/>
+      <img src="/images/manage-container-hero.png" alt="Manage My shipping container online United States ContainersClub dashboard"/>
     </div>
   </section>
 

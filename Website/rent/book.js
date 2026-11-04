@@ -16,7 +16,40 @@ function getAuth() {
 
 function isExpired(auth) {
   if (!auth || !auth.exp) return true;
-  return Date.now() >= auth.exp - 5000;
+  return Date.now() >= auth.exp - 5000; // small skew
+}
+
+function getUserEmail(auth) {
+  if (!auth || !auth.id_token) return null;
+  try {
+    const payload = JSON.parse(atob(auth.id_token.split('.')[1]));
+    return payload.email;
+  } catch {
+    return null;
+  }
+}
+
+function guessNameFromEmail(email) {
+  if (!email) return null;
+
+  // Extract part before @ and clean it up
+  const username = email.split('@')[0];
+
+  // Replace dots, underscores, hyphens with spaces
+  let name = username.replace(/[._-]/g, ' ');
+
+  // Capitalize each word
+  name = name.split(' ')
+    .map(word => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase())
+    .join(' ');
+
+  // Remove common email prefixes/suffixes
+  name = name.replace(/\b(seo|admin|user|test|mail|email|contact|info|support|sales|marketing)\b/gi, '').trim();
+
+  // If name is too short or empty, return null
+  if (name.length < 2) return null;
+
+  return name;
 }
 
 // ---- DOM ----
@@ -51,27 +84,45 @@ function refreshUI() {
 
   if (loginBtn)  loginBtn.style.display  = loggedIn ? "none" : "inline-block";
   if (logoutBtn) logoutBtn.style.display = loggedIn ? "inline-block" : "none";
+
+  // Update welcome message
+  const welcomeEl = document.getElementById("welcomeMessage");
+  if (welcomeEl) {
+    if (loggedIn) {
+      const email = getUserEmail(auth);
+      const guessedName = guessNameFromEmail(email);
+      if (guessedName) {
+        welcomeEl.textContent = `Welcome ${guessedName}! Logged in as: ${email}`;
+      } else {
+        welcomeEl.textContent = `Welcome! Logged in as: ${email}`;
+      }
+      welcomeEl.style.display = "block";
+    } else {
+      welcomeEl.style.display = "none";
+    }
+  }
 }
 
 // ---- Auth actions ----
 function login() {
-  const domain   = window.RENT_COGNITO_DOMAIN || window.COGNITO_DOMAIN;
-  const clientId = window.RENT_COGNITO_CLIENT_ID || window.COGNITO_CLIENT_ID;
-  const redirect = window.COGNITO_REDIRECT_URI_RENT || location.href;
+  const containerId = new URLSearchParams(window.location.search).get("id");
 
-  if (!domain || !clientId) {
-    alert("Login not configured.");
-    return;
-  }
+  const redirectState = encodeURIComponent(
+    JSON.stringify({
+      returnTo: "/rent/book.html",
+      id: containerId
+    })
+  );
 
-  const url = `${domain}/oauth2/authorize` +
-    `?response_type=token` +
-    `&client_id=${encodeURIComponent(clientId)}` +
-    `&redirect_uri=${encodeURIComponent(redirect)}` +
-    `&scope=${encodeURIComponent("openid profile email")}` +
-    `&state=${encodeURIComponent(location.pathname + location.search)}`;
+  const cognitoLoginUrl =
+    "https://rent-club-auth.auth.us-east-1.amazoncognito.com/oauth2/authorize" +
+    "?client_id=5tde7c3ddupmvr9c90417devc3" +
+    "&response_type=token" +
+    "&scope=openid+email+profile" +
+    "&redirect_uri=https://containersclub.com/rent/new.html" +
+    "&state=" + redirectState;
 
-  location.assign(url);
+  window.location.href = cognitoLoginUrl;
 }
 
 function logout() {

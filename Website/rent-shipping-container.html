@@ -8,6 +8,23 @@
   <link rel="canonical" href="https://containersclub.com/rent/"/>
   <meta name="robots" content="index, follow"/>
 
+  <!-- Open Graph Meta Tags -->
+  <meta property="og:title" content="Containers Club | USA's Shipping Container Marketplace" />
+  <meta property="og:description" content="Discover a trusted marketplace for new, used & high-cube shipping containers. Connect with verified sellers, book rentals, and access nationwide logistics support and delivery." />
+  <meta property="og:image" content="https://containersclub.com/images/hero.png" />
+  <meta property="og:url" content="https://containersclub.com/rent/" />
+  <meta property="og:type" content="website" />
+  <meta property="og:site_name" content="Containers Club" />
+  <meta property="og:locale" content="en_US" />
+  
+  <!-- Twitter Card Meta Tags -->
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:site" content="@containersclub">
+  <meta name="twitter:title" content="Containers Club | USA's Shipping Container Marketplace">
+  <meta name="twitter:description" content="Discover a trusted marketplace for new, used & high-cube shipping containers. Connect with verified sellers, book rentals, and access nationwide logistics support and delivery.">
+  <meta name="twitter:image" content="https://containersclub.com/images/hero.png">
+  <meta name="twitter:url" content="https://containersclub.com/rent/">
+
   <!-- Global stylesheet -->
   <link rel="stylesheet" href="/styles.css"/>
 
@@ -43,8 +60,19 @@
   <!-- Injects GA + header/footer partials -->
   <script src="/partials/include.js" defer></script>
 
+  <!-- Injects head partial (for JSON-LD structured data) -->
+  <script>
+    // Load head partial content
+    fetch('/partials/head.html')
+      .then(response => response.text())
+      .then(html => {
+        document.head.insertAdjacentHTML('beforeend', html);
+      })
+      .catch(err => console.error('Failed to load head partial:', err));
+  </script>
+
   <!-- App script (load AFTER config) -->
-  <script defer src="./js/app.js"></script>
+  <script defer src="./rent-app.js"></script>
 </head>
 <body>
 
@@ -69,12 +97,12 @@
         <li>List your own containers for rent and reach thousands of active renters.</li>
       </ul>
 
-      <p style="margin-top:18px;"><a class="primary" href="./new.html">List your container</a></p>
+      <p style="margin-top:18px;"><a class="primary" href="./rent/new.html">List your container</a></p>
     </div>
 
     <!-- image on the right (will size per .hero-ill img rules in styles.css) -->
     <div class="hero-ill">
-      <img src="/images/rent-hero.png" alt="Container rentals illustration"/>
+      <img src="/images/rent-hero.png" alt="Rent shipping containers in the United States affordable container rental ContainersClub"/>
     </div>
   </section>
 

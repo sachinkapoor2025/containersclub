@@ -6,12 +6,12 @@
     <priority>1.0</priority>
   </url>
   <url>
-    <loc>https://containersclub.com/track/</loc>
+    <loc>https://containersclub.com/container-tracking-online.html</loc>
     <lastmod>2025-10-11</lastmod>
     <priority>0.9</priority>
   </url>
   <url>
-    <loc>https://containersclub.com/rent/</loc>
+    <loc>https://containersclub.com/rent-shipping-container.html</loc>
     <lastmod>2025-10-11</lastmod>
     <priority>0.9</priority>
   </url>
@@ -21,7 +21,7 @@
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://containersclub.com/sell/</loc>
+    <loc>https://containersclub.com/sell-used-shipping-container.html</loc>
     <lastmod>2025-10-11</lastmod>
     <priority>0.9</priority>
   </url>
@@ -31,7 +31,32 @@
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://containersclub.com/info/</loc>
+    <loc>https://containersclub.com/container-type-size.html</loc>
+    <lastmod>2025-10-11</lastmod>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://containersclub.com/loading-offloading.html</loc>
+    <lastmod>2025-10-11</lastmod>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://containersclub.com/port-harbour.html</loc>
+    <lastmod>2025-10-11</lastmod>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://containersclub.com/container-shipping-news.html</loc>
+    <lastmod>2025-10-11</lastmod>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://containersclub.com/manage-container.html</loc>
+    <lastmod>2025-10-11</lastmod>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://containersclub.com/container-insurance-coverage.html</loc>
     <lastmod>2025-10-11</lastmod>
     <priority>0.8</priority>
   </url>

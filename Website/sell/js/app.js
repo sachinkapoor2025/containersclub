@@ -145,16 +145,77 @@ async function authFetch(url, options = {}) {
   return fetch(url, { ...options, headers });
 }
 
+// ---- Upload file to S3 ----
+async function uploadFile(file, type) {
+  const presignRes = await api("/sell/presign-upload", {
+    method: 'POST',
+    body: JSON.stringify({
+      filename: file.name,
+      contentType: file.type || 'application/octet-stream'
+    })
+  });
+  const uploadUrl = presignRes.uploadUrl;
+  const publicUrl = presignRes.publicUrl;
+
+  await fetch(uploadUrl, {
+    method: 'PUT',
+    body: file,
+    headers: {
+      'Content-Type': file.type || 'application/octet-stream'
+    }
+  });
+
+  return publicUrl;
+}
+
 // ---- Form submit ----
 if (formEl) {
   formEl.addEventListener("submit", async (e) => {
     e.preventDefault();
     const auth = getAuth();
     if (!auth || isExpired(auth)) { return login(); }
-    // Build FormData
-    const formData = new FormData(formEl);
+
     try {
-      const result = await authFetch(CONFIG.API_BASE + "/sell/listings", { method: 'POST', body: formData });
+      // Upload images
+      const imageFiles = formEl.querySelector('input[name="images"]').files;
+      const imageUrls = [];
+      for (let file of imageFiles) {
+        const url = await uploadFile(file, 'image');
+        imageUrls.push(url);
+      }
+
+      // Upload video if present
+      let videoUrl = null;
+      const videoFile = formEl.querySelector('input[name="video"]').files[0];
+      if (videoFile) {
+        videoUrl = await uploadFile(videoFile, 'video');
+      }
+
+      // Prepare JSON payload
+      const payload = {
+        title: formEl.querySelector('input[name="title"]').value,
+        size: formEl.querySelector('select[name="size"]').value,
+        condition: formEl.querySelector('select[name="condition"]').value,
+        location: formEl.querySelector('input[name="location"]').value,
+        description: formEl.querySelector('textarea[name="description"]').value,
+        specs: formEl.querySelector('input[name="specs"]').value,
+        price: formEl.querySelector('input[name="price"]').value,
+        availabilityFrom: formEl.querySelector('input[name="availabilityFrom"]').value,
+        images: imageUrls,
+        video: videoUrl
+      };
+
+      const result = await authFetch(CONFIG.API_BASE + "/sell/listings", {
+        method: 'POST',
+        body: JSON.stringify(payload)
+      });
+
+      if (!result.ok) {
+        const errorData = await result.json();
+        throw new Error(errorData.error || 'Failed to create listing');
+      }
+
+      const data = await result.json();
       alert("Listing created successfully!");
       // Optionally reset form or redirect
       formEl.reset();
@@ -244,7 +305,8 @@ function cardHtml(it) {
 
     <div style="display:flex;flex-direction:column;gap:10px;">
       <button onclick="showVideo()" style="padding:12px 24px;font-size:16px;">Video</button>
-      <button class="primary" onclick="window.location.href='/sell/book.html?id=${it.listingId}'" style="padding:12px 24px;font-size:16px;">Book</button>
+      <button class="primary" onclick="window.location.href='/sell/book.html?id=${it.listingId}&action=buy'" style="padding:12px 24px;font-size:16px;">Buy</button>
+      <button class="secondary" onclick="window.location.href='/sell/book.html?id=${it.listingId}&action=lock'" style="padding:12px 24px;font-size:16px;background:#f59e0b;color:white;border:1px solid #f59e0b;">Lock Deal</button>
     </div>
   </article>`;
 }

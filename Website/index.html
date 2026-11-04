@@ -3,14 +3,43 @@
 <head>
   <meta charset="utf-8"/>
   <meta content="width=device-width,initial-scale=1" name="viewport"/>
-  <title>Containers Club | Track • Rent • Sell • Info</title>
+  <title>Containers Club | Buy, Sell & Rent Shipping Containers in the USA</title>
   <link rel="icon" href="/images/cc_logo.png"/>
-  <meta name="description" content="Containers Club is an US-focused container logistics platform for terminals, depots, transporters and shippers. Real-time visibility, slot booking, gate automation, EDI/API integrations."/>
+  <meta name="description" content="Containers Club is a trusted USA marketplace to buy, sell, and rent shipping containers with USA delivery, verified suppliers, and flexible options."/>
+  
+  <!-- Open Graph Meta Tags -->
+  <meta property="og:title" content="Containers Club | USA's Shipping Container Marketplace" />
+  <meta property="og:description" content="Discover a trusted marketplace for new, used & high-cube shipping containers. Connect with verified sellers, book rentals, and access nationwide logistics support and delivery." />
+  <meta property="og:image" content="https://containersclub.com/images/hero.png" />
+  <meta property="og:url" content="https://containersclub.com" />
+  <meta property="og:type" content="website" />
+  <meta property="og:site_name" content="Containers Club" />
+  <meta property="og:locale" content="en_US" />
+
+  <!-- Twitter Card Meta Tags -->
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:site" content="@containersclub">
+  <meta name="twitter:title" content="Containers Club | USA's Shipping Container Marketplace">
+  <meta name="twitter:description" content="Discover a trusted marketplace for new, used & high-cube shipping containers. Connect with verified sellers, book rentals, and access nationwide logistics support and delivery.">
+  <meta name="twitter:image" content="https://containersclub.com/images/hero.png">
+  <meta name="twitter:url" content="https://containersclub.com">
+  
   <link rel="stylesheet" href="/styles.css"/>
   <!-- <script src="/config.js"></script> -->
 
   <!-- Injects GA + header/footer partials -->
   <script src="/partials/include.js" defer></script>
+
+  <!-- Injects head partial (for JSON-LD structured data) -->
+  <script>
+    // Load head partial content
+    fetch('/partials/head.html')
+      .then(response => response.text())
+      .then(html => {
+        document.head.insertAdjacentHTML('beforeend', html);
+      })
+      .catch(err => console.error('Failed to load head partial:', err));
+  </script>
 </head>
 <body>
 
@@ -20,29 +49,29 @@
 <main class="container">
   <section class="hero">
     <div>
-      <h1>Orchestrate containers across US — from port to hinterland.</h1>
-      <p>Containers Club connects terminals, depots, transporters, CHAs and shippers on a single platform. Plan slots, digitise gate moves, track equipment, and cut dwell &amp; turn-around times.</p>
+      <h1>Shipping Container Marketplace in the USA — Buy, Sell & Rent Containers</h1>
+      <p>ContainersClub offers a wide inventory of new, used, High Cube, refurbished, and cargo-worthy shipping containers available for immediate purchase across the United States. Buyers can explore 20ft, 40ft, and custom-sized units with detailed specifications, verified condition reports, and transparent pricing. Our platform helps businesses and individuals find reliable container solutions quickly and efficiently.</p>
       <div style="display:flex;gap:12px">
-        <a class="primary" href="contact.html">Get a live demo →</a>
-        <a class="secondary" href="a-pages/platform.html">Explore platform</a>
+        <a class="primary" href="contact.html">Get Started →</a>
+        <a class="secondary" href="a-pages/platform.html">Explore Platform</a>
       </div>
       <div class="badges">
-        <span class="badge">Slot booking</span>
-        <span class="badge">Gate automation (ANPR/RFID)</span>
-        <span class="badge">Depot &amp; yard ops</span>
-        <span class="badge">EIR &amp; damage</span>
-        <span class="badge">Rail/ICD workflows</span>
-        <span class="badge">GST e-invoicing</span>
-        <span class="badge">APIs &amp; EDI</span>
+        <span class="badge">New & Used Containers</span>
+        <span class="badge">20ft & 40ft Options</span>
+        <span class="badge">High Cube Available</span>
+        <span class="badge">Nationwide Delivery</span>
+        <span class="badge">Verified Sellers</span>
+        <span class="badge">Transparent Pricing</span>
+        <span class="badge">US-Based Services</span>
       </div>
       <div class="grid-3">
-        <div class="card"><h3>35%</h3><div class="sub">Faster truck turn-around</div></div>
-        <div class="card"><h3>↓22%</h3><div class="sub">Lower yard dwell</div></div>
-        <div class="card"><h3>99.95%</h3><div class="sub">Platform uptime</div></div>
+        <div class="card"><h3>Wide Selection</h3><div class="sub">New, used, and custom containers</div></div>
+        <div class="card"><h3>Fast Delivery</h3><div class="sub">Nationwide logistics network</div></div>
+        <div class="card"><h3>Trusted Platform</h3><div class="sub">Verified sellers and transparent pricing</div></div>
       </div>
     </div>
     <div class="hero-ill">
-      <img alt="Platform illustration" src="/images/hero.png" />
+      <img alt="Container Club platform to buy sell rent track shipping containers in the United States" src="/images/hero.png" />
     </div>
   </section>
 
@@ -84,6 +113,146 @@
         <h3>Go-live in weeks</h3>
         <div class="sub">Templates for ports, CFS, ICDs, depots; migration accelerators and sandbox APIs.</div>
       </div>
+    </div>
+  </section>
+
+  <!-- Top content from provided document -->
+  <section class="content-intro" style="margin-bottom:28px;">
+    <h2>Rent Shipping Containers in the USA — Flexible Short-Term & Long-Term Plans</h2>
+    <p>
+      Renting containers is an ideal solution for businesses requiring temporary storage or
+      project-based infrastructure. If you are looking for a
+
+      <a href="https://containersclub.com/rent-shipping-container.html">Container for
+      Rent</a>, ContainersClub provides flexible short-term and long-term rental options
+      including dry containers, High Cube units, refrigerated containers, and custom storage
+      solutions. Each unit is inspected before dispatch to ensure safety, quality, and usability for
+      U.S.-based clients.
+    </p>
+
+    <h2>On-Hire / Off-Hire Services & Easy Online Booking</h2>
+    <p>
+      Our streamlined booking system allows customers to check availability, compare pricing,
+      and schedule delivery efficiently within the U.S. Users can also access
+      <a href="https://containersclub.com/container-tracking-online.html">Live Container
+      Tracking</a> to monitor shipment movement, delivery timelines, and container status in
+      real time. This transparent workflow minimizes disputes and supports smooth rental cycles
+      for businesses nationwide.
+    </p>
+
+    <h2>US-Based Delivery & Logistics Support — Fast Container Transport to Ports & Job
+    Sites</h2>
+    <p>
+      ContainersClub coordinates U.S.-based container delivery through a strong logistics
+      network covering major ports, rail terminals, metro areas, and remote job sites. Our
+      transport partners ensure safe and timely movement using flatbeds, trailers, and crane-
+      equipped vehicles. Optimized route planning reduces downtime and improves operational
+      efficiency for American businesses.
+    </p>
+
+    <h2>Quality New and Used Shipping Containers Available Across the USA</h2>
+    <p>
+      ContainersClub offers a wide selection of high-quality new and used shipping containers
+      across the USA, catering to construction companies, logistics firms, retailers, and personal
+      storage needs. Sellers can also
+
+      <a href="https://containersclub.com/sell-used-shipping-container.html">Sell Used
+      Container</a> through our trusted marketplace that connects them with qualified buyers
+      nationwide. With transparent pricing, inspection reports, and secure transactions, both
+      buyers and sellers benefit from a reliable container ecosystem.
+    </p>
+
+    <h3>20ft, 40ft, Reefer & Customized Container Solutions for Every Industry</h3>
+    <p>
+      We provide industry-specific container solutions including standard 20ft and 40ft dry
+      containers, High Cube containers for oversized cargo, and refrigerated containers for
+      temperature-controlled shipments. ContainersClub also delivers customized containers
+      such as portable offices, retail units, cold storage spaces, industrial workshops, and modular
+      structures with insulation, HVAC systems, electrical wiring, and reinforced flooring for U.S.-
+      based projects.
+    </p>
+
+    <h3>Delivery to Major U.S. Ports — Los Angeles, Long Beach, Houston & New York</h3>
+    <p>
+      ContainersClub ensures fast and reliable container delivery to major U.S. ports including
+      Los Angeles, Long Beach, Houston, New York/New Jersey, Savannah, and Oakland.
+      Exporters and importers rely on our nationwide services for depot transfers, stuffing
+      operations, and warehouse placement, helping maintain strong supply-chain efficiency
+      throughout the United States.
+    </p>
+  </section>
+
+  <!-- FAQ Section -->
+  <section class="faq-section section" style="margin-bottom:28px;">
+    <h2>Frequently Asked Questions</h2>
+
+    <div class="faq-item">
+      <h4>What is ContainersClub?</h4>
+      <p>
+        ContainersClub is a USA-based digital platform that helps users <strong>track, rent, buy,
+        sell, insure, and manage shipping containers in the USA</strong> efficiently across the
+        country.
+      </p>
+    </div>
+
+    <div class="faq-item">
+      <h4>How does ContainersClub work?</h4>
+      <p>
+        ContainersClub connects <strong>container owners, renters, and service
+        providers</strong> on one platform, allowing users to manage containers, request services,
+        and <strong>track shipping containers</strong> digitally.
+      </p>
+    </div>
+
+    <div class="faq-item">
+      <h4>What services does ContainersClub offer?</h4>
+      <p>
+        Services include <strong>container tracking, container rental, buying and selling
+        containers, container insurance</strong>, and smart container management solutions
+        across the USA.
+      </p>
+    </div>
+
+    <div class="faq-item">
+      <h4>Can I track shipping containers on ContainersClub?</h4>
+      <p>
+        Yes, ContainersClub provides a digital <strong>container tracking system</strong> to
+        improve visibility and simplify logistics planning for <strong>shipping containers in the
+        USA</strong>.
+      </p>
+    </div>
+
+    <div class="faq-item">
+      <h4>Can I rent or sell containers through ContainersClub?</h4>
+      <p>
+        Yes, users can <strong>rent or sell new and used shipping containers in the
+        USA</strong> through ContainersClub easily and securely.
+      </p>
+    </div>
+
+    <div class="faq-item">
+      <h4>Does ContainersClub provide container insurance?</h4>
+      <p>
+        Yes, ContainersClub offers <strong>container insurance solutions</strong> to protect
+        against risks such as damage, theft, and loss for all types of <strong>shipping containers in
+        the USA</strong>.
+      </p>
+    </div>
+
+    <div class="faq-item">
+      <h4>What is "Manage My Container"?</h4>
+      <p>
+        "Manage My Container" is a smart tool that helps users <strong>track container
+        locations, organize records, and manage container data</strong> all in one place.
+      </p>
+    </div>
+
+    <div class="faq-item">
+      <h4>Is ContainersClub available outside the USA?</h4>
+      <p>
+        No, ContainersClub currently operates only within the United States, focusing on
+        <strong>shipping containers in the USA</strong>.
+      </p>
     </div>
   </section>
 </main>

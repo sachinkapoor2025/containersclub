@@ -1,4 +1,4 @@
-name: Deploy Employee Portal (Backend + Frontend)
+name: Deploy Containers Club  (Backend + Frontend)
 
 on:
   push:
@@ -37,14 +37,12 @@ jobs:
         run: |
           sam build
 
-      # ----------------------------
-      # Backend: SAM Deploy (uses samconfig.toml)
-      # ----------------------------
       - name: SAM Deploy (dev)
         working-directory: Backend
         run: |
           sam deploy \
             --config-env dev \
+            --capabilities CAPABILITY_IAM CAPABILITY_NAMED_IAM \
             --no-confirm-changeset \
             --no-fail-on-empty-changeset
 
